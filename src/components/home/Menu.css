@@ -1,0 +1,10 @@
+.menu-header{
+    background: rgb(88,149,162);
+    background: linear-gradient(90deg, rgba(88,149,162,1) 0%, rgba(33,191,104,1) 48%, rgba(15,108,73,1) 99%);
+    display: flex;
+    padding: 5px;
+}
+
+.menu-header .avatar{
+    margin-left: auto;
+}
