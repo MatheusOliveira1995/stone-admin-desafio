@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
-import './AppNavbar.css'
+import './styles.css'
 
 import {
     CssBaseline,
@@ -18,7 +18,7 @@ import {
 
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 
-import { Menu as SideMenu } from 'src/components/home/menu/Menu'
+import { Menu as SideMenu } from 'src/components/menu'
 
 import { useTranslation } from 'react-i18next'
 let drawerWidth = 240;

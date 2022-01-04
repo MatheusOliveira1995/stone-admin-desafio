@@ -18,7 +18,7 @@ import {
 
 } from '@mui/material'
 
-import './Menu.css'
+import './styles.css'
 
 type Props = {
     open: boolean,

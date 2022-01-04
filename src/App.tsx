@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router } from 'react-router-dom';
 import Routes from 'src/router/routes'
-import AppNavBar from "./components/home/navbar/AppNavBar";
+import AppNavBar from "./components/navbar";
 import { Box } from '@mui/material'
 import { styled } from '@mui/material/styles';
 
