@@ -1,0 +1,9 @@
+.table-header{
+    background-color: rgba(32, 187, 102, 0.9);
+}
+
+.table-header th {
+    color: white;
+    font-size: 0.9rem;
+    padding: 14px;
+}

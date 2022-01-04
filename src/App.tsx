@@ -38,7 +38,7 @@ function App() {
 
   return (
     <Router>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: 'flex'}}>
         <AppNavBar handleDrawerShowing={handleMenu} drawerWidth={menuWidth}/>
         <Main open={open}>
           <Routes />

@@ -13,6 +13,8 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
+import './styles.css'
+
 function createData(
   name: string,
   calories: number,
@@ -118,14 +120,14 @@ export default function CollapsibleTable() {
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
-        <TableHead>
+        <TableHead className='table-header'>
           <TableRow>
             <TableCell />
             <TableCell>Dessert (100g serving)</TableCell>
             <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell align="right">Fat (g)</TableCell>
+            <TableCell align="right">Carbs (g)</TableCell>
+            <TableCell align="right">Protein (g)</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
