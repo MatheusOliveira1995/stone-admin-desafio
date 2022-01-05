@@ -23,7 +23,8 @@ import './styles.css'
 type Props = {
     open: boolean,
     drawerWidth: number,
-    handleDrawerClose: React.MouseEventHandler
+    handleDrawerClose: React.MouseEventHandler,
+    handleDrawerOpen: React.MouseEventHandler
 }
 let drawerWidth = 240
 
@@ -92,7 +93,7 @@ export function Menu(props: Props) {
         <Divider />
         <List>
           {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem className='menu-list-item' button key={text}>
+            <ListItem  onMouseEnter={props.handleDrawerOpen} onMouseLeave={props.handleDrawerClose} className='menu-list-item' button key={text}>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>
@@ -103,7 +104,7 @@ export function Menu(props: Props) {
         <Divider />
         <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem className='menu-list-item' button key={text}>
+            <ListItem onMouseEnter={props.handleDrawerOpen} onMouseLeave={props.handleDrawerClose} className='menu-list-item' button key={text}>
               <ListItemIcon>
                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
               </ListItemIcon>

@@ -55,7 +55,7 @@ export default function AppNavBar(props: Props) {
     const [open, setOpen] = React.useState(false);
     drawerWidth = props.drawerWidth
 
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -127,7 +127,7 @@ export default function AppNavBar(props: Props) {
                 </Toolbar>
             </AppBar>
 
-            <SideMenu open={open} drawerWidth={drawerWidth} handleDrawerClose={handleDrawerClose} />
+            <SideMenu open={open} drawerWidth={drawerWidth} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
         </div>
     );
 }
