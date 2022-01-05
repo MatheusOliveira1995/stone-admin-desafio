@@ -6,8 +6,8 @@ type State = Users
 const initialState: Users = {
     users: []
 }
-const setUsers: CaseReducer<State, PayloadAction<User[]>> = (state, users) => {
-    state.users = users.payload
+const setUsers: CaseReducer<State, PayloadAction<User[]>> = (state, action) => {
+    state.users = action.payload
 }
 export const usersSlice = createSlice({
     name: 'usersSlice',

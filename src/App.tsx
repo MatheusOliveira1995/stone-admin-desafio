@@ -18,7 +18,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: `-${menuWidth}px`,
   marginTop: '65px',
   ...(open && {
     transition: theme.transitions.create('margin', {
@@ -40,7 +39,7 @@ function App() {
     <Router>
       <Box sx={{ display: 'flex'}}>
         <AppNavBar handleDrawerShowing={handleMenu} drawerWidth={menuWidth}/>
-        <Main open={open}>
+        <Main open={open} sx={{ flexGrow: 1, p: 3 }}>
           <Routes />
         </Main>
       </Box>
