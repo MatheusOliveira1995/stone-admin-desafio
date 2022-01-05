@@ -7,7 +7,7 @@ import { styled } from '@mui/material/styles';
 
 import "./App.css";
 
-const menuWidth = 240;
+const menuWidth = 280;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })<{
   open?: boolean;

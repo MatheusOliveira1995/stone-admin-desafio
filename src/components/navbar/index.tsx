@@ -27,11 +27,12 @@ type Props = {
     handleDrawerShowing: Function
     drawerWidth: number
 }
-
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
 }
 
+/**
+ */
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
@@ -50,6 +51,9 @@ const AppBar = styled(MuiAppBar, {
     }),
 }));
 
+/**
+ * @param props 
+ */
 export default function AppNavBar(props: Props) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const [open, setOpen] = React.useState(false);
