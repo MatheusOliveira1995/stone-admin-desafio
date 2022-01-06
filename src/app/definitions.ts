@@ -14,7 +14,7 @@ export type User = {
     id: number | string,
     name: string,
     email: string,
-    birthDate?: Date,
+    BirthDate?: Date,
     createdAt?: Date,
     updatedAt?: Date,
     enabledFeatures?: Feature[],

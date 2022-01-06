@@ -94,18 +94,22 @@ function EnhancedTableHead(props: EnhancedTableProps) {
               align='left'
               sortDirection={orderBy === column.id ? order : false}
             >
-              <TableSortLabel
-                active={orderBy === column.id}
-                direction={orderBy === column.id ? order : 'asc'}
-                onClick={createSortHandler(column.id)}
-              >
-                {column.name}
-                {orderBy === column.id ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </TableSortLabel>
+              { 
+                column.enableSort ? 
+                      <TableSortLabel
+                        active={orderBy === column.id}
+                        direction={orderBy === column.id ? order : 'asc'}
+                        onClick={createSortHandler(column.id)}
+                      >
+                        {column.name}
+                        {orderBy === column.id ? (
+                          <Box component="span" sx={visuallyHidden}>
+                            {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                          </Box>
+                        ) : null}
+                      </TableSortLabel>
+                : column.name      
+              }
             </TableCell>
           ))}
         </TableRow>
