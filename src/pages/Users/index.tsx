@@ -16,7 +16,38 @@ export default function User() {
 
     return (
         <div>
-            <AppTable />
+            <AppTable
+                columns={[
+                    {
+                        id: 'name',
+                        name: 'Name',
+                        enableSort: true,
+                    },
+                    {
+                        id: 'desc',
+                        name: 'Description',
+                        enableSort: true,
+                    },
+                    {
+                        id: 'data',
+                        name: 'Data',
+                        enableSort: true,
+                    }
+                ]}
+                rows={[
+                   { 
+                       name: 'First',
+                       desc: 'First Item',
+                       data: '29/12/1995'
+                    },
+                   { 
+                       name: 'Second',
+                       desc: 'Second Item',
+                       data:'21/02/1954'
+                    }
+                ]}
+            
+            />
         </div>
     )
 }
