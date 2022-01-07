@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,9 +13,10 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+
+import './styles.css'
 
 type Order = 'asc' | 'desc';
 
@@ -24,6 +24,7 @@ type Column = {
   id: string,
   name: string,
   enableSort?: boolean
+  width?: number
 }
 type Props = {
   columns?: Column[],
@@ -87,7 +88,14 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   return (
     <React.Fragment>
       <TableHead>
-        <TableRow>
+        <TableRow
+          sx={
+            {
+              bgcolor: 'rgba(72, 161, 145, 0.9)',
+              opacity: 0.8
+            }
+          }
+        >
           {props.columns.map((column) => (
             <TableCell
               key={column.id}
@@ -108,7 +116,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                           </Box>
                         ) : null}
                       </TableSortLabel>
-                : column.name      
+                : <span>{ column.name }</span>    
               }
             </TableCell>
           ))}
@@ -119,30 +127,18 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 }
 
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
-  const { numSelected } = props;
 
   return (
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
+        bgcolor: 'rgba(72, 161, 145, 1)',
+        boxShadow: 2,
+        color: 'white'
       }}
     >
-      {numSelected > 0 ? (
-        <Typography
-          sx={{ flex: '1 1 100%' }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography
+      <Typography
           sx={{ flex: '1 1 100%' }}
           variant="h6"
           id="tableTitle"
@@ -150,27 +146,18 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         >
           Usuários
         </Typography>
-      )}
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
+      <Tooltip title="Filter list">
           <IconButton>
             <FilterListIcon />
           </IconButton>
         </Tooltip>
-      )}
     </Toolbar>
   );
 };
 
 export default function AppTable(props: Props) {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof any>('calories');
+  const [orderBy, setOrderBy] = React.useState<keyof any>(props.columns ? props.columns[0].id : '');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -178,7 +165,8 @@ export default function AppTable(props: Props) {
   let internalColumnData: Column[] = [{
     id: "",
     name: "",
-    enableSort: false
+    enableSort: false,
+    width: 30
   }];
 
   if (!props.columns) {
@@ -243,17 +231,27 @@ export default function AppTable(props: Props) {
                     return (
                       <TableRow
                         hover
+                        sx={{cursor: 'pointer'}}
                         tabIndex={-1}
                         key={index}
                       >
                         {
                           Object.keys(row).map((key, index) => {
+                            const colWidth = internalColumnData[index] ? internalColumnData[index].width : 30
                             return (
                               <TableCell
                                 align={'inherit'}
                                 component="th"
                                 key={index}
                                 scope="row"
+                                sx={
+                                  {
+                                    maxWidth: colWidth,
+                                    minWidth: colWidth,
+                                    textOverflow: 'ellipsis',
+                                    overflow: 'hidden'
+                                  }
+                                }
                               >
                                 {row[key]}
                               </TableCell>

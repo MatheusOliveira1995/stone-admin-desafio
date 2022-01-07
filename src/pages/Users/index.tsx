@@ -15,22 +15,26 @@ const configureTableData = ( users: UserType[], t: TFunction<"translation", unde
         {
             id: 'name',
             name: t('user.details.name'),
-            enableSort: true
+            enableSort: true,
+            width: 150
         },
         {
             id: 'email',
             name: t('user.details.email'),
-            enableSort: true
+            enableSort: true,
+            width: 150
         },
         {
             id: 'document',
             name: t('user.details.document'),
-            enableSort: true
+            enableSort: true,
+            width: 50
         },
         {
             id: 'birthDate',
             name: t('user.details.birthDate'),
-            enableSort: false
+            enableSort: false,
+            width: 50
         }
     ]
     const rowsData = users.map((user: UserType) => {
@@ -49,6 +53,8 @@ const configureTableData = ( users: UserType[], t: TFunction<"translation", unde
     }
 
 }
+
+
 
 export default function Users() {
     const { t } = useTranslation();

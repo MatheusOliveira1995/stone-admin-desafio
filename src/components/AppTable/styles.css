@@ -7,3 +7,11 @@
     font-size: 0.9rem;
     padding: 14px;
 }
+
+th > span {
+    color: white !important;
+}
+
+span > svg {
+    color: white !important
+}
