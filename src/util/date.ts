@@ -8,5 +8,5 @@ export function formatDate(dateValue: Date | string) {
   const year = String(date.getFullYear())
 
 
-  return `${monthDay < 9 ? '0' + (monthDay): monthDay}/${month < 9 ? '0' + (month + 1) : (month + 1)}/${year}`
+  return `${monthDay <= 9 ? '0' + (monthDay): monthDay}/${month < 9 ? '0' + (month + 1) : (month + 1)}/${year}`
 }

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import AppTable from 'src/components/shared/app-table'
+import AppTable from 'src/components/AppTable'
 
 import { User as UserType } from "src/app/definitions";
 
@@ -50,7 +50,7 @@ const configureTableData = ( users: UserType[], t: TFunction<"translation", unde
 
 }
 
-export default function User() {
+export default function Users() {
     const { t } = useTranslation();
 
     const dipatch = useAppDispatch()

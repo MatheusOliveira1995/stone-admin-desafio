@@ -18,7 +18,7 @@ import {
 
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 
-import { Menu as SideMenu } from 'src/components/menu'
+import { Menu as SideMenu } from 'src/components/Menu'
 
 import { useTranslation } from 'react-i18next'
 let drawerWidth = 240;
