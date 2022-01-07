@@ -13,6 +13,12 @@ import { formatDate } from 'src/util/date'
 const configureTableData = ( users: UserType[], t: TFunction<"translation", undefined>) => {
     const columnsMetaData = [
         {
+            id: 'id',
+            name: 'ID',
+            enableSort: true,
+            width: 5
+        },
+        {
             id: 'name',
             name: t('user.details.name'),
             enableSort: true,
@@ -28,7 +34,7 @@ const configureTableData = ( users: UserType[], t: TFunction<"translation", unde
             id: 'document',
             name: t('user.details.document'),
             enableSort: true,
-            width: 50
+            width: 45
         },
         {
             id: 'birthDate',
@@ -40,6 +46,7 @@ const configureTableData = ( users: UserType[], t: TFunction<"translation", unde
     const rowsData = users.map((user: UserType) => {
         return(
             {
+                id: user.id,
                 name: user.name,
                 email: user.email,
                 document: user.document,
@@ -74,6 +81,7 @@ export default function Users() {
             <AppTable
                 columns={tableData.columnsMetaData}
                 rows={tableData.rowsData}
+                headerTitle={t('user.label')}
             />
         </div>
     )

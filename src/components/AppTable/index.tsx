@@ -27,12 +27,14 @@ type Column = {
   width?: number
 }
 type Props = {
+  headerTitle: string
   columns?: Column[],
   rows: any[]
 }
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  headerTitle: string;
 }
 
 //IDataTableHeadProps 
@@ -144,7 +146,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
           id="tableTitle"
           component="div"
         >
-          Usuários
+          {props.headerTitle}
         </Typography>
       <Tooltip title="Filter list">
           <IconButton>
@@ -206,10 +208,10 @@ export default function AppTable(props: Props) {
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar headerTitle={props.headerTitle} numSelected={selected.length} />
         <TableContainer>
           <Table
-            sx={{ minWidth: 750 }}
+            sx={{ minWidth: 800 }}
             aria-labelledby="tableTitle"
             size={'medium'}
           >
@@ -237,7 +239,10 @@ export default function AppTable(props: Props) {
                       >
                         {
                           Object.keys(row).map((key, index) => {
-                            const colWidth = internalColumnData[index] ? internalColumnData[index].width : 30
+                            let colWidth 
+                            if(internalColumnData[index]){
+                              colWidth = internalColumnData[index].width ? internalColumnData[index].width : 100
+                            }
                             return (
                               <TableCell
                                 align={'inherit'}
