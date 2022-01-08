@@ -8,11 +8,13 @@ import { setUsers } from "src/app/store/slices/users";
 import { getUsers } from 'src/service/api/users'
 import { useTranslation, TFunction } from "react-i18next";
 
+import { Column } from "src/components/AppTable";
+
 import { formatDate } from 'src/util/date'
 import { formatDocument } from 'src/util/format' 
 
 const configureTableData = ( users: UserType[], t: TFunction<"translation", undefined>) => {
-    const columnsMetaData = [
+    const columnsMetaData: Column[] = [
         {
             id: 'id',
             name: 'ID',

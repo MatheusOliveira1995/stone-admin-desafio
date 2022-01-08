@@ -23,7 +23,7 @@ import './styles.css'
 
 type Order = 'asc' | 'desc';
 
-type Column = {
+export type Column = {
   id: string,
   name: string,
   enableSort?: boolean

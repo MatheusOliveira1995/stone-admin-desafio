@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowId, GridValueGetterParams } from '@mui/x-data-grid';
+import { Paper, Box, Button } from '@mui/material';
+
+import { Add, Delete } from '@mui/icons-material';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -43,19 +46,87 @@ const rows = [
   { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
   { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  { id: 10, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+  { id: 11, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+  { id: 12, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  { id: 13, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+  { id: 14, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+  { id: 15, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  { id: 16, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+  { id: 17, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+  { id: 18, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
+  { id: 19, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
+  { id: 20, lastName: 'Frances', firstName: 'Rossini', age: 36 },
+  { id: 21, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
 
 export default function DataGridDemo() {
+  const [selectionModel, setSelectionModel] = React.useState<GridRowId[]>([]);
+
   return (
-    <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        checkboxSelection
-        disableSelectionOnClick
-      />
-    </div>
+    <Paper
+      elevation={2}
+      sx={{
+        display: 'flex',
+        flexDirection:'column',
+        marginTop: '70px',
+        height:'600px'
+      }}
+    >
+      <Box
+        component="div"
+        sx={{
+          display: 'flex',
+          padding:'20px'
+        }}
+      >
+        <Button
+          endIcon={<Add/>}
+          aria-label='Novo'
+          size='medium'
+          variant='contained'
+        >
+          Adicionar
+        </Button>
+        <Button
+          endIcon={<Delete/>}
+          aria-label='Deletar'
+          size='medium'
+          variant='contained'
+          color='error'
+        >
+          Deletar
+        </Button>
+      </Box>
+      <Box component="div" sx={{
+        height: '100%',
+        backgroundColor: 'white',
+        padding: '18px 18px 30px 18px'
+      }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          autoPageSize
+          rowsPerPageOptions={[30]}
+          checkboxSelection
+          selectionModel={selectionModel}
+          hideFooterSelectedRowCount
+          onSelectionModelChange={(selection) => {
+            if (selection.length === rows.length) {
+              setSelectionModel([])
+              return
+            }
+            if (selection.length > 1) {
+              const selectionSet = new Set(selectionModel);
+              const result = selection.filter((s) => !selectionSet.has(s));
+
+              setSelectionModel(result);
+            } else {
+              setSelectionModel(selection);
+            }
+          }}
+        />
+      </Box>
+    </Paper >
   );
 }
