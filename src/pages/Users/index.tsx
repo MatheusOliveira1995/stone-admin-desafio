@@ -9,6 +9,7 @@ import { getUsers } from 'src/service/api/users'
 import { useTranslation, TFunction } from "react-i18next";
 
 import { formatDate } from 'src/util/date'
+import { formatDocument } from 'src/util/format' 
 
 const configureTableData = ( users: UserType[], t: TFunction<"translation", undefined>) => {
     const columnsMetaData = [
@@ -49,7 +50,7 @@ const configureTableData = ( users: UserType[], t: TFunction<"translation", unde
                 id: user.id,
                 name: user.name,
                 email: user.email,
-                document: user.document,
+                document: formatDocument(user.document.toString()),
                 birthDate: user.BirthDate ? formatDate(user.BirthDate) : '-'
             }
         )

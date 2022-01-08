@@ -8,10 +8,6 @@
     padding: 14px;
 }
 
-th > span {
-    color: white !important;
-}
-
-span > svg {
-    color: white !important
+#table-sort-label > svg{
+    color: white;
 }

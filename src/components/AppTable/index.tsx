@@ -107,9 +107,15 @@ function EnhancedTableHead(props: EnhancedTableProps) {
               { 
                 column.enableSort ? 
                       <TableSortLabel
+                        id='table-sort-label'
                         active={orderBy === column.id}
                         direction={orderBy === column.id ? order : 'asc'}
                         onClick={createSortHandler(column.id)}
+                        sx={
+                          {
+                            color: 'white!important'
+                          }
+                        }
                       >
                         {column.name}
                         {orderBy === column.id ? (
@@ -118,7 +124,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                           </Box>
                         ) : null}
                       </TableSortLabel>
-                : <span>{ column.name }</span>    
+                : <span style={{color: 'white'}}>{ column.name }</span>    
               }
             </TableCell>
           ))}
@@ -253,8 +259,9 @@ export default function AppTable(props: Props) {
                                   {
                                     maxWidth: colWidth,
                                     minWidth: colWidth,
+                                    whiteSpace: 'nowrap',
                                     textOverflow: 'ellipsis',
-                                    overflow: 'hidden'
+                                    overflow: 'hidden',
                                   }
                                 }
                               >
@@ -280,7 +287,10 @@ export default function AppTable(props: Props) {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          labelRowsPerPage="Linhas por página:"
+          showFirstButton={true}
+          showLastButton={true}
+          rowsPerPageOptions={[5,10,25]}
           component="div"
           count={props.rows.length}
           rowsPerPage={rowsPerPage}
