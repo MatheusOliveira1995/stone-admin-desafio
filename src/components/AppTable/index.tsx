@@ -16,7 +16,10 @@ import Tooltip from '@mui/material/Tooltip';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 
+import CSS from 'csstype';
+
 import './styles.css'
+
 
 type Order = 'asc' | 'desc';
 
@@ -25,6 +28,7 @@ type Column = {
   name: string,
   enableSort?: boolean
   width?: number
+  textAlign?: string
 }
 type Props = {
   headerTitle: string
@@ -245,23 +249,24 @@ export default function AppTable(props: Props) {
                       >
                         {
                           Object.keys(row).map((key, index) => {
-                            let colWidth 
+                            let colWidth
+                            let alignment
                             if(internalColumnData[index]){
                               colWidth = internalColumnData[index].width ? internalColumnData[index].width : 100
+                              alignment = internalColumnData[index].textAlign ?  internalColumnData[index].textAlign : ''
                             }
                             return (
                               <TableCell
-                                align={'inherit'}
                                 component="th"
                                 key={index}
                                 scope="row"
                                 sx={
                                   {
                                     maxWidth: colWidth,
-                                    minWidth: colWidth,
                                     whiteSpace: 'nowrap',
                                     textOverflow: 'ellipsis',
                                     overflow: 'hidden',
+                                    textAlign: alignment as CSS.Properties
                                   }
                                 }
                               >
