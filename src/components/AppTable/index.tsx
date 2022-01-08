@@ -97,8 +97,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         <TableRow
           sx={
             {
-              bgcolor: 'rgba(72, 161, 145, 0.9)',
-              opacity: 0.8
+              bgcolor: 'rgba(0, 142, 90, 0.8)',
             }
           }
         >
@@ -107,6 +106,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
               key={column.id}
               align='left'
               sortDirection={orderBy === column.id ? order : false}
+              sx={{
+                padding:'14px'
+              }}
             >
               { 
                 column.enableSort ? 
@@ -145,8 +147,8 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
-        bgcolor: 'rgba(72, 161, 145, 1)',
-        boxShadow: 2,
+        bgcolor: 'rgba(0, 142, 90, 1)',
+        boxShadow: 3,
         color: 'white'
       }}
     >
@@ -158,7 +160,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
         >
           {props.headerTitle}
         </Typography>
-      <Tooltip title="Filter list">
+      <Tooltip sx={{color:'white'}} title="Filter list">
           <IconButton>
             <FilterListIcon />
           </IconButton>

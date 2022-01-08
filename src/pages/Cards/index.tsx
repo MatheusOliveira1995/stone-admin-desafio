@@ -5,7 +5,7 @@ import { Paper, Box, Button } from '@mui/material';
 import { Add, Delete } from '@mui/icons-material';
 
 const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 90 },
+  { field: 'id', headerName: 'ID', width: 9 },
   {
     field: 'firstName',
     headerName: 'First name',
@@ -85,8 +85,9 @@ export default function DataGridDemo() {
           aria-label='Novo'
           size='medium'
           variant='contained'
+          color='primary'
         >
-          Adicionar
+          Novo
         </Button>
         <Button
           endIcon={<Delete/>}
@@ -94,6 +95,11 @@ export default function DataGridDemo() {
           size='medium'
           variant='contained'
           color='error'
+          sx={
+            {
+              marginLeft: '10px'
+            }
+          }
         >
           Deletar
         </Button>
@@ -101,7 +107,8 @@ export default function DataGridDemo() {
       <Box component="div" sx={{
         height: '100%',
         backgroundColor: 'white',
-        padding: '18px 18px 30px 18px'
+        padding: '18px 18px 30px 18px',
+        width: 1,
       }}>
         <DataGrid
           rows={rows}
@@ -125,6 +132,14 @@ export default function DataGridDemo() {
               setSelectionModel(selection);
             }
           }}
+          sx={
+            {
+              '& .grid-header': {
+                bgcolor: 'rgba(76, 182, 170, 1)!important',
+                opacity: 0.8
+              },
+            }
+          }
         />
       </Box>
     </Paper >
