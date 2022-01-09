@@ -1,16 +1,21 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Paper from '@mui/material/Paper';
+
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+  Toolbar,
+  Typography,
+  Paper
+
+} from "@mui/material"
+
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -37,14 +42,12 @@ type Props = {
 }
 
 interface EnhancedTableToolbarProps {
-  numSelected: number;
   headerTitle: string;
 }
 
 //IDataTableHeadProps 
 interface EnhancedTableProps {
   columns: Column[],
-  numSelected: number;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof any) => void;
   order: Order;
   orderBy: keyof any;
@@ -172,7 +175,6 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 export default function AppTable(props: Props) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof any>(props.columns ? props.columns[0].id : '');
-  const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -187,7 +189,7 @@ export default function AppTable(props: Props) {
     if (props.rows.length) {
       internalColumnData.length = 0;
       Object.keys(props.rows[0]).map(key => {
-        internalColumnData.push({
+        return internalColumnData.push({
           id: String(key),
           name: String(key),
           enableSort: false
@@ -220,7 +222,7 @@ export default function AppTable(props: Props) {
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar headerTitle={props.headerTitle} numSelected={selected.length} />
+        <EnhancedTableToolbar headerTitle={props.headerTitle} />
         <TableContainer>
           <Table
             sx={{ minWidth: 800 }}
@@ -229,7 +231,6 @@ export default function AppTable(props: Props) {
           >
             <EnhancedTableHead
               columns={internalColumnData}
-              numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}

@@ -7,8 +7,6 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 
-import CSS from 'csstype';
-
 import MuiDrawer from '@mui/material/Drawer';
 import {
   List,

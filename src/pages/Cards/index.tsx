@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from "react";
-import { DataGrid, GridColDef, GridRowId, GridRow } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowId } from '@mui/x-data-grid';
 import { Paper, Box, Button } from '@mui/material';
 import { Add, Delete, Visibility } from '@mui/icons-material';
 
@@ -16,6 +17,7 @@ type DataGridType = {
   columns: GridColDef[] ,
   rows: any[]
 }
+
 const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): DataGridType => {  
   const dataGridColumns: GridColDef[] = [
     { 
@@ -99,16 +101,15 @@ export default function Cards() {
   const [gridData, setGridData] = useState<DataGridType>({columns: [], rows: []})
 
   useEffect(() => {
-    const gridData = configureGridData(cards, t)
-    setGridData(gridData)
-  }, [cards])
-
-  
-  useEffect(() => {
     getCards().then((response) => {
       dispatch(setCards(response))
     })
   }, [])
+
+  useEffect(() => {
+    const gridData = configureGridData(cards, t)
+    setGridData(gridData)
+  }, [cards])
 
   return (
     <Paper
