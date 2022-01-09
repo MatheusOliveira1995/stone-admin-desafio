@@ -20,7 +20,6 @@ const configureTableData = ( users: UserType[], t: TFunction<"translation", unde
             name: 'ID',
             enableSort: true,
             width: 5,
-            textAlign: 'right'
         },
         {
             id: 'name',

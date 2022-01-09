@@ -109,6 +109,7 @@ export default function DataGridDemo() {
         backgroundColor: 'white',
         padding: '18px 18px 30px 18px',
         width: 1,
+        display: 'flex'
       }}>
         <DataGrid
           rows={rows}

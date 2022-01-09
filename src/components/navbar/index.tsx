@@ -3,6 +3,8 @@ import { styled } from '@mui/material/styles';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircle from '@mui/icons-material/AccountCircle';
+ 
+import { Box } from '@mui/material';
 
 import './styles.css'
 
@@ -82,7 +84,7 @@ export default function AppNavBar(props: Props) {
     return (
         <div>
             <CssBaseline />
-            <AppBar className="navbar-header" position="fixed" open={open}>
+            <AppBar sx={{backgroundColor: "primary", display: 'flex'}} position="fixed" open={open}>
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -99,7 +101,7 @@ export default function AppNavBar(props: Props) {
                     <Typography variant="h6" noWrap component="div">
                         {t('home.name')}
                     </Typography>
-                    <div className='avatar'>
+                    <Box component="div" sx={{marginLeft: 'auto'}}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -128,7 +130,7 @@ export default function AppNavBar(props: Props) {
                             <MenuItem onClick={handleFloatMenuClose}>Profile</MenuItem>
                             <MenuItem onClick={handleFloatMenuClose}>My account</MenuItem>
                         </Menu>
-                    </div>
+                    </Box>
                 </Toolbar>
             </AppBar>
 
