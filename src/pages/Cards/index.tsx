@@ -1,67 +1,114 @@
-import * as React from 'react';
-import { DataGrid, GridColDef, GridRowId, GridValueGetterParams } from '@mui/x-data-grid';
+import React, { useEffect, useState } from "react";
+import { DataGrid, GridColDef, GridRowId, GridRow } from '@mui/x-data-grid';
 import { Paper, Box, Button } from '@mui/material';
-
 import { Add, Delete, Visibility } from '@mui/icons-material';
 
-const columns: GridColDef[] = [
-  { field: 'id', headerName: 'ID', width: 9 },
-  {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'lastName',
-    headerName: 'Last name',
-    width: 150,
-    editable: true,
-  },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
-    editable: true,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params: GridValueGetterParams) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
-];
+import { useTranslation, TFunction } from "react-i18next";
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  { id: 10, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 11, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 12, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  { id: 13, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 14, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 15, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  { id: 16, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 17, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 18, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-  { id: 19, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 20, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 21, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+import { getCards } from 'src/service/api/cards';
+import { useAppDispatch, useAppSelector } from "src/app/hooks";
+import { setCards } from "src/app/store/slices/cards";
+import { Card, Cards as CardsType } from "src/app/definitions";
 
-export default function DataGridDemo() {
-  const [selectionModel, setSelectionModel] = React.useState<GridRowId[]>([]);
+import { getUser } from "src/service/api/users";
+
+type DataGridType = {
+  columns: GridColDef[] ,
+  rows: any[]
+}
+const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): DataGridType => {  
+  const dataGridColumns: GridColDef[] = [
+    { 
+      field: 'id',
+      headerName: 'ID',
+      width: 15 
+    },
+    {
+      field: 'cardHolderName',
+      minWidth: 300,
+      headerName: 'Titular do cartão',
+      width: 150,
+      editable: false,
+    },
+    {
+      field: 'digits',
+      headerName: 'Número do cartão',
+      width: 150,
+      type: 'number',
+      editable: false,
+    },
+    {
+      field: 'limit',
+      headerName: 'Limite do cartão',
+      type: 'number',
+      width: 200,
+      editable: false,
+    },
+    {
+      field: 'status',
+      headerName: 'Status do pedido',
+      sortable: true,
+      width: 160,
+    },
+    {
+      field: 'createdAt',
+      headerName: 'Criado em',
+      sortable: true,
+      width: 100,
+    },
+    {
+      field: 'updatedAt',
+      headerName: 'Atualizado em',
+      sortable: true,
+      width: 150,
+    },
+  ];
+
+  const dataGridRows = data.cards.map((card: Card) => {
+      let cardHolderName =  card.metaDatas.name
+      if(!card.metaDatas.name){
+        getUser(card.userId).then((cardHolder) => {
+          cardHolderName = cardHolder.name
+        })
+      }
+      
+      return (
+        {
+          id: card.id,
+          cardHolderName: cardHolderName,
+          digits: card.metaDatas.digits ? card.metaDatas.digits : '-',
+          limit: card.metaDatas.limit ? card.metaDatas.limit : '-',
+          status: card.status,
+          createdAt: new Date(card.createdAt),
+          updatedAt: card.updatedAt ? new Date( card.updatedAt ) : '-'
+        }
+      )
+  })
+
+  return {
+    columns: dataGridColumns,
+    rows: dataGridRows
+  }
+}
+export default function Cards() {
+  const { t } = useTranslation();
+
+  const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
+  const dispatch = useAppDispatch()
+  const cards = useAppSelector((state) => state.cards)
+  const [gridData, setGridData] = useState<DataGridType>({columns: [], rows: []})
+
+  useEffect(() => {
+    const gridData = configureGridData(cards, t)
+    setGridData(gridData)
+  }, [cards])
+
+  
+  useEffect(() => {
+    getCards().then((response) => {
+      dispatch(setCards(response))
+    })
+  }, [])
 
   return (
     <Paper
@@ -69,7 +116,7 @@ export default function DataGridDemo() {
       sx={{
         display: 'flex',
         flexDirection:'column',
-        marginTop: '50px',
+        marginTop: '60px',
         height:'600px'
       }}
     >
@@ -126,35 +173,27 @@ export default function DataGridDemo() {
         display: 'flex'
       }}>
         <DataGrid
-          rows={rows}
-          columns={columns}
+          rows={gridData.rows}
+          columns={gridData.columns}
           autoPageSize
           rowsPerPageOptions={[30]}
           checkboxSelection
           selectionModel={selectionModel}
           hideFooterSelectedRowCount
           onSelectionModelChange={(selection) => {
-            if (selection.length === rows.length) {
+            if (selection.length === gridData.rows.length) {
               setSelectionModel([])
               return
             }
             if (selection.length > 1) {
               const selectionSet = new Set(selectionModel);
-              const result = selection.filter((s) => !selectionSet.has(s));
+              const result = selection.filter((selected) => !selectionSet.has(selected));
 
               setSelectionModel(result);
             } else {
               setSelectionModel(selection);
             }
           }}
-          sx={
-            {
-              '& .grid-header': {
-                bgcolor: 'rgba(76, 182, 170, 1)!important',
-                opacity: 0.8
-              },
-            }
-          }
         />
       </Box>
     </Paper >
