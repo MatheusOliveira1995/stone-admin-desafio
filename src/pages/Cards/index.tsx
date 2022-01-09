@@ -2,7 +2,7 @@ import * as React from 'react';
 import { DataGrid, GridColDef, GridRowId, GridValueGetterParams } from '@mui/x-data-grid';
 import { Paper, Box, Button } from '@mui/material';
 
-import { Add, Delete } from '@mui/icons-material';
+import { Add, Delete, Visibility } from '@mui/icons-material';
 
 const columns: GridColDef[] = [
   { field: 'id', headerName: 'ID', width: 9 },
@@ -69,7 +69,7 @@ export default function DataGridDemo() {
       sx={{
         display: 'flex',
         flexDirection:'column',
-        marginTop: '70px',
+        marginTop: '50px',
         height:'600px'
       }}
     >
@@ -102,6 +102,20 @@ export default function DataGridDemo() {
           }
         >
           Deletar
+        </Button>
+        <Button
+          endIcon={<Visibility/>}
+          aria-label='Detalhes'
+          size='medium'
+          variant='contained'
+          color='info'
+          sx={
+            {
+              marginLeft: '10px'
+            }
+          }
+        >
+          Detalhes
         </Button>
       </Box>
       <Box component="div" sx={{

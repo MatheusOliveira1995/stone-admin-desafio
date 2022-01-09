@@ -1,3 +1,7 @@
 .menu-list-item:hover{
     background-color: rgba(40, 185, 112, 0.2) !important;
 }
+
+.menu-list .menu-list-icon{
+    color: #008E5A;
+}

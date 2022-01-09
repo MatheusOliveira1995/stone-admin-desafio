@@ -14,6 +14,9 @@ const theme = createTheme({
       warning:{
         main:'#DBA216'
       },
+      info:{
+        main:'#DADADA'
+      },
     }
   })
 

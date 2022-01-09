@@ -7,6 +7,8 @@ import InboxIcon from '@mui/icons-material/MoveToInbox';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 
+import CSS from 'csstype';
+
 import MuiDrawer from '@mui/material/Drawer';
 import {
   List,
@@ -107,7 +109,7 @@ export function Menu(props: Props) {
       <List className='menu-list' onMouseEnter={props.handleDrawerOpen} onMouseLeave={props.handleDrawerClose}>
         {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
           <ListItem className='menu-list-item' button key={text}>
-            <ListItemIcon>
+            <ListItemIcon className='menu-list-icon'>
               {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
             </ListItemIcon>
             <ListItemText primary={text} />
