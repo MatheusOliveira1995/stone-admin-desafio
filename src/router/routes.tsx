@@ -1,13 +1,12 @@
 import * as React from "react";
-import { useRoutes } from "react-router-dom";
+import { useRoutes } from "react-router-dom"
 
-import MainLayout from "src/layouts/MainLayout";
+import MainLayout from "src/layouts/MainLayout"
 
 import Dashboard from "src/pages/Dashboard"
-import Users from "src/pages/Users";
+import Users from "src/pages/Users"
 import SignIn from "src/pages/Auth/SignIn"
 import Cards from "src/pages/Cards"
-
 
 export default function Routes() {
 
