@@ -104,9 +104,9 @@ export function Menu(props: Props) {
         </IconButton>
       </DrawerHeader>
       <Divider />
-      <List className='menu-list' onMouseEnter={props.handleDrawerOpen} onMouseLeave={props.handleDrawerClose}>
+      <List className='menu-list'>
         {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem className='menu-list-item' button key={text}>
+          <ListItem className='menu-list-item' onClick={ props.handleDrawerOpen } button key={text}>
             <ListItemIcon className='menu-list-icon'>
               {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
             </ListItemIcon>
