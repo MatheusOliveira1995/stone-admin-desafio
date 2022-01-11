@@ -1,38 +1,80 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { ReactElement } from "react";
-import { Box } from '@mui/material';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Dialog from '@mui/material/Dialog';
+import { TransitionProps } from '@mui/material/transitions';
 
-import Modal from '@mui/material/Modal';
+import {
+  DialogContent,
+  DialogTitle,
+  Slide 
+} from '@mui/material'
 
 
-type ModalType = {
-    open: boolean,
-    handleClose: () => void
-    children: ReactElement
-  }
+type DialogType = {
+  open: boolean,
+  handleClose: () => void
+  children: ReactElement
+}
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 24,
-    pt: 2,
-    px: 4,
-    pb: 3,
-};  
-  
-export default function FormModal ({open, handleClose, children }: ModalType) {
-    return (
-      <React.Fragment>
-        <Modal open={open} onClose={handleClose}>
-          <Box sx={{ ...style, width: 400 }}>
-            { children }
-          </Box> 
-        </Modal>
-       </React.Fragment> 
-    )
-  }
+export interface DialogTitleProps {
+  id: string;
+  children?: React.ReactNode;
+  onClose: () => void;
+}
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
+const AppDialogTitle = (props: DialogTitleProps) => {
+  const { children, onClose, ...other } = props;
+
+  return (
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+      {children}
+      {onClose ? (
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      ) : null}
+    </DialogTitle>
+  );
+};
+
+export default function FormModal({ open, handleClose, children }: DialogType) {
+  return (
+    <React.Fragment>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        TransitionComponent={Transition}
+        scroll='paper'
+        disableEscapeKeyDown={true}
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+      >
+        <AppDialogTitle id="scroll-dialog-title"  onClose={ handleClose }>Subscribe</AppDialogTitle>
+        <DialogContent dividers={true}>
+          {children}
+        </DialogContent>
+      </Dialog>
+    </React.Fragment>
+  )
+}
