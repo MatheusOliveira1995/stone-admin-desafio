@@ -47,6 +47,9 @@
     "start": "pm2-runtime start pm2.json --env production",
     "serve:kill": "pm2 kill"
   },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

@@ -143,7 +143,7 @@ export default function Cards() {
             variant='contained'
             color='primary'
           >
-            Novo
+            { t('card.actions.new') }
           </Button>
           <Button
             endIcon={<Delete />}
@@ -157,7 +157,7 @@ export default function Cards() {
               }
             }
           >
-            Deletar
+             { t('card.actions.delete') }
           </Button>
           <Button
             endIcon={<Visibility />}
@@ -171,7 +171,7 @@ export default function Cards() {
               }
             }
           >
-            Detalhes
+             { t('card.actions.details') }
           </Button>
         </Box>
         <Box component="div" sx={{
@@ -206,12 +206,14 @@ export default function Cards() {
           />
         </Box>
       </Paper>
-      <AppModal handleClose={handleClose} open={open}>
+      <AppModal handleClose={handleClose} open={open} title={t('card.add.title')}>
           <>
-            <h2 id="parent-modal-title">Text in a modal</h2>
-            <p id="parent-modal-description">
-              Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-            </p>
+            <Box sx={{
+              height: 600,
+              display: "flex"
+            }}>
+
+            </Box>
           </>
       </AppModal>
     </div>

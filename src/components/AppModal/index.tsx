@@ -15,7 +15,8 @@ import {
 type DialogType = {
   open: boolean,
   handleClose: () => void
-  children: ReactElement
+  children: ReactElement,
+  title: string
 }
 
 export interface DialogTitleProps {
@@ -33,10 +34,8 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
 const AppDialogTitle = (props: DialogTitleProps) => {
   const { children, onClose, ...other } = props;
-
   return (
     <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
       {children}
@@ -58,19 +57,26 @@ const AppDialogTitle = (props: DialogTitleProps) => {
   );
 };
 
-export default function FormModal({ open, handleClose, children }: DialogType) {
+export default function FormModal({ open, title, handleClose, children }: DialogType) {
+  
+  const closeHandler = (event: Object, reason: string) => {
+    if(reason && reason === 'backdropClick') return;
+    handleClose()
+  }
   return (
     <React.Fragment>
       <Dialog
         open={open}
-        onClose={handleClose}
+        onClose={closeHandler}
+        fullWidth
+        maxWidth="xl"
         TransitionComponent={Transition}
         scroll='paper'
         disableEscapeKeyDown={true}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <AppDialogTitle id="scroll-dialog-title"  onClose={ handleClose }>Subscribe</AppDialogTitle>
+        <AppDialogTitle id="scroll-dialog-title"  onClose={ handleClose }>{title}</AppDialogTitle>
         <DialogContent dividers={true}>
           {children}
         </DialogContent>
