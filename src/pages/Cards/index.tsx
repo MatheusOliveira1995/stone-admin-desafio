@@ -10,7 +10,7 @@ import Event from '@mui/icons-material/Event';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { useTranslation, TFunction } from 'react-i18next';
-import { getCards } from 'src/service/api/cards';
+import { getCards, createCard } from 'src/service/api/cards';
 import { getUserByDocument } from 'src/service/api/users';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { setCards } from 'src/app/store/slices/cards';
@@ -18,8 +18,15 @@ import { Card, Cards as CardsType, User } from 'src/app/definitions';
 import { getUserById } from 'src/service/api/users';
 import AppModal from 'src/components/AppModal';
 import AppInput from 'src/components/AppInput'
+import { SubmitHandler, useForm } from "react-hook-form";
 
 
+interface CardForm {
+  limit: number,
+  digits: string,
+  status: string,
+  createdAt: Date
+}
 type DataGridType = {
   columns: GridColDef[],
   rows: any[]
@@ -102,6 +109,7 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
 
 export default function Cards() {
   const { t } = useTranslation();
+  const { register, formState: { errors }, handleSubmit } = useForm<CardForm>()
   const [open, setOpen] = useState(false)
   const [document, setDocument] = useState('')
   const [formError, setFormError] = useState(false)
@@ -110,11 +118,23 @@ export default function Cards() {
     document: '',
     name: ''
   })
-
   const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
   const dispatch = useAppDispatch()
   const cards = useAppSelector((state) => state.cards)
   const [gridData, setGridData] = useState<DataGridType>({ columns: [], rows: [] })
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const submit: SubmitHandler<CardForm> = (data) => {
+    const payload = {
+        ...data,
+        userId: user.id,
+        userName: user.name,
+      }
+    createCard(payload)
+    handleClose()
+  }
 
   useEffect(() => {
     getCards().then((response) => {
@@ -126,10 +146,7 @@ export default function Cards() {
     const gridData = configureGridData(cards, t)
     setGridData(gridData)
   }, [cards])
-
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
+  
   return (
     <div>
 
@@ -220,28 +237,38 @@ export default function Cards() {
           />
         </Box>
       </Paper>
-      <AppModal handleClose={handleClose} open={open} title={t('card.add.title')}>
+      <AppModal 
+        handleClose={handleClose}
+        open={open} 
+        title={t('card.add.title')}
+      >
           <>
             <Box 
               display="grid"
               gridTemplateColumns="repeat(12, 1fr)"
-              gap={2} component="form" 
+              gap={2}
+              component="form"
+              method='POST'
+              onSubmit={ handleSubmit(submit) }
             >
               <Box gridColumn="span 3">
                 <AppInput 
-                  type='number'
+                  type='text'
                   handleChange={(value: string) => setDocument(value)}
                   label='Documento'
                   required={true}
+                  error={formError}
+                  helperText='Usuário não cadastrado'
                   endAdornment={
                     <IconButton
                       onClick={() => {
                         if(!document) return;
                         getUserByDocument(document).then((user: Array<User>) =>{
                           if(user.length){
+                            setFormError(false)
                             setUser(user[0])
                             return
-                          }
+                          } 
                           setUser(
                             {
                               id: 0,
@@ -249,6 +276,7 @@ export default function Cards() {
                               name: ''
                             }
                           )
+                          setFormError(true)
                         })
                       }}
                       aria-label="search"
@@ -276,6 +304,7 @@ export default function Cards() {
               </Box>
               <Box gridColumn="span 8">
                 <TextField
+                  { ...register("limit", { required: true }) }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -283,7 +312,6 @@ export default function Cards() {
                       </InputAdornment>
                     ),
                   }}
-                  required={true}
                   fullWidth
                   label="Limite pretendido"
                   variant="outlined"
@@ -291,6 +319,7 @@ export default function Cards() {
               </Box>
               <Box gridColumn="span 4">
                 <TextField
+                  { ...register("digits", { required: true }) }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -305,6 +334,8 @@ export default function Cards() {
               </Box>
               <Box gridColumn="span 4">
                 <TextField
+                  type="date"
+                  { ...register("createdAt", { required: true }) }
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -312,14 +343,14 @@ export default function Cards() {
                       </InputAdornment>
                     ),
                   }}
-                  required={true} 
                   fullWidth
                   label="Data do pedido"
                   variant="outlined"
                 ></TextField>
               </Box>
               <Box gridColumn="span 8">
-                <TextField 
+                <TextField
+                  { ...register("status", { required: true }) } 
                   InputProps={{
                     readOnly: true,
                   }} 
@@ -327,6 +358,10 @@ export default function Cards() {
                   fullWidth label="Status"
                   variant="outlined"
                 ></TextField>
+              </Box>
+              <Box sx={{display: 'flex'}} component="div" gridColumn="span 12" justifyContent="flex-end">
+                <Button variant='contained' color='primary' type='submit'>Salvar</Button>
+                <Button sx={{marginLeft: 2}} variant='contained' color='error'>Cancelar</Button>
               </Box>
             </Box>
           </>

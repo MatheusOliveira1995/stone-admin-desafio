@@ -26,3 +26,18 @@ export async function getCards(): Promise<Cards> {
     })
     return cards
 }
+
+export async function createCard(card: Record<string, unknown>) {
+    const payload = {
+        status: card.status,
+        user_id: card.userId,
+        createdAt: card.createdAt,
+        metadatas: {
+            name: card.userName,
+            digits: card.digits,
+            limit: card.limit
+        }
+    }   
+    const response = await http.post('/cards', payload)
+    return response.data
+}

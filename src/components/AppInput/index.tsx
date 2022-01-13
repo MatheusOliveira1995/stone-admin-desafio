@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ReactNode } from "react";
+import React, { ReactNode } from "react";
 import {InputAdornment, FormHelperText, FormControl, OutlinedInput, InputLabel  } from '@mui/material'
 
 type Props = {
@@ -9,14 +9,14 @@ type Props = {
   handleChange: (value: string) => void
   required?: boolean
   value?: any
+  error?: boolean
 }
 
-export default function AppInput({ type, label, endAdornment, helperText, handleChange, value, required = false } : Props) {
+export default function AppInput({ type, label, endAdornment, helperText, handleChange, value, required = false, error = false } : Props) {
   return (
-    <FormControl fullWidth variant="outlined">
+    <FormControl required={required} error={error} fullWidth variant="outlined">
       <InputLabel htmlFor="outlined-adornment">{label}</InputLabel>
       <OutlinedInput
-        required={required}
         id="outlined-adornment"
         value={value}
         type={type}
@@ -28,7 +28,7 @@ export default function AppInput({ type, label, endAdornment, helperText, handle
         }
         label={label}
       />
-      <FormHelperText id="outlined-weight-helper-text">{helperText}</FormHelperText>
+      <FormHelperText id="outlined-weight-helper-text">{error ? helperText : ''}</FormHelperText>
     </FormControl>
   )
 }
