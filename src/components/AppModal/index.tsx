@@ -69,7 +69,7 @@ export default function FormModal({ open, title, handleClose, children }: Dialog
         open={open}
         onClose={closeHandler}
         fullWidth
-        maxWidth="xl"
+        maxWidth="md"
         TransitionComponent={Transition}
         scroll='paper'
         disableEscapeKeyDown={true}

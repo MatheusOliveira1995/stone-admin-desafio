@@ -1,17 +1,24 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from "react";
-import { DataGrid, GridColDef, GridRowId } from "@mui/x-data-grid";
-import { Paper, Box, Button } from "@mui/material";
-import { Add, Delete, Visibility } from "@mui/icons-material";
-import { useTranslation, TFunction } from "react-i18next";
-import { getCards } from "src/service/api/cards";
-import { useAppDispatch, useAppSelector } from "src/app/hooks";
-import { setCards } from "src/app/store/slices/cards";
-import { Card, Cards as CardsType } from "src/app/definitions";
+import React, { useEffect, useState } from 'react';
+import { DataGrid, GridColDef, GridRowId } from '@mui/x-data-grid';
+import { Paper, Box, Button, TextField, InputAdornment, IconButton } from '@mui/material';
+import { Add, Delete, Visibility } from '@mui/icons-material';
+import AssigmentId from '@mui/icons-material/AccountCircle';
+import CreditCard from '@mui/icons-material/CreditCard';
+import LocalAtm from '@mui/icons-material/LocalAtm';
+import Event from '@mui/icons-material/Event';
+import SearchIcon from '@mui/icons-material/Search';
 
-import { getUser } from "src/service/api/users";
+import { useTranslation, TFunction } from 'react-i18next';
+import { getCards } from 'src/service/api/cards';
+import { getUserByDocument } from 'src/service/api/users';
+import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { setCards } from 'src/app/store/slices/cards';
+import { Card, Cards as CardsType, User } from 'src/app/definitions';
+import { getUserById } from 'src/service/api/users';
+import AppModal from 'src/components/AppModal';
+import AppInput from 'src/components/AppInput'
 
-import AppModal from "src/components/AppModal";
 
 type DataGridType = {
   columns: GridColDef[],
@@ -69,7 +76,7 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
   const dataGridRows = data.cards.map((card: Card) => {
     let cardHolderName = card.metaDatas.name
     if (!card.metaDatas.name) {
-      getUser(card.userId).then((cardHolder) => {
+      getUserById(card.userId).then((cardHolder) => {
         cardHolderName = cardHolder.name
       })
     }
@@ -96,6 +103,13 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
 export default function Cards() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false)
+  const [document, setDocument] = useState('')
+  const [formError, setFormError] = useState(false)
+  const [user, setUser] = useState<User>({
+    id: 0,
+    document: '',
+    name: ''
+  })
 
   const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
   const dispatch = useAppDispatch()
@@ -208,11 +222,112 @@ export default function Cards() {
       </Paper>
       <AppModal handleClose={handleClose} open={open} title={t('card.add.title')}>
           <>
-            <Box sx={{
-              height: 600,
-              display: "flex"
-            }}>
-
+            <Box 
+              display="grid"
+              gridTemplateColumns="repeat(12, 1fr)"
+              gap={2} component="form" 
+            >
+              <Box gridColumn="span 3">
+                <AppInput 
+                  type='number'
+                  handleChange={(value: string) => setDocument(value)}
+                  label='Documento'
+                  required={true}
+                  endAdornment={
+                    <IconButton
+                      onClick={() => {
+                        if(!document) return;
+                        getUserByDocument(document).then((user: Array<User>) =>{
+                          if(user.length){
+                            setUser(user[0])
+                            return
+                          }
+                          setUser(
+                            {
+                              id: 0,
+                              document: '',
+                              name: ''
+                            }
+                          )
+                        })
+                      }}
+                      aria-label="search"
+                      edge="end"
+                    >
+                      <SearchIcon/>
+                    </IconButton>
+                  }
+                />
+              </Box>
+              <Box gridColumn="span 9">
+                <TextField
+                  value={user.name}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <AssigmentId/>
+                      </InputAdornment>
+                     ),
+                  }}
+                  fullWidth
+                  label="Pessoa"
+                  variant="outlined"
+                ></TextField>
+              </Box>
+              <Box gridColumn="span 8">
+                <TextField
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LocalAtm/>
+                      </InputAdornment>
+                    ),
+                  }}
+                  required={true}
+                  fullWidth
+                  label="Limite pretendido"
+                  variant="outlined"
+                ></TextField>
+              </Box>
+              <Box gridColumn="span 4">
+                <TextField
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <CreditCard/>
+                      </InputAdornment>
+                    ),
+                  }}
+                  fullWidth
+                  label="Digitos gerados"
+                  variant="outlined"
+                ></TextField>
+              </Box>
+              <Box gridColumn="span 4">
+                <TextField
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Event/>
+                      </InputAdornment>
+                    ),
+                  }}
+                  required={true} 
+                  fullWidth
+                  label="Data do pedido"
+                  variant="outlined"
+                ></TextField>
+              </Box>
+              <Box gridColumn="span 8">
+                <TextField 
+                  InputProps={{
+                    readOnly: true,
+                  }} 
+                  value="Solicitado"
+                  fullWidth label="Status"
+                  variant="outlined"
+                ></TextField>
+              </Box>
             </Box>
           </>
       </AppModal>

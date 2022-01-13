@@ -6,41 +6,43 @@ export async function getUsers(): Promise<Users> {
     try {
         response = await http.get('/users')
     } catch (error) {
-        return {users: []}
+        return { users: [] }
     }
 
     const data = response.data as Users
     return data
 }
 
-export async function getUser(userId: number): Promise<User> {
+export async function getUserById(userId: number): Promise<User> {
+    const url = `/users/${userId}`
     let response
     try {
-        response = await http.get(`/users/${userId}`)
+        response = await http.get(url)
     } catch (error) {
         return {
             id: 0,
             name: '',
-            email: '',
-            document: '',
-            address: {
-                city: '',
-                neighborhood: '',
-                postalCode: '',
-                state: '',
-                streetNumber: 0
-            },
-            salaryBase: 0
-            
+            document: ''
         }
     }
-    const data = response.data
-    return {
-        id: data.id,
-        name: data.name,
-        document: data.document,
-        email: data.email,
-        address: data.address,
-        salaryBase: data.salaryBase
+
+    return response.data
+}
+
+export async function getUserByDocument(document: string): Promise<User[]> {
+    const url = `/users?document=${document}`
+    let response
+    try {
+        response = await http.get(url)
+    } catch (error) {
+        return[
+            {
+                id: 0,
+                name: '',
+                document: ''
+            }
+        ]
     }
+
+    return response.data
 }

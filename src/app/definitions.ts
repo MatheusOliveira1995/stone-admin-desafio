@@ -20,7 +20,7 @@ export type Address = {
 export type User = {
     id: number,
     name: string,
-    email: string,
+    email?: string,
     BirthDate?: Date,
     createdAt?: Date,
     updatedAt?: Date,
@@ -30,8 +30,8 @@ export type User = {
         validDocument: boolean,
         verified: boolean
     },
-    address: Address,
-    salaryBase: number
+    address?: Address,
+    salaryBase?: number
 }
 
 export interface Users {
