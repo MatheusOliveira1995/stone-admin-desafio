@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { DataGrid, GridColDef, GridRowId } from '@mui/x-data-grid';
-import { Paper, Box, Button, TextField, InputAdornment, IconButton } from '@mui/material';
+import { Paper, Box, Button, IconButton } from '@mui/material';
 import { Add, Delete, Visibility } from '@mui/icons-material';
 import AssigmentId from '@mui/icons-material/AccountCircle';
 import CreditCard from '@mui/icons-material/CreditCard';
@@ -21,12 +21,14 @@ import AppInput from 'src/components/AppInput'
 import { SubmitHandler, useForm } from "react-hook-form";
 
 
-interface CardForm {
+export type CardForm = {
+  document: string,
   limit: number,
   digits: string,
   status: string,
   createdAt: Date
 }
+
 type DataGridType = {
   columns: GridColDef[],
   rows: any[]
@@ -109,10 +111,9 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
 
 export default function Cards() {
   const { t } = useTranslation();
-  const { register, formState: { errors }, handleSubmit } = useForm<CardForm>()
+  const { register, formState: { errors }, handleSubmit, setError, reset } = useForm<CardForm>()
   const [open, setOpen] = useState(false)
   const [document, setDocument] = useState('')
-  const [formError, setFormError] = useState(false)
   const [user, setUser] = useState<User>({
     id: 0,
     document: '',
@@ -122,31 +123,39 @@ export default function Cards() {
   const dispatch = useAppDispatch()
   const cards = useAppSelector((state) => state.cards)
   const [gridData, setGridData] = useState<DataGridType>({ columns: [], rows: [] })
-
+  const [reloadData, setReloadData] = useState(true)
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const submit: SubmitHandler<CardForm> = (data) => {
     const payload = {
-        ...data,
-        userId: user.id,
-        userName: user.name,
-      }
-    createCard(payload)
-    handleClose()
+      ...data,
+      userId: user.id,
+      userName: user.name,
+    }
+    try {
+      createCard(payload)
+      handleClose()
+      reset()
+      setReloadData(true)
+    } catch (error) {
+      
+    }
+    
   }
 
   useEffect(() => {
     getCards().then((response) => {
       dispatch(setCards(response))
     })
-  }, [])
+    setReloadData(false)
+  }, [reloadData])
 
   useEffect(() => {
     const gridData = configureGridData(cards, t)
     setGridData(gridData)
   }, [cards])
-  
+
   return (
     <div>
 
@@ -167,14 +176,14 @@ export default function Cards() {
           }}
         >
           <Button
-            onClick={ handleOpen }
+            onClick={handleOpen}
             endIcon={<Add />}
             aria-label='Novo'
             size='medium'
             variant='contained'
             color='primary'
           >
-            { t('card.actions.new') }
+            {t('card.actions.new')}
           </Button>
           <Button
             endIcon={<Delete />}
@@ -188,7 +197,7 @@ export default function Cards() {
               }
             }
           >
-             { t('card.actions.delete') }
+            {t('card.actions.delete')}
           </Button>
           <Button
             endIcon={<Visibility />}
@@ -202,7 +211,7 @@ export default function Cards() {
               }
             }
           >
-             { t('card.actions.details') }
+            {t('card.actions.details')}
           </Button>
         </Box>
         <Box component="div" sx={{
@@ -237,134 +246,126 @@ export default function Cards() {
           />
         </Box>
       </Paper>
-      <AppModal 
+      <AppModal
         handleClose={handleClose}
-        open={open} 
+        open={open}
         title={t('card.add.title')}
       >
-          <>
-            <Box 
-              display="grid"
-              gridTemplateColumns="repeat(12, 1fr)"
-              gap={2}
-              component="form"
-              method='POST'
-              onSubmit={ handleSubmit(submit) }
-            >
-              <Box gridColumn="span 3">
-                <AppInput 
-                  type='text'
-                  handleChange={(value: string) => setDocument(value)}
-                  label='Documento'
-                  required={true}
-                  error={formError}
-                  helperText='Usuário não cadastrado'
-                  endAdornment={
-                    <IconButton
-                      onClick={() => {
-                        if(!document) return;
-                        getUserByDocument(document).then((user: Array<User>) =>{
-                          if(user.length){
-                            setFormError(false)
-                            setUser(user[0])
-                            return
-                          } 
-                          setUser(
-                            {
-                              id: 0,
-                              document: '',
-                              name: ''
-                            }
-                          )
-                          setFormError(true)
-                        })
-                      }}
-                      aria-label="search"
-                      edge="end"
-                    >
-                      <SearchIcon/>
-                    </IconButton>
-                  }
-                />
-              </Box>
-              <Box gridColumn="span 9">
-                <TextField
-                  value={user.name}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <AssigmentId/>
-                      </InputAdornment>
-                     ),
-                  }}
-                  fullWidth
-                  label="Pessoa"
-                  variant="outlined"
-                ></TextField>
-              </Box>
-              <Box gridColumn="span 8">
-                <TextField
-                  { ...register("limit", { required: true }) }
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <LocalAtm/>
-                      </InputAdornment>
-                    ),
-                  }}
-                  fullWidth
-                  label="Limite pretendido"
-                  variant="outlined"
-                ></TextField>
-              </Box>
-              <Box gridColumn="span 4">
-                <TextField
-                  { ...register("digits", { required: true }) }
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <CreditCard/>
-                      </InputAdornment>
-                    ),
-                  }}
-                  fullWidth
-                  label="Digitos gerados"
-                  variant="outlined"
-                ></TextField>
-              </Box>
-              <Box gridColumn="span 4">
-                <TextField
-                  type="date"
-                  { ...register("createdAt", { required: true }) }
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Event/>
-                      </InputAdornment>
-                    ),
-                  }}
-                  fullWidth
-                  label="Data do pedido"
-                  variant="outlined"
-                ></TextField>
-              </Box>
-              <Box gridColumn="span 8">
-                <TextField
-                  { ...register("status", { required: true }) } 
-                  InputProps={{
-                    readOnly: true,
-                  }} 
-                  value="Solicitado"
-                  fullWidth label="Status"
-                  variant="outlined"
-                ></TextField>
-              </Box>
-              <Box sx={{display: 'flex'}} component="div" gridColumn="span 12" justifyContent="flex-end">
-                <Button variant='contained' color='primary' type='submit'>Salvar</Button>
-                <Button sx={{marginLeft: 2}} variant='contained' color='error'>Cancelar</Button>
-              </Box>
+        <>
+          <Box
+            display="grid"
+            gridTemplateColumns="repeat(12, 1fr)"
+            gap={2}
+            component="form"
+            method='POST'
+            onSubmit={handleSubmit(submit)}
+          >
+            <Box gridColumn="span 3">
+              <AppInput
+                name="document"
+                type='text'
+                register={ register }
+                handleChange={(value: string) => setDocument(value)}
+                label={t('card.add.document')}
+                error={ errors.document }
+                validation={{
+                  required: t('card.validation.required')
+                }}
+                endAdornment={
+                  <IconButton
+                    onClick={() => {
+                      if (!document) return;
+                      getUserByDocument(document).then((user: Array<User>) => {
+                        if (user.length) {
+                          setUser(user[0])
+                          return
+                        }
+                        setUser(
+                          {
+                            id: 0,
+                            document: '',
+                            name: ''
+                          }
+                        )
+                        setError("document", { type: "custom", message: t('card.validation.user') })
+                      })
+                    }}
+                    aria-label="search"
+                    edge="end"
+                  >
+                    <SearchIcon />
+                  </IconButton>
+                }
+              />
             </Box>
-          </>
+            <Box gridColumn="span 9">
+              <AppInput
+                name="name"
+                type='text'
+                value={user.name}
+                startAdornment={<AssigmentId />}
+                label={t('card.add.clientName')}
+              />
+            </Box>
+            <Box gridColumn="span 8">
+              <AppInput
+                name="limit"
+                register={ register }
+                type="text"
+                error={ errors.limit }
+                validation={{
+                  required: t('card.validation.required')
+                }}
+                startAdornment={<LocalAtm />}
+                label={t('card.add.limit')}
+              />
+            </Box>
+            <Box gridColumn="span 4">
+              <AppInput
+                 name="digits"
+                 register={ register }
+                 validation={{
+                  required: t('card.validation.required')
+                 }}
+                 error={ errors.digits }
+                startAdornment={<CreditCard />}
+                label={t('card.add.digits')}
+                type="text"
+              />
+            </Box>
+            <Box gridColumn="span 4">
+              <AppInput
+                name="createdAt"
+                type="date"
+                register={ register }
+                 validation={{
+                  required: t('card.validation.required')
+                }}
+                error={ errors.createdAt }
+                startAdornment={<Event />}
+                label={t('card.add.createdAt')}
+              />
+            </Box>
+            <Box gridColumn="span 8">
+              <AppInput
+                name="status"
+                register={ register }
+                 validation={{
+                  required: t('card.validation.required')
+                }}
+                error={ errors.status }
+                value={t('card.add.statuses.requested')}
+                label={t('card.add.status')}
+                type="text"
+                readOnly={true}
+              />
+            </Box>
+            <Box sx={{ display: 'flex' }} component="div" gridColumn="span 12" justifyContent="flex-end">
+              <Button variant='contained' color='primary' type='submit'>{ t('card.actions.save')}</Button>
+              <Button sx={{ marginLeft: 2 }} variant='contained' color='error'>{  t('card.actions.cancel') }</Button>
+            </Box>
+          </Box>
+        </>
       </AppModal>
     </div>
   );
