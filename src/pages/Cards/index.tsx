@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
-import { DataGrid, GridColDef, GridRowId } from '@mui/x-data-grid';
+import { DataGrid, GridCellValue, GridColDef, GridComparatorFn, GridRowId } from '@mui/x-data-grid';
 import { Paper, Box, Button, IconButton } from '@mui/material';
 import { Add, Delete, Visibility } from '@mui/icons-material';
 import AssigmentId from '@mui/icons-material/AccountCircle';
@@ -37,6 +37,13 @@ type DataGridType = {
 }
 
 const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): DataGridType => {
+  const dateComparator = (v1: GridCellValue, v2: GridCellValue) => {
+    if (!v1) v1 = '';
+    if (!v2) v2 = '';
+    v1 = v1.toString().split('/').reverse().join('');
+    v2 = v2.toString().split('/').reverse().join('');
+    return v1 > v2 ? 1 : v1 < v2 ? -1 : 0;
+  }
   const dataGridColumns: GridColDef[] = [
     {
       field: 'id',
@@ -75,12 +82,14 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
       headerName: 'Criado em',
       sortable: true,
       width: 100,
+      sortComparator: dateComparator
     },
     {
       field: 'updatedAt',
       headerName: 'Atualizado em',
       sortable: true,
       width: 150,
+      sortComparator: dateComparator
     },
   ];
 
@@ -99,7 +108,7 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
         digits: card.metaDatas.digits ? card.metaDatas.digits : '-',
         limit: card.metaDatas.limit ? card.metaDatas.limit : '-',
         status: card.status,
-        createdAt: formatDate({dateValue: card.createdAt}),
+        createdAt: formatDate({ dateValue: card.createdAt }),
         updatedAt: card.updatedAt ? new Date(card.updatedAt) : '-'
       }
     )
@@ -156,9 +165,9 @@ export default function Cards() {
       handleClose()
       fetchData()
     } catch (error) {
-      
+
     }
-    
+
   }
 
   useEffect(() => {
@@ -278,10 +287,10 @@ export default function Cards() {
               <AppInput
                 name="document"
                 type='text'
-                register={ register }
+                register={register}
                 handleChange={(value: string) => setDocument(value)}
                 label={t('card.add.document')}
-                error={ errors.document }
+                error={errors.document}
                 validation={{
                   required: t('card.validation.required')
                 }}
@@ -325,9 +334,9 @@ export default function Cards() {
             <Box gridColumn="span 8">
               <AppInput
                 name="limit"
-                register={ register }
+                register={register}
                 type="text"
-                error={ errors.limit }
+                error={errors.limit}
                 validation={{
                   required: t('card.validation.required')
                 }}
@@ -337,12 +346,12 @@ export default function Cards() {
             </Box>
             <Box gridColumn="span 4">
               <AppInput
-                 name="digits"
-                 register={ register }
-                 validation={{
+                name="digits"
+                register={register}
+                validation={{
                   required: t('card.validation.required')
-                 }}
-                 error={ errors.digits }
+                }}
+                error={errors.digits}
                 startAdornment={<CreditCard />}
                 label={t('card.add.digits')}
                 type="text"
@@ -352,11 +361,11 @@ export default function Cards() {
               <AppInput
                 name="createdAt"
                 type="date"
-                register={ register }
-                 validation={{
+                register={register}
+                validation={{
                   required: t('card.validation.required')
                 }}
-                error={ errors.createdAt }
+                error={errors.createdAt}
                 startAdornment={<Event />}
                 label={t('card.add.createdAt')}
               />
@@ -364,19 +373,19 @@ export default function Cards() {
             <Box gridColumn="span 8">
               <AppInput
                 name="status"
-                register={ register }
-                 validation={{
+                register={register}
+                validation={{
                   required: t('card.validation.required')
                 }}
-                error={ errors.status }
+                error={errors.status}
                 label={t('card.add.status')}
                 type="text"
                 readOnly={true}
               />
             </Box>
             <Box sx={{ display: 'flex' }} component="div" gridColumn="span 12" justifyContent="flex-end">
-              <Button variant='contained' color='primary' type='submit'>{ t('card.actions.save')}</Button>
-              <Button sx={{ marginLeft: 2 }} variant='contained' color='error' onClick={ () => handleClose() }>{  t('card.actions.cancel') }</Button>
+              <Button variant='contained' color='primary' type='submit'>{t('card.actions.save')}</Button>
+              <Button sx={{ marginLeft: 2 }} variant='contained' color='error' onClick={() => handleClose()}>{t('card.actions.cancel')}</Button>
             </Box>
           </Box>
         </>
