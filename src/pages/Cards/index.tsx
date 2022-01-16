@@ -99,7 +99,7 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
         digits: card.metaDatas.digits ? card.metaDatas.digits : '-',
         limit: card.metaDatas.limit ? card.metaDatas.limit : '-',
         status: card.status,
-        createdAt: new Date(card.createdAt),
+        createdAt: formatDate({dateValue: card.createdAt}),
         updatedAt: card.updatedAt ? new Date(card.updatedAt) : '-'
       }
     )
@@ -113,7 +113,7 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
 
 export default function Cards() {
   const { t } = useTranslation();
-  const { register, formState: { errors }, handleSubmit, setError, reset } = useForm<CardForm>({
+  const { register, formState: { errors }, handleSubmit, setError, clearErrors, reset } = useForm<CardForm>({
     defaultValues: {
       createdAt: undefined,
       digits: '',
@@ -144,7 +144,7 @@ export default function Cards() {
       dispatch(setCards(response))
     })
   }
-  
+
   const submit: SubmitHandler<CardForm> = (data) => {
     const payload = {
       ...data,
@@ -291,6 +291,7 @@ export default function Cards() {
                       if (!document) return;
                       getUserByDocument(document).then((user: Array<User>) => {
                         if (user.length) {
+                          clearErrors('document')
                           setUser(user[0])
                           return
                         }
