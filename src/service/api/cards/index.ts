@@ -29,7 +29,7 @@ export async function getCards(): Promise<Cards> {
 
 export async function createCard(card: Record<string, unknown>) {
     const payload = {
-        status: card.status,
+        status: Status.REQUESTED,
         user_id: card.userId,
         createdAt: card.createdAt,
         metadatas: {

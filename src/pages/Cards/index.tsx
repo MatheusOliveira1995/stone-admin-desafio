@@ -20,6 +20,8 @@ import AppModal from 'src/components/AppModal';
 import AppInput from 'src/components/AppInput'
 import { SubmitHandler, useForm } from "react-hook-form";
 
+import { formatDate } from 'src/util/date';
+
 
 export type CardForm = {
   document: string,
@@ -111,7 +113,15 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
 
 export default function Cards() {
   const { t } = useTranslation();
-  const { register, formState: { errors }, handleSubmit, setError, reset } = useForm<CardForm>()
+  const { register, formState: { errors }, handleSubmit, setError, reset } = useForm<CardForm>({
+    defaultValues: {
+      createdAt: undefined,
+      digits: '',
+      document: '',
+      limit: undefined,
+      status: t('card.add.statuses.requested')
+    }
+  })
   const [open, setOpen] = useState(false)
   const [document, setDocument] = useState('')
   const [user, setUser] = useState<User>({
@@ -123,10 +133,18 @@ export default function Cards() {
   const dispatch = useAppDispatch()
   const cards = useAppSelector((state) => state.cards)
   const [gridData, setGridData] = useState<DataGridType>({ columns: [], rows: [] })
-  const [reloadData, setReloadData] = useState(true)
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false)
+    reset()
+  }
 
+  const fetchData = () => {
+    getCards().then((response) => {
+      dispatch(setCards(response))
+    })
+  }
+  
   const submit: SubmitHandler<CardForm> = (data) => {
     const payload = {
       ...data,
@@ -136,8 +154,7 @@ export default function Cards() {
     try {
       createCard(payload)
       handleClose()
-      reset()
-      setReloadData(true)
+      fetchData()
     } catch (error) {
       
     }
@@ -145,11 +162,8 @@ export default function Cards() {
   }
 
   useEffect(() => {
-    getCards().then((response) => {
-      dispatch(setCards(response))
-    })
-    setReloadData(false)
-  }, [reloadData])
+    fetchData()
+  }, [])
 
   useEffect(() => {
     const gridData = configureGridData(cards, t)
@@ -354,7 +368,6 @@ export default function Cards() {
                   required: t('card.validation.required')
                 }}
                 error={ errors.status }
-                value={t('card.add.statuses.requested')}
                 label={t('card.add.status')}
                 type="text"
                 readOnly={true}
@@ -362,7 +375,7 @@ export default function Cards() {
             </Box>
             <Box sx={{ display: 'flex' }} component="div" gridColumn="span 12" justifyContent="flex-end">
               <Button variant='contained' color='primary' type='submit'>{ t('card.actions.save')}</Button>
-              <Button sx={{ marginLeft: 2 }} variant='contained' color='error'>{  t('card.actions.cancel') }</Button>
+              <Button sx={{ marginLeft: 2 }} variant='contained' color='error' onClick={ () => handleClose() }>{  t('card.actions.cancel') }</Button>
             </Box>
           </Box>
         </>
