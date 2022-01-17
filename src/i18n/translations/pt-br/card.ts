@@ -1,6 +1,7 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     gridDataEmpty: 'Nenhum registro encontrado!',
+    helpText: 'Selecione um pedido na lista de solicitações em aberto para avaliar. Com um pedido selecionado é possível visualizar os detalhes clicando no botão "DETALHES" ',
     add: {
         title: 'Novo pedido de cartão',
         document: 'Documento',

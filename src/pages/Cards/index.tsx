@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, SyntheticEvent } from 'react';
 import { GridCellValue, GridColDef, GridRowId, GridSortModel } from '@mui/x-data-grid';
-import { Paper, Box, Button, IconButton, Tabs, Tab } from '@mui/material';
+import { Paper, Box, Button, IconButton, Tabs, Tab, Tooltip } from '@mui/material';
 import { Add, Delete, Visibility } from '@mui/icons-material';
 import AssigmentId from '@mui/icons-material/AccountCircle';
 import CreditCard from '@mui/icons-material/CreditCard';
@@ -11,6 +11,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import HelpIcon from '@mui/icons-material/Help';
+import Zoom from '@mui/material/Zoom';
 
 import { useTranslation, TFunction } from 'react-i18next';
 import { getCards, createCard } from 'src/service/api/cards';
@@ -575,9 +576,15 @@ export default function Cards() {
         </>
       </AppModal>
 
-      <AppFloatButton top={66} right={16}>
-        <HelpIcon/>    
-      </AppFloatButton>
+      <Box sx={{ '& > :not(style)': { m: 1 }, position: 'absolute', right: 16, bottom: 16 }}>
+        <Tooltip TransitionComponent={Zoom} placement="left" title={t('card.helpText') as string}>
+          <div>
+            <AppFloatButton color="secondary">
+              <HelpIcon />
+            </AppFloatButton>
+          </div>
+        </Tooltip>
+      </Box>
     </Box>
   );
 }
