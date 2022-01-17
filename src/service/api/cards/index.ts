@@ -10,18 +10,18 @@ export async function getCards(): Promise<Cards> {
     }
     const data = response.data
     const cards = data.map((card: Record<string, unknown>):Card => {
-        const metaDatas = card.metadatas as Record<string, unknown>
+        const metaDatas = card.metadatas as Record<string, any>
         return{
             id: card.id as number,
             status: card.status as Status,
             userId: card.user_id as number,
             createdAt: card.createdAt ? new Date(card.createdAt as string) : '-',
             metaDatas: {
-                name: metaDatas.name ? metaDatas.name as string : '',
-                digits: metaDatas.digits ? metaDatas.digits as string : '',
-                limit: metaDatas.limit ? metaDatas.limit as number : 0
+                name: metaDatas?.name ?? '',
+                digits: metaDatas?.digits ?? '',
+                limit: metaDatas?.limit as number ?? 0
             },
-            updatedAt: card.updatedAt ? new Date(card.updatedAt as string) : '-',
+            updatedAt: card.updatedAt ? new Date(card.updatedAt as string) : undefined,
         }
     })
     return cards
@@ -37,7 +37,13 @@ export async function createCard(card: Record<string, unknown>) {
             digits: card.digits,
             limit: card.limit
         }
+    }
+    try {
+      const response = await http.post('/cards', payload)
+      return response.data  
+    } catch (error) {
+        return {}
     }   
-    const response = await http.post('/cards', payload)
-    return response.data
+    
+    
 }

@@ -14,7 +14,7 @@ import { getCards, createCard } from 'src/service/api/cards';
 import { getUserByDocument } from 'src/service/api/users';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { setCards } from 'src/app/store/slices/cards';
-import { Card, Cards as CardsType, User } from 'src/app/definitions';
+import { Card, Cards as CardsType, Status, User } from 'src/app/definitions';
 import { getUserById } from 'src/service/api/users';
 import AppModal from 'src/components/AppModal';
 import AppInput from 'src/components/AppInput'
@@ -38,9 +38,15 @@ export type CardForm = {
   createdAt: Date
 }
 
+type GridConfigType = {
+  columns: GridColDef[],
+  requestedRows: any[],
+  approvedRows: any [],
+  rejectedRows: any []
+}
 type DataGridType = {
   columns: GridColDef[],
-  rows: any[]
+  rows: any
 }
 
 function TabPanel(props: TabPanelProps) {
@@ -69,7 +75,11 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): DataGridType => {
+const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): GridConfigType => {
+  let requested: any =[]
+  let approved: any = []
+  let rejected: any = []
+
   const dateComparator = (v1: GridCellValue, v2: GridCellValue) => {
     if (!v1) v1 = '';
     if (!v2) v2 = '';
@@ -126,30 +136,43 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
     },
   ];
 
-  const dataGridRows = data.cards.map((card: Card) => {
+  data.cards.forEach((card: Card) => {
     let cardHolderName = card.metaDatas.name
+
     if (!card.metaDatas.name) {
       getUserById(card.userId).then((cardHolder) => {
         cardHolderName = cardHolder.name
       })
     }
 
-    return (
-      {
-        id: card.id,
-        cardHolderName: cardHolderName,
-        digits: card.metaDatas.digits ? card.metaDatas.digits : '-',
-        limit: card.metaDatas.limit ? card.metaDatas.limit : '-',
-        status: card.status,
-        createdAt: formatDate({ dateValue: card.createdAt }),
-        updatedAt: card.updatedAt ? new Date(card.updatedAt) : '-'
-      }
-    )
+    const data = {
+      id: card.id,
+      cardHolderName: cardHolderName,
+      digits: card.metaDatas.digits ? card.metaDatas.digits : '-',
+      limit: card.metaDatas.limit ? card.metaDatas.limit : '-',
+      status: t(`card.add.statuses.${card.status}`),
+      createdAt: card.createdAt ? formatDate({ dateValue: card.createdAt }) : '-',
+      updatedAt: card.updatedAt ? formatDate({ dateValue: card.updatedAt }) : '-'
+    }
+
+    if(card.status === Status.REQUESTED){
+      requested.push(data)
+      return
+    }
+    if(card.status === Status.APPROVED){
+      approved.push(data)
+      return
+    }
+
+    rejected.push(data)
+
   })
 
   return {
     columns: dataGridColumns,
-    rows: dataGridRows
+    requestedRows: requested,
+    rejectedRows: rejected,
+    approvedRows: approved
   }
 }
 
@@ -183,7 +206,9 @@ export default function Cards() {
   const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
   const dispatch = useAppDispatch()
   const cards = useAppSelector((state) => state.cards)
-  const [gridData, setGridData] = useState<DataGridType>({ columns: [], rows: [] })
+  const [requestedGridData, setRequestedGridData] = useState<DataGridType>({ columns: [], rows: [] })
+  const [approvedGridData, setApprovedGridData] = useState<DataGridType>({ columns: [], rows: [] })
+  const [ rejectedGridData, setRejectedGridData] = useState<DataGridType>({ columns: [], rows: []})
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false)
@@ -222,7 +247,9 @@ export default function Cards() {
 
   useEffect(() => {
     const gridData = configureGridData(cards, t)
-    setGridData(gridData)
+    setApprovedGridData({columns: gridData.columns, rows: gridData.approvedRows})
+    setRejectedGridData({ columns: gridData.columns, rows: gridData.rejectedRows})
+    setRequestedGridData({ columns: gridData.columns, rows: gridData.requestedRows})
   }, [cards])
 
   return (
@@ -291,15 +318,15 @@ export default function Cards() {
           }}
         >
           <DataGrid
-            rows={gridData.rows}
-            columns={gridData.columns}
+            rows={ requestedGridData.rows }
+            columns={ requestedGridData.columns }
             autoPageSize
             rowsPerPageOptions={[30]}
             checkboxSelection
             selectionModel={selectionModel}
             hideFooterSelectedRowCount
             onSelectionModelChange={(selection) => {
-              if (selection.length === gridData.rows.length) {
+              if (selection.length === requestedGridData.rows.length) {
                 setSelectionModel([])
                 return
               }
@@ -312,6 +339,46 @@ export default function Cards() {
                 setSelectionModel(selection);
               }
             }}
+          />
+        </Box>
+      </TabPanel>
+
+      <TabPanel value={tabState} index={1}>
+        <Box component="div"
+          sx={{
+            display: 'flex',
+            backgroundColor: 'white',
+            flexDirection: 'column',
+            padding: '18px 18px 30px 18px',
+            height: '600px',
+          }}
+        >
+          <DataGrid
+            rows={ approvedGridData.rows }
+            columns={ approvedGridData.columns }
+            autoPageSize
+            rowsPerPageOptions={[30]}
+            checkboxSelection
+          />
+        </Box>
+      </TabPanel>
+
+      <TabPanel value={tabState} index={2}>
+        <Box component="div"
+          sx={{
+            display: 'flex',
+            backgroundColor: 'white',
+            flexDirection: 'column',
+            padding: '18px 18px 30px 18px',
+            height: '600px',
+          }}
+        >
+          <DataGrid
+            rows={ rejectedGridData.rows }
+            columns={ rejectedGridData.columns }
+            autoPageSize
+            rowsPerPageOptions={[30]}
+            checkboxSelection
           />
         </Box>
       </TabPanel>
