@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
+    gridDataEmpty: 'Nenhum registro encontrado!',
     add: {
         title: 'Novo pedido de cartão',
         document: 'Documento',

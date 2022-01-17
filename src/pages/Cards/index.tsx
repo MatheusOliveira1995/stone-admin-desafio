@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, SyntheticEvent } from 'react';
-import { DataGrid, GridCellValue, GridColDef, GridComparatorFn, GridRowId } from '@mui/x-data-grid';
+import { GridCellValue, GridColDef, GridRowId, GridSortModel } from '@mui/x-data-grid';
 import { Paper, Box, Button, IconButton, Tabs, Tab } from '@mui/material';
 import { Add, Delete, Visibility } from '@mui/icons-material';
 import AssigmentId from '@mui/icons-material/AccountCircle';
@@ -17,7 +17,8 @@ import { setCards } from 'src/app/store/slices/cards';
 import { Card, Cards as CardsType, Status, User } from 'src/app/definitions';
 import { getUserById } from 'src/service/api/users';
 import AppModal from 'src/components/AppModal';
-import AppInput from 'src/components/AppInput'
+import AppInput from 'src/components/AppInput';
+import AppGridData from 'src/components/AppGridData';
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { formatDate } from 'src/util/date';
@@ -49,6 +50,9 @@ type DataGridType = {
   rows: any
 }
 
+/**
+ * @param props 
+ */
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -75,6 +79,11 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
+/** 
+ * @param data 
+ * @param t 
+ * @returns GridConfigType
+ */
 const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): GridConfigType => {
   let requested: any =[]
   let approved: any = []
@@ -175,14 +184,15 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
     approvedRows: approved
   }
 }
-
+/**
+ * @param index 
+ */
 function tabProps(index: number) {
   return {
     id: `simple-tab-${index}`,
     'aria-controls': `simple-tabpanel-${index}`,
   };
 }
-
 
 export default function Cards() {
   const { t } = useTranslation();
@@ -204,27 +214,35 @@ export default function Cards() {
     name: ''
   })
   const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
+  const [defaultSortRequestGrid, setDefaultSortRequestGrid] = useState<GridSortModel> ([{field: 'createdAt', sort: 'desc'}])
   const dispatch = useAppDispatch()
   const cards = useAppSelector((state) => state.cards)
   const [requestedGridData, setRequestedGridData] = useState<DataGridType>({ columns: [], rows: [] })
   const [approvedGridData, setApprovedGridData] = useState<DataGridType>({ columns: [], rows: [] })
-  const [ rejectedGridData, setRejectedGridData] = useState<DataGridType>({ columns: [], rows: []})
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => {
+  const [rejectedGridData, setRejectedGridData] = useState<DataGridType>({ columns: [], rows: []})
+  const handleOpenModal = () => setOpen(true);
+  const handleCloseModal = () => {
     setOpen(false)
     reset()
   }
-
+ 
+  /**
+   * @param event 
+   * @param newState 
+   */
   const handleChangeTab = (event: SyntheticEvent, newState: number) => {
     setTabState(newState)
   }
-
+  /**
+   */
   const fetchData = () => {
     getCards().then((response) => {
       dispatch(setCards(response))
     })
   }
-
+  /**
+   * @param data 
+   */
   const submit: SubmitHandler<CardForm> = (data) => {
     const payload = {
       ...data,
@@ -233,18 +251,23 @@ export default function Cards() {
     }
     try {
       createCard(payload)
-      handleClose()
+      handleCloseModal()
       fetchData()
+      if(tabState){
+        setTabState(0)
+      }
     } catch (error) {
 
     }
 
   }
-
+  /**
+   */
   useEffect(() => {
     fetchData()
   }, [])
-
+  /**
+   */
   useEffect(() => {
     const gridData = configureGridData(cards, t)
     setApprovedGridData({columns: gridData.columns, rows: gridData.approvedRows})
@@ -262,7 +285,7 @@ export default function Cards() {
         }}
       >
         <Button
-          onClick={handleOpen}
+          onClick={handleOpenModal}
           endIcon={<Add />}
           aria-label='Novo'
           size='medium'
@@ -317,15 +340,18 @@ export default function Cards() {
             height: '600px',
           }}
         >
-          <DataGrid
+          <AppGridData
             rows={ requestedGridData.rows }
             columns={ requestedGridData.columns }
-            autoPageSize
-            rowsPerPageOptions={[30]}
-            checkboxSelection
+            autoPageSize={true}
+            rowsPerPage={[30]}
+            checkboxSelection={true}
+            sortModel={ defaultSortRequestGrid }
+            noRowsOverlayMessage={t('card.gridDataEmpty')}
+            handleSortModelChange={(model) => setDefaultSortRequestGrid(model)}
             selectionModel={selectionModel}
-            hideFooterSelectedRowCount
-            onSelectionModelChange={(selection) => {
+            hideFooterSelectedRowsCount={true}
+            handleSelectionModelChange={(selection) => {
               if (selection.length === requestedGridData.rows.length) {
                 setSelectionModel([])
                 return
@@ -353,12 +379,12 @@ export default function Cards() {
             height: '600px',
           }}
         >
-          <DataGrid
+          <AppGridData
+            noRowsOverlayMessage={t('card.gridDataEmpty')}
             rows={ approvedGridData.rows }
             columns={ approvedGridData.columns }
-            autoPageSize
-            rowsPerPageOptions={[30]}
-            checkboxSelection
+            autoPageSize={true}
+            rowsPerPage={[30]}
           />
         </Box>
       </TabPanel>
@@ -373,19 +399,19 @@ export default function Cards() {
             height: '600px',
           }}
         >
-          <DataGrid
+          <AppGridData
+            noRowsOverlayMessage={t('card.gridDataEmpty')}
             rows={ rejectedGridData.rows }
             columns={ rejectedGridData.columns }
-            autoPageSize
-            rowsPerPageOptions={[30]}
-            checkboxSelection
+            autoPageSize={true}
+            rowsPerPage={[30]}
           />
         </Box>
       </TabPanel>
 
 
       <AppModal
-        handleClose={handleClose}
+        handleClose={handleCloseModal}
         open={open}
         title={t('card.add.title')}
       >
@@ -500,7 +526,7 @@ export default function Cards() {
             </Box>
             <Box sx={{ display: 'flex' }} component="div" gridColumn="span 12" justifyContent="flex-end">
               <Button variant='contained' color='primary' type='submit'>{t('card.actions.save')}</Button>
-              <Button sx={{ marginLeft: 2 }} variant='contained' color='error' onClick={() => handleClose()}>{t('card.actions.cancel')}</Button>
+              <Button sx={{ marginLeft: 2 }} variant='contained' color='error' onClick={() => handleCloseModal()}>{t('card.actions.cancel')}</Button>
             </Box>
           </Box>
         </>
