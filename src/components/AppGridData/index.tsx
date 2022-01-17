@@ -1,6 +1,17 @@
 import React from 'react';
-import { DataGrid, GridColDef, GridInputSelectionModel, GridSelectionModel, GridSlotsComponent, GridSortModel } from '@mui/x-data-grid';
+import {
+    DataGrid,
+    GridColDef,
+    GridInputSelectionModel,
+    GridSelectionModel,
+    GridSortModel,
+    GridToolbarColumnsButton,
+    GridToolbarContainer,
+    GridToolbarFilterButton
+} from '@mui/x-data-grid';
 import { Box } from '@mui/material';
+
+import { useTranslation, TFunction } from 'react-i18next';
 
 interface AppDataGridType {
     columns: GridColDef[]
@@ -9,7 +20,6 @@ interface AppDataGridType {
     rowsPerPage: number[]
     checkboxSelection?: boolean
     sortModel?: GridSortModel
-    components?: Partial<GridSlotsComponent>
     handleSortModelChange?: (model: GridSortModel) => void
     hideFooterSelectedRowsCount?: boolean
     handleSelectionModelChange?: (selectionModel: GridSelectionModel) => void
@@ -24,23 +34,30 @@ export default function AppGridData({
     rowsPerPage,
     checkboxSelection = false,
     sortModel,
-    components,
     handleSortModelChange,
     hideFooterSelectedRowsCount = false,
     selectionModel,
     handleSelectionModelChange,
     noRowsOverlayMessage
 }: AppDataGridType) {
-
-  /**
-   * @returns JSX.Element
-   */
+    const { t } = useTranslation();
+    /**
+     * @returns JSX.Element
+     */
     const CustomNoRowsOverlay = () => {
         return (
             <Box sx={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
                 <div>{noRowsOverlayMessage}</div>
             </Box>
+        )
+    }
 
+    const CustomToolbar = () => {
+        return (
+            <GridToolbarContainer>
+                <GridToolbarColumnsButton />
+                <GridToolbarFilterButton />
+            </GridToolbarContainer>
         )
     }
 
@@ -52,7 +69,34 @@ export default function AppGridData({
             rowsPerPageOptions={rowsPerPage}
             checkboxSelection={checkboxSelection}
             sortModel={sortModel}
-            components={{...components , NoRowsOverlay: CustomNoRowsOverlay}}
+            components={{
+                NoRowsOverlay: CustomNoRowsOverlay,
+                Toolbar: CustomToolbar
+            }}
+            localeText={{
+                columnsPanelHideAllButton: t('home.dataGrid.columnsPanelHideAllButton'),
+                columnsPanelShowAllButton: t('home.dataGrid.columnsPanelShowAllButton'),
+                columnsPanelTextFieldLabel: t('home.dataGrid.columnsPanelTextFieldLabel'),
+                columnsPanelTextFieldPlaceholder: t('home.dataGrid.columnsPanelTextFieldPlaceholder'),
+                filterPanelInputLabel: t('home.dataGrid.filterPanelInputLabel'),
+                filterPanelColumns: t('home.dataGrid.filterPanelColumns'),
+                filterPanelOperators: t('home.dataGrid.filterPanelOperators'),
+                filterPanelInputPlaceholder: t('home.dataGrid.filterPanelInputPlaceholder'),
+                toolbarColumns: t('home.dataGrid.toolbarColumns'),
+                toolbarFilters: t('home.dataGrid.toolbarFilters'),
+                filterOperatorContains: t('home.dataGrid.filterOperatorContains'),
+                filterOperatorEquals: t('home.dataGrid.filterOperatorEquals'),
+                filterOperatorStartsWith: t('home.dataGrid.filterOperatorStartsWith'),
+                filterOperatorEndsWith: t('home.dataGrid.filterOperatorEndsWith'),
+                filterOperatorIsEmpty: t('home.dataGrid.filterOperatorIsEmpty'),
+                filterOperatorIsNotEmpty: t('home.dataGrid.filterOperatorIsNotEmpty'),
+                columnMenuUnsort: t('home.dataGrid.columnMenuUnsort'),
+                columnMenuSortAsc: t('home.dataGrid.columnMenuSortAsc'),
+                columnMenuSortDesc: t('home.dataGrid.columnMenuSortDesc'),
+                columnMenuFilter: t('home.dataGrid.columnMenuFilter'),
+                columnMenuHideColumn: t('home.dataGrid.columnMenuHideColumn'),
+                columnMenuShowColumns: t('home.dataGrid.columnMenuShowColumns'),
+            }}
             onSortModelChange={handleSortModelChange}
             selectionModel={selectionModel}
             hideFooterSelectedRowCount={hideFooterSelectedRowsCount}
