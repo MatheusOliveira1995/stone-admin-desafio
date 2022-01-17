@@ -7,9 +7,13 @@ import {
     GridSortModel,
     GridToolbarColumnsButton,
     GridToolbarContainer,
-    GridToolbarFilterButton
+    GridToolbarFilterButton,
+    useGridApiContext,
+    useGridSelector,
+    gridPageCountSelector,
+    gridPageSelector,
 } from '@mui/x-data-grid';
-import { Box } from '@mui/material';
+import { Box, Pagination  } from '@mui/material';
 
 import { useTranslation, TFunction } from 'react-i18next';
 
@@ -51,7 +55,9 @@ export default function AppGridData({
             </Box>
         )
     }
-
+    /**
+     * @return JSX.Element
+     */
     const CustomToolbar = () => {
         return (
             <GridToolbarContainer>
@@ -60,7 +66,22 @@ export default function AppGridData({
             </GridToolbarContainer>
         )
     }
-
+    /**
+     */
+    const CustomPagination = () => {
+        const apiRef = useGridApiContext();
+        const page = useGridSelector(apiRef, gridPageSelector);
+        const pageCount = useGridSelector(apiRef, gridPageCountSelector);
+      
+        return (
+          <Pagination
+            color="primary"
+            count={pageCount}
+            page={page + 1}
+            onChange={(event, value) => apiRef.current.setPage(value - 1)}
+          />
+        );
+      }
     return (
         <DataGrid
             rows={rows}
@@ -71,7 +92,8 @@ export default function AppGridData({
             sortModel={sortModel}
             components={{
                 NoRowsOverlay: CustomNoRowsOverlay,
-                Toolbar: CustomToolbar
+                Toolbar: CustomToolbar,
+                Pagination: CustomPagination
             }}
             localeText={{
                 columnsPanelHideAllButton: t('home.dataGrid.columnsPanelHideAllButton'),
