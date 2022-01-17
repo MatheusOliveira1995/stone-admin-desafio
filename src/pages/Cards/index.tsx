@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, SyntheticEvent } from 'react';
 import { DataGrid, GridCellValue, GridColDef, GridComparatorFn, GridRowId } from '@mui/x-data-grid';
-import { Paper, Box, Button, IconButton } from '@mui/material';
+import { Paper, Box, Button, IconButton, Tabs, Tab } from '@mui/material';
 import { Add, Delete, Visibility } from '@mui/icons-material';
 import AssigmentId from '@mui/icons-material/AccountCircle';
 import CreditCard from '@mui/icons-material/CreditCard';
@@ -23,9 +23,16 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { formatDate } from 'src/util/date';
 
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
 export type CardForm = {
   document: string,
   limit: number,
+  name: string,
   digits: string,
   status: string,
   createdAt: Date
@@ -34,6 +41,32 @@ export type CardForm = {
 type DataGridType = {
   columns: GridColDef[],
   rows: any[]
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Paper
+          elevation={2}
+          sx={{
+            display: 'flex',
+            flexDirection: 'column'
+          }}
+        >
+          {children}
+        </Paper>
+      )}
+    </div>
+  );
 }
 
 const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): DataGridType => {
@@ -120,6 +153,14 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
   }
 }
 
+function tabProps(index: number) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+
 export default function Cards() {
   const { t } = useTranslation();
   const { register, formState: { errors }, handleSubmit, setError, clearErrors, reset } = useForm<CardForm>({
@@ -133,6 +174,7 @@ export default function Cards() {
   })
   const [open, setOpen] = useState(false)
   const [document, setDocument] = useState('')
+  const [tabState, setTabState] = useState(0)
   const [user, setUser] = useState<User>({
     id: 0,
     document: '',
@@ -146,6 +188,10 @@ export default function Cards() {
   const handleClose = () => {
     setOpen(false)
     reset()
+  }
+
+  const handleChangeTab = (event: SyntheticEvent, newState: number) => {
+    setTabState(newState)
   }
 
   const fetchData = () => {
@@ -180,70 +226,70 @@ export default function Cards() {
   }, [cards])
 
   return (
-    <div>
-
-      <Paper
-        elevation={2}
+    <Box component="div" sx={{ backgroundColor: '#fff' }}>
+      <Box
+        component="div"
         sx={{
           display: 'flex',
-          flexDirection: 'column',
-          marginTop: '60px',
-          height: '600px'
+          padding: '20px',
         }}
       >
-        <Box
-          component="div"
+        <Button
+          onClick={handleOpen}
+          endIcon={<Add />}
+          aria-label='Novo'
+          size='medium'
+          variant='contained'
+          color='primary'
+        >
+          {t('card.actions.new')}
+        </Button>
+        <Button
+          endIcon={<Delete />}
+          aria-label='Deletar'
+          size='medium'
+          variant='contained'
+          color='error'
+          sx={
+            {
+              marginLeft: '10px'
+            }
+          }
+        >
+          {t('card.actions.delete')}
+        </Button>
+        <Button
+          endIcon={<Visibility />}
+          aria-label='Detalhes'
+          size='medium'
+          variant='contained'
+          color='info'
+          sx={
+            {
+              marginLeft: '10px'
+            }
+          }
+        >
+          {t('card.actions.details')}
+        </Button>
+      </Box>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={tabState} onChange={handleChangeTab} variant="fullWidth">
+          <Tab label="Solicitações em aberto" {...tabProps(0)} />
+          <Tab label="Solicitações aceitas" {...tabProps(1)} />
+          <Tab label="Solicitações recusadas" {...tabProps(2)} />
+        </Tabs>
+      </Box>
+      <TabPanel value={tabState} index={0}>
+        <Box component="div"
           sx={{
             display: 'flex',
-            padding: '20px'
+            backgroundColor: 'white',
+            flexDirection: 'column',
+            padding: '18px 18px 30px 18px',
+            height: '600px',
           }}
         >
-          <Button
-            onClick={handleOpen}
-            endIcon={<Add />}
-            aria-label='Novo'
-            size='medium'
-            variant='contained'
-            color='primary'
-          >
-            {t('card.actions.new')}
-          </Button>
-          <Button
-            endIcon={<Delete />}
-            aria-label='Deletar'
-            size='medium'
-            variant='contained'
-            color='error'
-            sx={
-              {
-                marginLeft: '10px'
-              }
-            }
-          >
-            {t('card.actions.delete')}
-          </Button>
-          <Button
-            endIcon={<Visibility />}
-            aria-label='Detalhes'
-            size='medium'
-            variant='contained'
-            color='info'
-            sx={
-              {
-                marginLeft: '10px'
-              }
-            }
-          >
-            {t('card.actions.details')}
-          </Button>
-        </Box>
-        <Box component="div" sx={{
-          height: '100%',
-          backgroundColor: 'white',
-          padding: '18px 18px 30px 18px',
-          width: 1,
-          display: 'flex'
-        }}>
           <DataGrid
             rows={gridData.rows}
             columns={gridData.columns}
@@ -268,7 +314,9 @@ export default function Cards() {
             }}
           />
         </Box>
-      </Paper>
+      </TabPanel>
+
+
       <AppModal
         handleClose={handleClose}
         open={open}
@@ -390,6 +438,6 @@ export default function Cards() {
           </Box>
         </>
       </AppModal>
-    </div>
+    </Box>
   );
 }
