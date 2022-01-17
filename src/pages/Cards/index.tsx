@@ -8,6 +8,9 @@ import CreditCard from '@mui/icons-material/CreditCard';
 import LocalAtm from '@mui/icons-material/LocalAtm';
 import Event from '@mui/icons-material/Event';
 import SearchIcon from '@mui/icons-material/Search';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import HelpIcon from '@mui/icons-material/Help';
 
 import { useTranslation, TFunction } from 'react-i18next';
 import { getCards, createCard } from 'src/service/api/cards';
@@ -19,6 +22,7 @@ import { getUserById } from 'src/service/api/users';
 import AppModal from 'src/components/AppModal';
 import AppInput from 'src/components/AppInput';
 import AppGridData from 'src/components/AppGridData';
+import AppFloatButton from 'src/components/AppFloatButton';
 import { SubmitHandler, useForm } from "react-hook-form";
 
 import { formatDate } from 'src/util/date';
@@ -42,8 +46,8 @@ export type CardForm = {
 type GridConfigType = {
   columns: GridColDef[],
   requestedRows: any[],
-  approvedRows: any [],
-  rejectedRows: any []
+  approvedRows: any[],
+  rejectedRows: any[]
 }
 type DataGridType = {
   columns: GridColDef[],
@@ -85,7 +89,7 @@ function TabPanel(props: TabPanelProps) {
  * @returns GridConfigType
  */
 const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): GridConfigType => {
-  let requested: any =[]
+  let requested: any = []
   let approved: any = []
   let rejected: any = []
 
@@ -164,11 +168,11 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
       updatedAt: card.updatedAt ? formatDate({ dateValue: card.updatedAt }) : '-'
     }
 
-    if(card.status === Status.REQUESTED){
+    if (card.status === Status.REQUESTED) {
       requested.push(data)
       return
     }
-    if(card.status === Status.APPROVED){
+    if (card.status === Status.APPROVED) {
       approved.push(data)
       return
     }
@@ -214,18 +218,18 @@ export default function Cards() {
     name: ''
   })
   const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
-  const [defaultSortRequestGrid, setDefaultSortRequestGrid] = useState<GridSortModel> ([{field: 'createdAt', sort: 'desc'}])
+  const [defaultSortRequestGrid, setDefaultSortRequestGrid] = useState<GridSortModel>([{ field: 'createdAt', sort: 'desc' }])
   const dispatch = useAppDispatch()
   const cards = useAppSelector((state) => state.cards)
   const [requestedGridData, setRequestedGridData] = useState<DataGridType>({ columns: [], rows: [] })
   const [approvedGridData, setApprovedGridData] = useState<DataGridType>({ columns: [], rows: [] })
-  const [rejectedGridData, setRejectedGridData] = useState<DataGridType>({ columns: [], rows: []})
+  const [rejectedGridData, setRejectedGridData] = useState<DataGridType>({ columns: [], rows: [] })
   const handleOpenModal = () => setOpen(true);
   const handleCloseModal = () => {
     setOpen(false)
     reset()
   }
- 
+
   /**
    * @param event 
    * @param newState 
@@ -253,7 +257,7 @@ export default function Cards() {
       createCard(payload)
       handleCloseModal()
       fetchData()
-      if(tabState){
+      if (tabState) {
         setTabState(0)
       }
     } catch (error) {
@@ -270,58 +274,97 @@ export default function Cards() {
    */
   useEffect(() => {
     const gridData = configureGridData(cards, t)
-    setApprovedGridData({columns: gridData.columns, rows: gridData.approvedRows})
-    setRejectedGridData({ columns: gridData.columns, rows: gridData.rejectedRows})
-    setRequestedGridData({ columns: gridData.columns, rows: gridData.requestedRows})
+    setApprovedGridData({ columns: gridData.columns, rows: gridData.approvedRows })
+    setRejectedGridData({ columns: gridData.columns, rows: gridData.rejectedRows })
+    setRequestedGridData({ columns: gridData.columns, rows: gridData.requestedRows })
   }, [cards])
 
   return (
     <Box component="div" sx={{ backgroundColor: '#fff' }}>
       <Box
         component="div"
+        gridTemplateColumns="repeat(12, 1fr)"
+        gap={2}
         sx={{
-          display: 'flex',
+          display: 'grid',
           padding: '20px',
+          width: '100%',
         }}
       >
-        <Button
-          onClick={handleOpenModal}
-          endIcon={<Add />}
-          aria-label='Novo'
-          size='medium'
-          variant='contained'
-          color='primary'
-        >
-          {t('card.actions.new')}
-        </Button>
-        <Button
-          endIcon={<Delete />}
-          aria-label='Deletar'
-          size='medium'
-          variant='contained'
-          color='error'
-          sx={
-            {
-              marginLeft: '10px'
+        <Box gridColumn="span 8" component='div'>
+          <Button
+            onClick={handleOpenModal}
+            endIcon={<Add />}
+            aria-label='Novo'
+            size='medium'
+            variant='contained'
+            color='primary'
+          >
+            {t('card.actions.new')}
+          </Button>
+          <Button
+            endIcon={<Delete />}
+            aria-label='Deletar'
+            size='medium'
+            variant='contained'
+            color='error'
+            sx={
+              {
+                marginLeft: '10px'
+              }
             }
-          }
-        >
-          {t('card.actions.delete')}
-        </Button>
-        <Button
-          endIcon={<Visibility />}
-          aria-label='Detalhes'
-          size='medium'
-          variant='contained'
-          color='info'
-          sx={
-            {
-              marginLeft: '10px'
+          >
+            {t('card.actions.delete')}
+          </Button>
+          <Button
+            endIcon={<Visibility />}
+            aria-label='Detalhes'
+            size='medium'
+            variant='contained'
+            color='info'
+            sx={
+              {
+                marginLeft: '10px'
+              }
             }
-          }
-        >
-          {t('card.actions.details')}
-        </Button>
+          >
+            {t('card.actions.details')}
+          </Button>
+        </Box>
+        {selectionModel.length > 0 &&
+          <Box gridColumn="span 4" component='div' sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              endIcon={<ThumbUpAltIcon />}
+              aria-label='Detalhes'
+              size='medium'
+              variant='outlined'
+              color='primary'
+              sx={
+                {
+                  marginLeft: '10px'
+                }
+              }
+            >
+              Aceitar
+            </Button>
+
+            <Button
+              endIcon={<ThumbDownAltIcon />}
+              aria-label='Detalhes'
+              size='medium'
+              variant='outlined'
+              color='error'
+              sx={
+                {
+                  marginLeft: '10px'
+                }
+              }
+            >
+              Recusar
+            </Button>
+          </Box>
+        }
+
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={tabState} onChange={handleChangeTab} variant="fullWidth">
@@ -341,12 +384,12 @@ export default function Cards() {
           }}
         >
           <AppGridData
-            rows={ requestedGridData.rows }
-            columns={ requestedGridData.columns }
+            rows={requestedGridData.rows}
+            columns={requestedGridData.columns}
             autoPageSize={true}
             rowsPerPage={[30]}
             checkboxSelection={true}
-            sortModel={ defaultSortRequestGrid }
+            sortModel={defaultSortRequestGrid}
             noRowsOverlayMessage={t('card.gridDataEmpty')}
             handleSortModelChange={(model) => setDefaultSortRequestGrid(model)}
             selectionModel={selectionModel}
@@ -381,8 +424,8 @@ export default function Cards() {
         >
           <AppGridData
             noRowsOverlayMessage={t('card.gridDataEmpty')}
-            rows={ approvedGridData.rows }
-            columns={ approvedGridData.columns }
+            rows={approvedGridData.rows}
+            columns={approvedGridData.columns}
             autoPageSize={true}
             rowsPerPage={[30]}
           />
@@ -401,8 +444,8 @@ export default function Cards() {
         >
           <AppGridData
             noRowsOverlayMessage={t('card.gridDataEmpty')}
-            rows={ rejectedGridData.rows }
-            columns={ rejectedGridData.columns }
+            rows={rejectedGridData.rows}
+            columns={rejectedGridData.columns}
             autoPageSize={true}
             rowsPerPage={[30]}
           />
@@ -531,6 +574,10 @@ export default function Cards() {
           </Box>
         </>
       </AppModal>
+
+      <AppFloatButton top={66} right={16}>
+        <HelpIcon/>    
+      </AppFloatButton>
     </Box>
   );
 }
