@@ -162,17 +162,9 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
   ];
 
   data.cards.forEach((card: Card) => {
-    let cardHolderName = card.metaDatas.name
-
-    if (!card.metaDatas.name) {
-      getUserById(card.userId).then((cardHolder) => {
-        cardHolderName = cardHolder.name
-      })
-    }
-
     const data = {
       id: card.id,
-      cardHolderName: cardHolderName,
+      cardHolderName: card.metaDatas.name ? card.metaDatas.name :  '',
       digits: card.metaDatas.digits ? card.metaDatas.digits : '-',
       limit: card.metaDatas.limit ? card.metaDatas.limit : '-',
       status: t(`card.add.statuses.${card.status}`),
@@ -213,7 +205,7 @@ function tabProps(index: number) {
 
 export default function Cards() {
   const { t } = useTranslation();
-  const { register, formState: { errors }, handleSubmit, setError, setValue, clearErrors, reset } = useForm<CardForm>({
+  const { register, formState: { errors }, handleSubmit, setError, setValue, getValues, clearErrors, reset } = useForm<CardForm>({
     defaultValues: {
       id: undefined,
       userId: undefined,
@@ -227,7 +219,6 @@ export default function Cards() {
   })
   const [open, setOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
-  const [document, setDocument] = useState('')
   const [tabState, setTabState] = useState(0)
 
   const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
@@ -298,6 +289,7 @@ export default function Cards() {
    * @returns Promise<User>
    */
   const loadUserFormDataByDocument = () => {
+    const document = getValues('document')
     if (!document) return;
     const response = getUserByDocument(document)
     return response
@@ -562,7 +554,6 @@ export default function Cards() {
                 name="document"
                 type='text'
                 register={register}
-                handleChange={(value: string) => setDocument(value)}
                 label={t('card.add.document')}
                 error={errors.document}
                 validation={{
@@ -570,7 +561,7 @@ export default function Cards() {
                   validate: async () => {
                     const user = await loadUserFormDataByDocument() as Array<User>
                     //if not return any user with this document
-                    if (!user.length) {
+                    if (!user) {
                       return t('card.validation.user')
                     }
                     setValue('userId', user[0].id)
