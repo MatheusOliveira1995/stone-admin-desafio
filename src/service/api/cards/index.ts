@@ -44,7 +44,7 @@ export async function getCards(): Promise<Cards> {
 export async function saveCard(card: Record<string, unknown>) {
     let url = '/cards'
     const payload: ApiCard = {
-        status: Status.REQUESTED,
+        status: card.status as Status,
         user_id: card.userId as number,
         createdAt: card.createdAt as string,
         metadatas: {
