@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState, SyntheticEvent } from 'react';
-import { GridCellValue, GridColDef, GridRowId, GridSortModel } from '@mui/x-data-grid';
+import { GridCellParams, GridCellValue, GridColDef, GridRowId, GridSortModel } from '@mui/x-data-grid';
 import { Paper, Box, Button, IconButton, Tabs, Tab, Tooltip } from '@mui/material';
 import { Add, Delete, Visibility } from '@mui/icons-material';
 import AssigmentId from '@mui/icons-material/AccountCircle';
@@ -12,9 +12,10 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import HelpIcon from '@mui/icons-material/Help';
 import Zoom from '@mui/material/Zoom';
+import EditIcon from '@mui/icons-material/Edit';
 
 import { useTranslation, TFunction } from 'react-i18next';
-import { getCards, createCard } from 'src/service/api/cards';
+import { getCards, saveCard } from 'src/service/api/cards';
 import { getUserByDocument } from 'src/service/api/users';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { setCards } from 'src/app/store/slices/cards';
@@ -36,7 +37,9 @@ interface TabPanelProps {
 }
 
 export type CardForm = {
+  id: number,
   document: string,
+  userId: number,
   limit: number,
   name: string,
   digits: string,
@@ -110,9 +113,9 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
     {
       field: 'cardHolderName',
       minWidth: 300,
-      headerName: 'Titular do cartão',
+      headerName: 'Nome impresso',
       width: 150,
-      editable: false,
+      editable: true,
     },
     {
       field: 'digits',
@@ -135,6 +138,14 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
       width: 160,
     },
     {
+      field: 'userId',
+      type: 'number',
+      headerName: 'Id usuário',
+      hide: true,
+      sortable: true,
+      width: 100,
+    },
+    {
       field: 'createdAt',
       headerName: 'Criado em',
       sortable: true,
@@ -143,9 +154,9 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
     },
     {
       field: 'updatedAt',
-      headerName: 'Atualizado em',
+      headerName: 'Atualizado',
       sortable: true,
-      width: 150,
+      width: 100,
       sortComparator: dateComparator
     },
   ];
@@ -165,8 +176,9 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
       digits: card.metaDatas.digits ? card.metaDatas.digits : '-',
       limit: card.metaDatas.limit ? card.metaDatas.limit : '-',
       status: t(`card.add.statuses.${card.status}`),
+      userId: card.userId,
       createdAt: card.createdAt ? formatDate({ dateValue: card.createdAt }) : '-',
-      updatedAt: card.updatedAt ? formatDate({ dateValue: card.updatedAt }) : '-'
+      updatedAt: card.updatedAt ? formatDate({ dateValue: card.updatedAt }) : '-',
     }
 
     if (card.status === Status.REQUESTED) {
@@ -201,9 +213,12 @@ function tabProps(index: number) {
 
 export default function Cards() {
   const { t } = useTranslation();
-  const { register, formState: { errors }, handleSubmit, setError, clearErrors, reset } = useForm<CardForm>({
+  const { register, formState: { errors }, handleSubmit, setError, setValue, clearErrors, reset } = useForm<CardForm>({
     defaultValues: {
+      id: undefined,
+      userId: undefined,
       createdAt: undefined,
+      name: '',
       digits: '',
       document: '',
       limit: undefined,
@@ -211,13 +226,10 @@ export default function Cards() {
     }
   })
   const [open, setOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [document, setDocument] = useState('')
   const [tabState, setTabState] = useState(0)
-  const [user, setUser] = useState<User>({
-    id: 0,
-    document: '',
-    name: ''
-  })
+
   const [selectionModel, setSelectionModel] = useState<GridRowId[]>([]);
   const [defaultSortRequestGrid, setDefaultSortRequestGrid] = useState<GridSortModel>([{ field: 'createdAt', sort: 'desc' }])
   const dispatch = useAppDispatch()
@@ -239,6 +251,23 @@ export default function Cards() {
     setTabState(newState)
   }
   /**
+   * @param row 
+   */
+  const handleEdit = (row: any) => {
+    getUserById(row.userId).then((user) => {
+      setValue('id', row.id)
+      setValue('userId', user.id)
+      setValue('document', user.document)
+      setValue('name', row.cardHolderName)
+      setValue('digits', row.digits)
+      setValue('limit', row.limit)
+      setValue('status', row.status)
+      setValue('createdAt', row.createdAt.split('/').reverse().join('-'))
+      setIsEditing(true)
+      handleOpenModal()
+    })
+  }
+  /**
    */
   const fetchData = () => {
     getCards().then((response) => {
@@ -249,18 +278,20 @@ export default function Cards() {
    * @param data 
    */
   const submit: SubmitHandler<CardForm> = (data) => {
+    debugger
     const payload = {
-      ...data,
-      userId: user.id,
-      userName: user.name,
+      ...data
     }
     try {
-      createCard(payload)
+      saveCard(payload)
       handleCloseModal()
       fetchData()
       if (tabState) {
         setTabState(0)
       }
+
+      if(isEditing) setIsEditing(false);
+
     } catch (error) {
 
     }
@@ -386,7 +417,29 @@ export default function Cards() {
         >
           <AppGridData
             rows={requestedGridData.rows}
-            columns={requestedGridData.columns}
+            columns={[
+              ...requestedGridData.columns,
+              {
+                field: 'edit',
+                type: 'actions',
+                headerName: 'Editar',
+                width: 70,
+                sortable: false,
+                cellClassName: 'actions',
+                renderCell: (params: GridCellParams) => {
+                  return (
+                    <IconButton 
+                      aria-label="edit"
+                      onClick={() => {
+                        handleEdit(params.row)   
+                      }}
+                    >
+                      <EditIcon/>
+                    </IconButton>
+                  )
+                }
+              },
+            ]}
             autoPageSize={true}
             rowsPerPage={[30]}
             checkboxSelection={true}
@@ -457,7 +510,7 @@ export default function Cards() {
       <AppModal
         handleClose={handleCloseModal}
         open={open}
-        title={t('card.add.title')}
+        title={!isEditing ? t('card.add.title') : t('card.update.title')}
       >
         <>
           <Box
@@ -470,6 +523,7 @@ export default function Cards() {
           >
             <Box gridColumn="span 3">
               <AppInput
+                readOnly={isEditing}
                 name="document"
                 type='text'
                 register={register}
@@ -481,21 +535,16 @@ export default function Cards() {
                 }}
                 endAdornment={
                   <IconButton
+                    disabled={isEditing}
                     onClick={() => {
                       if (!document) return;
                       getUserByDocument(document).then((user: Array<User>) => {
                         if (user.length) {
                           clearErrors('document')
-                          setUser(user[0])
+                          setValue('name', user[0].name)
+                          setValue('userId', user[0].id)
                           return
                         }
-                        setUser(
-                          {
-                            id: 0,
-                            document: '',
-                            name: ''
-                          }
-                        )
                         setError("document", { type: "custom", message: t('card.validation.user') })
                       })
                     }}
@@ -510,14 +559,15 @@ export default function Cards() {
             <Box gridColumn="span 9">
               <AppInput
                 name="name"
+                register={register}
                 type='text'
-                value={user.name}
                 startAdornment={<AssigmentId />}
                 label={t('card.add.clientName')}
               />
             </Box>
             <Box gridColumn="span 8">
               <AppInput
+                readOnly={isEditing}
                 name="limit"
                 register={register}
                 type="text"
@@ -531,6 +581,7 @@ export default function Cards() {
             </Box>
             <Box gridColumn="span 4">
               <AppInput
+                readOnly={isEditing}
                 name="digits"
                 register={register}
                 validation={{
@@ -544,6 +595,7 @@ export default function Cards() {
             </Box>
             <Box gridColumn="span 4">
               <AppInput
+                readOnly={isEditing}
                 name="createdAt"
                 type="date"
                 register={register}
@@ -568,6 +620,20 @@ export default function Cards() {
                 readOnly={true}
               />
             </Box>
+            <AppInput
+                label='ID'
+                name="id"
+                register={register}
+                type="number"
+                hidden={true}
+              />
+            <AppInput
+                label='User ID'
+                name="userId"
+                register={register}
+                type="number"
+                hidden={true}
+              />
             <Box sx={{ display: 'flex' }} component="div" gridColumn="span 12" justifyContent="flex-end">
               <Button variant='contained' color='primary' type='submit'>{t('card.actions.save')}</Button>
               <Button sx={{ marginLeft: 2 }} variant='contained' color='error' onClick={() => handleCloseModal()}>{t('card.actions.cancel')}</Button>

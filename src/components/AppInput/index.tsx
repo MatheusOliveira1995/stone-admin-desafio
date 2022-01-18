@@ -8,6 +8,7 @@ type Props = {
   type: string,
   name: string,
   label: string,
+  hidden?: boolean,
   endAdornment?: ReactNode,
   startAdornment?: ReactNode,
   helperText?: string,
@@ -20,9 +21,9 @@ type Props = {
   validation?: any
 }
 
-export default function AppInput({ id, name, type, label, endAdornment, register , validation, startAdornment, readOnly = false, helperText, handleChange, value, required = false, error } : Props) {
+export default function AppInput({ id, name, type, label, hidden, endAdornment, register , validation, startAdornment, readOnly = false, helperText, handleChange, value, required = false, error } : Props) {
   return (
-    <FormControl required={required} error={!!error} fullWidth variant="outlined">
+    <FormControl sx={{display: () => hidden ? 'none' : 'flex'}} required={required} error={!!error} fullWidth variant="outlined">
       <InputLabel htmlFor={id}>{label}</InputLabel>
       <OutlinedInput
         { ...( register && register(name, validation)) }

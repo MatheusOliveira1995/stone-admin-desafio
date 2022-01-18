@@ -1,6 +1,20 @@
 import http from "src/settings/http";
 import { Cards, Card, Status } from "src/app/definitions";
 
+import {formatDate} from 'src/util/date'
+
+type ApiCard = {
+    id?: string | number,
+    createdAt: string,
+    updatedAt?: string,
+    status: Status,
+    user_id: number,
+    metadatas:{
+        name?:string,
+        digits?: string,
+        limit?: number
+    }
+}
 export async function getCards(): Promise<Cards> {
     let response
     try {
@@ -27,20 +41,33 @@ export async function getCards(): Promise<Cards> {
     return cards
 }
 
-export async function createCard(card: Record<string, unknown>) {
-    const payload = {
+export async function saveCard(card: Record<string, unknown>) {
+    let url = '/cards'
+    const payload: ApiCard = {
         status: Status.REQUESTED,
-        user_id: card.userId,
-        createdAt: card.createdAt,
+        user_id: card.userId as number,
+        createdAt: card.createdAt as string,
         metadatas: {
-            name: card.userName,
-            digits: card.digits,
-            limit: card.limit
+            name: card.name as string,
+            digits: card.digits as string,
+            limit: card.limit as number
         }
     }
+    if(card.id){
+        payload.id = card.id as number
+        payload.updatedAt = formatDate({dateValue:(new Date()), pattern: 'us'})
+        url = url.concat(`/${card.id}`)
+    }
     try {
-      const response = await http.post('/cards', payload)
+      let response
+      if(payload.id){
+        response = await http.put(url, payload)
+        return response.data
+      }
+
+      response = await http.post(url, payload)
       return response.data  
+
     } catch (error) {
         return {}
     }   

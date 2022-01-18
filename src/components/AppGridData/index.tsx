@@ -15,7 +15,7 @@ import {
 } from '@mui/x-data-grid';
 import { Box, Pagination  } from '@mui/material';
 
-import { useTranslation, TFunction } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 interface AppDataGridType {
     columns: GridColDef[]
@@ -29,6 +29,7 @@ interface AppDataGridType {
     handleSelectionModelChange?: (selectionModel: GridSelectionModel) => void
     selectionModel?: GridInputSelectionModel,
     noRowsOverlayMessage: string
+    handleCellEditCommit?: () => void
 }
 
 export default function AppGridData({
