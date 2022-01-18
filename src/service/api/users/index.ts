@@ -43,7 +43,6 @@ export async function getUserByDocument(document: string): Promise<User[]> {
             }
         ]
     }
-    console.log(response.data);
-    
+
     return response.data
 }

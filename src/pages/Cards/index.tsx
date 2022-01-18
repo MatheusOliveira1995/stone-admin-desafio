@@ -268,123 +268,84 @@ export default function Cards() {
     })
   }
   /**
+   * @returns Promise<User>
+   */
+  const loadUserFormDataByDocument = () => {
+      if (!document) return;
+      const response = getUserByDocument(document)
+      return response
+  }
+  /**
    */
   const fetchData = () => {
-    getCards().then((response) => {
-      dispatch(setCards(response))
-    })
-  }
-  /**
-   * @param data 
-   */
-  const submit: SubmitHandler<CardForm> = (data) => {
-    debugger
-    const payload = {
-      ...data
+      getCards().then((response) => {
+        dispatch(setCards(response))
+      })
     }
-    try {
-      saveCard(payload)
-      handleCloseModal()
-      fetchData()
-      if (tabState) {
-        setTabState(0)
+    /**
+     * @param data 
+     */
+    const submit: SubmitHandler<CardForm> = (data) => {
+      const payload = {
+        ...data
+      }
+      try {
+        saveCard(payload)
+        handleCloseModal()
+        fetchData()
+        if (tabState) {
+          setTabState(0)
+        }
+
+        if (isEditing) setIsEditing(false);
+
+      } catch (error) {
+
       }
 
-      if(isEditing) setIsEditing(false);
-
-    } catch (error) {
-
     }
+    /**
+     */
+    useEffect(() => {
+      fetchData()
+    }, [])
+    /**
+     */
+    useEffect(() => {
+      const gridData = configureGridData(cards, t)
+      setApprovedGridData({ columns: gridData.columns, rows: gridData.approvedRows })
+      setRejectedGridData({ columns: gridData.columns, rows: gridData.rejectedRows })
+      setRequestedGridData({ columns: gridData.columns, rows: gridData.requestedRows })
+    }, [cards])
 
-  }
-  /**
-   */
-  useEffect(() => {
-    fetchData()
-  }, [])
-  /**
-   */
-  useEffect(() => {
-    const gridData = configureGridData(cards, t)
-    setApprovedGridData({ columns: gridData.columns, rows: gridData.approvedRows })
-    setRejectedGridData({ columns: gridData.columns, rows: gridData.rejectedRows })
-    setRequestedGridData({ columns: gridData.columns, rows: gridData.requestedRows })
-  }, [cards])
-
-  return (
-    <Box component="div" sx={{ backgroundColor: '#fff' }}>
-      <Box
-        component="div"
-        gridTemplateColumns="repeat(12, 1fr)"
-        gap={2}
-        sx={{
-          display: 'grid',
-          padding: '20px',
-          width: '100%',
-        }}
-      >
-        <Box gridColumn="span 8" component='div'>
-          <Button
-            onClick={handleOpenModal}
-            endIcon={<Add />}
-            aria-label='Novo'
-            size='medium'
-            variant='contained'
-            color='primary'
-          >
-            {t('card.actions.new')}
-          </Button>
-          <Button
-            endIcon={<Delete />}
-            aria-label='Deletar'
-            size='medium'
-            variant='contained'
-            color='error'
-            sx={
-              {
-                marginLeft: '10px'
-              }
-            }
-          >
-            {t('card.actions.delete')}
-          </Button>
-          <Button
-            endIcon={<Visibility />}
-            aria-label='Detalhes'
-            size='medium'
-            variant='contained'
-            color='info'
-            sx={
-              {
-                marginLeft: '10px'
-              }
-            }
-          >
-            {t('card.actions.details')}
-          </Button>
-        </Box>
-        {selectionModel.length > 0 &&
-          <Box gridColumn="span 4" component='div' sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+    return (
+      <Box component="div" sx={{ backgroundColor: '#fff' }}>
+        <Box
+          component="div"
+          gridTemplateColumns="repeat(12, 1fr)"
+          gap={2}
+          sx={{
+            display: 'grid',
+            padding: '20px',
+            width: '100%',
+          }}
+        >
+          <Box gridColumn="span 8" component='div'>
             <Button
-              endIcon={<ThumbUpAltIcon />}
-              aria-label='Detalhes'
+              onClick={handleOpenModal}
+              endIcon={<Add />}
+              aria-label='Novo'
               size='medium'
-              variant='outlined'
+              variant='contained'
               color='primary'
-              sx={
-                {
-                  marginLeft: '10px'
-                }
-              }
             >
-              Aceitar
+              {t('card.actions.new')}
             </Button>
-
             <Button
-              endIcon={<ThumbDownAltIcon />}
-              aria-label='Detalhes'
+              endIcon={<Delete />}
+              aria-label='Deletar'
               size='medium'
-              variant='outlined'
+              variant='contained'
               color='error'
               sx={
                 {
@@ -392,265 +353,321 @@ export default function Cards() {
                 }
               }
             >
-              Recusar
+              {t('card.actions.delete')}
+            </Button>
+            <Button
+              endIcon={<Visibility />}
+              aria-label='Detalhes'
+              size='medium'
+              variant='contained'
+              color='info'
+              sx={
+                {
+                  marginLeft: '10px'
+                }
+              }
+            >
+              {t('card.actions.details')}
             </Button>
           </Box>
-        }
-
-      </Box>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={tabState} onChange={handleChangeTab} variant="fullWidth">
-          <Tab label="Solicitações em aberto" {...tabProps(0)} />
-          <Tab label="Solicitações aceitas" {...tabProps(1)} />
-          <Tab label="Solicitações recusadas" {...tabProps(2)} />
-        </Tabs>
-      </Box>
-      <TabPanel value={tabState} index={0}>
-        <Box component="div"
-          sx={{
-            display: 'flex',
-            backgroundColor: 'white',
-            flexDirection: 'column',
-            padding: '18px 18px 30px 18px',
-            height: '600px',
-          }}
-        >
-          <AppGridData
-            rows={requestedGridData.rows}
-            columns={[
-              ...requestedGridData.columns,
-              {
-                field: 'edit',
-                type: 'actions',
-                headerName: 'Editar',
-                width: 70,
-                sortable: false,
-                cellClassName: 'actions',
-                renderCell: (params: GridCellParams) => {
-                  return (
-                    <IconButton 
-                      aria-label="edit"
-                      onClick={() => {
-                        handleEdit(params.row)   
-                      }}
-                    >
-                      <EditIcon/>
-                    </IconButton>
-                  )
+          {selectionModel.length > 0 &&
+            <Box gridColumn="span 4" component='div' sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+              <Button
+                endIcon={<ThumbUpAltIcon />}
+                aria-label='Detalhes'
+                size='medium'
+                variant='outlined'
+                color='primary'
+                sx={
+                  {
+                    marginLeft: '10px'
+                  }
                 }
-              },
-            ]}
-            autoPageSize={true}
-            rowsPerPage={[30]}
-            checkboxSelection={true}
-            sortModel={defaultSortRequestGrid}
-            noRowsOverlayMessage={t('card.gridDataEmpty')}
-            handleSortModelChange={(model) => setDefaultSortRequestGrid(model)}
-            selectionModel={selectionModel}
-            hideFooterSelectedRowsCount={true}
-            handleSelectionModelChange={(selection) => {
-              if (selection.length === requestedGridData.rows.length) {
-                setSelectionModel([])
-                return
-              }
-              if (selection.length > 1) {
-                const selectionSet = new Set(selectionModel);
-                const result = selection.filter((selected) => !selectionSet.has(selected));
+              >
+                Aceitar
+              </Button>
 
-                setSelectionModel(result);
-              } else {
-                setSelectionModel(selection);
-              }
+              <Button
+                endIcon={<ThumbDownAltIcon />}
+                aria-label='Detalhes'
+                size='medium'
+                variant='outlined'
+                color='error'
+                sx={
+                  {
+                    marginLeft: '10px'
+                  }
+                }
+              >
+                Recusar
+              </Button>
+            </Box>
+          }
+
+        </Box>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={tabState} onChange={handleChangeTab} variant="fullWidth">
+            <Tab label="Solicitações em aberto" {...tabProps(0)} />
+            <Tab label="Solicitações aceitas" {...tabProps(1)} />
+            <Tab label="Solicitações recusadas" {...tabProps(2)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={tabState} index={0}>
+          <Box component="div"
+            sx={{
+              display: 'flex',
+              backgroundColor: 'white',
+              flexDirection: 'column',
+              padding: '18px 18px 30px 18px',
+              height: '600px',
             }}
-          />
-        </Box>
-      </TabPanel>
-
-      <TabPanel value={tabState} index={1}>
-        <Box component="div"
-          sx={{
-            display: 'flex',
-            backgroundColor: 'white',
-            flexDirection: 'column',
-            padding: '18px 18px 30px 18px',
-            height: '600px',
-          }}
-        >
-          <AppGridData
-            noRowsOverlayMessage={t('card.gridDataEmpty')}
-            rows={approvedGridData.rows}
-            columns={approvedGridData.columns}
-            autoPageSize={true}
-            rowsPerPage={[30]}
-          />
-        </Box>
-      </TabPanel>
-
-      <TabPanel value={tabState} index={2}>
-        <Box component="div"
-          sx={{
-            display: 'flex',
-            backgroundColor: 'white',
-            flexDirection: 'column',
-            padding: '18px 18px 30px 18px',
-            height: '600px',
-          }}
-        >
-          <AppGridData
-            noRowsOverlayMessage={t('card.gridDataEmpty')}
-            rows={rejectedGridData.rows}
-            columns={rejectedGridData.columns}
-            autoPageSize={true}
-            rowsPerPage={[30]}
-          />
-        </Box>
-      </TabPanel>
-
-
-      <AppModal
-        handleClose={handleCloseModal}
-        open={open}
-        title={!isEditing ? t('card.add.title') : t('card.update.title')}
-      >
-        <>
-          <Box
-            display="grid"
-            gridTemplateColumns="repeat(12, 1fr)"
-            gap={2}
-            component="form"
-            method='POST'
-            onSubmit={handleSubmit(submit)}
           >
-            <Box gridColumn="span 3">
-              <AppInput
-                readOnly={isEditing}
-                name="document"
-                type='text'
-                register={register}
-                handleChange={(value: string) => setDocument(value)}
-                label={t('card.add.document')}
-                error={errors.document}
-                validation={{
-                  required: t('card.validation.required')
-                }}
-                endAdornment={
-                  <IconButton
-                    disabled={isEditing}
-                    onClick={() => {
-                      if (!document) return;
-                      getUserByDocument(document).then((user: Array<User>) => {
-                        if (user.length) {
-                          clearErrors('document')
-                          setValue('name', user[0].name)
-                          setValue('userId', user[0].id)
+            <AppGridData
+              rows={requestedGridData.rows}
+              columns={[
+                ...requestedGridData.columns,
+                {
+                  field: 'edit',
+                  type: 'actions',
+                  headerName: 'Editar',
+                  width: 70,
+                  sortable: false,
+                  cellClassName: 'actions',
+                  renderCell: (params: GridCellParams) => {
+                    return (
+                      <IconButton
+                        aria-label="edit"
+                        onClick={() => {
+                          handleEdit(params.row)
+                        }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    )
+                  }
+                },
+              ]}
+              autoPageSize={true}
+              rowsPerPage={[30]}
+              checkboxSelection={true}
+              sortModel={defaultSortRequestGrid}
+              noRowsOverlayMessage={t('card.gridDataEmpty')}
+              handleSortModelChange={(model) => setDefaultSortRequestGrid(model)}
+              selectionModel={selectionModel}
+              hideFooterSelectedRowsCount={true}
+              handleSelectionModelChange={(selection) => {
+                if (selection.length === requestedGridData.rows.length) {
+                  setSelectionModel([])
+                  return
+                }
+                if (selection.length > 1) {
+                  const selectionSet = new Set(selectionModel);
+                  const result = selection.filter((selected) => !selectionSet.has(selected));
+
+                  setSelectionModel(result);
+                } else {
+                  setSelectionModel(selection);
+                }
+              }}
+            />
+          </Box>
+        </TabPanel>
+
+        <TabPanel value={tabState} index={1}>
+          <Box component="div"
+            sx={{
+              display: 'flex',
+              backgroundColor: 'white',
+              flexDirection: 'column',
+              padding: '18px 18px 30px 18px',
+              height: '600px',
+            }}
+          >
+            <AppGridData
+              noRowsOverlayMessage={t('card.gridDataEmpty')}
+              rows={approvedGridData.rows}
+              columns={approvedGridData.columns}
+              autoPageSize={true}
+              rowsPerPage={[30]}
+            />
+          </Box>
+        </TabPanel>
+
+        <TabPanel value={tabState} index={2}>
+          <Box component="div"
+            sx={{
+              display: 'flex',
+              backgroundColor: 'white',
+              flexDirection: 'column',
+              padding: '18px 18px 30px 18px',
+              height: '600px',
+            }}
+          >
+            <AppGridData
+              noRowsOverlayMessage={t('card.gridDataEmpty')}
+              rows={rejectedGridData.rows}
+              columns={rejectedGridData.columns}
+              autoPageSize={true}
+              rowsPerPage={[30]}
+            />
+          </Box>
+        </TabPanel>
+
+
+        <AppModal
+          handleClose={handleCloseModal}
+          open={open}
+          title={!isEditing ? t('card.add.title') : t('card.update.title')}
+        >
+          <>
+            <Box
+              display="grid"
+              gridTemplateColumns="repeat(12, 1fr)"
+              gap={2}
+              component="form"
+              method='POST'
+              onSubmit={handleSubmit(submit)}
+            >
+              <Box gridColumn="span 3">
+                <AppInput
+                  readOnly={isEditing}
+                  name="document"
+                  type='text'
+                  register={register}
+                  handleChange={(value: string) => setDocument(value)}
+                  label={t('card.add.document')}
+                  error={errors.document}
+                  validation={{
+                    required: t('card.validation.required'),
+                    validate: async () => {
+                      const user = await loadUserFormDataByDocument() as Array<User>
+                      //if not return any user with this document
+                      if(!user.length){
+                        return t('card.validation.user')
+                      }
+                      setValue('userId', user[0].id)
+                    }
+                  }}
+                  endAdornment={
+                    <IconButton
+                      disabled={isEditing}
+                      onClick={async () => {
+                        const user = await loadUserFormDataByDocument() as Array<User>
+                        if (!user.length){
+                          setError("document", { type: "custom", message: t('card.validation.user') })
                           return
                         }
-                        setError("document", { type: "custom", message: t('card.validation.user') })
-                      })
-                    }}
-                    aria-label="search"
-                    edge="end"
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                }
-              />
-            </Box>
-            <Box gridColumn="span 9">
+                        clearErrors('document')
+                        setValue('name', user[0].name)
+                        setValue('userId', user[0].id)
+                      }}
+                      aria-label="search"
+                      edge="end"
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  }
+                />
+              </Box>
+              <Box gridColumn="span 9">
+                <AppInput
+                  name="name"
+                  register={register}
+                  error={errors.name}
+                  validation={{
+                    required: t('card.validation.required')
+                  }}
+                  type='text'
+                  startAdornment={<AssigmentId />}
+                  label={t('card.add.clientName')}
+                />
+              </Box>
+              <Box gridColumn="span 8">
+                <AppInput
+                  readOnly={isEditing}
+                  name="limit"
+                  register={register}
+                  type="text"
+                  error={errors.limit}
+                  validation={{
+                    required: t('card.validation.required')
+                  }}
+                  startAdornment={<LocalAtm />}
+                  label={t('card.add.limit')}
+                />
+              </Box>
+              <Box gridColumn="span 4">
+                <AppInput
+                  readOnly={isEditing}
+                  name="digits"
+                  register={register}
+                  validation={{
+                    required: t('card.validation.required')
+                  }}
+                  error={errors.digits}
+                  startAdornment={<CreditCard />}
+                  label={t('card.add.digits')}
+                  type="text"
+                />
+              </Box>
+              <Box gridColumn="span 4">
+                <AppInput
+                  readOnly={isEditing}
+                  name="createdAt"
+                  type="date"
+                  register={register}
+                  validation={{
+                    required: t('card.validation.required')
+                  }}
+                  error={errors.createdAt}
+                  startAdornment={<Event />}
+                  label={t('card.add.createdAt')}
+                />
+              </Box>
+              <Box gridColumn="span 8">
+                <AppInput
+                  name="status"
+                  register={register}
+                  validation={{
+                    required: t('card.validation.required')
+                  }}
+                  error={errors.status}
+                  label={t('card.add.status')}
+                  type="text"
+                  readOnly={true}
+                />
+              </Box>
               <AppInput
-                name="name"
-                register={register}
-                type='text'
-                startAdornment={<AssigmentId />}
-                label={t('card.add.clientName')}
-              />
-            </Box>
-            <Box gridColumn="span 8">
-              <AppInput
-                readOnly={isEditing}
-                name="limit"
-                register={register}
-                type="text"
-                error={errors.limit}
-                validation={{
-                  required: t('card.validation.required')
-                }}
-                startAdornment={<LocalAtm />}
-                label={t('card.add.limit')}
-              />
-            </Box>
-            <Box gridColumn="span 4">
-              <AppInput
-                readOnly={isEditing}
-                name="digits"
-                register={register}
-                validation={{
-                  required: t('card.validation.required')
-                }}
-                error={errors.digits}
-                startAdornment={<CreditCard />}
-                label={t('card.add.digits')}
-                type="text"
-              />
-            </Box>
-            <Box gridColumn="span 4">
-              <AppInput
-                readOnly={isEditing}
-                name="createdAt"
-                type="date"
-                register={register}
-                validation={{
-                  required: t('card.validation.required')
-                }}
-                error={errors.createdAt}
-                startAdornment={<Event />}
-                label={t('card.add.createdAt')}
-              />
-            </Box>
-            <Box gridColumn="span 8">
-              <AppInput
-                name="status"
-                register={register}
-                validation={{
-                  required: t('card.validation.required')
-                }}
-                error={errors.status}
-                label={t('card.add.status')}
-                type="text"
-                readOnly={true}
-              />
-            </Box>
-            <AppInput
                 label='ID'
                 name="id"
                 register={register}
                 type="number"
                 hidden={true}
               />
-            <AppInput
+              <AppInput
                 label='User ID'
                 name="userId"
                 register={register}
                 type="number"
                 hidden={true}
               />
-            <Box sx={{ display: 'flex' }} component="div" gridColumn="span 12" justifyContent="flex-end">
-              <Button variant='contained' color='primary' type='submit'>{t('card.actions.save')}</Button>
-              <Button sx={{ marginLeft: 2 }} variant='contained' color='error' onClick={() => handleCloseModal()}>{t('card.actions.cancel')}</Button>
+              <Box sx={{ display: 'flex' }} component="div" gridColumn="span 12" justifyContent="flex-end">
+                <Button variant='contained' color='primary' type='submit'>{t('card.actions.save')}</Button>
+                <Button sx={{ marginLeft: 2 }} variant='contained' color='error' onClick={() => handleCloseModal()}>{t('card.actions.cancel')}</Button>
+              </Box>
             </Box>
-          </Box>
-        </>
-      </AppModal>
+          </>
+        </AppModal>
 
-      <Box sx={{ '& > :not(style)': { m: 1 }, position: 'absolute', right: 16, bottom: 16 }}>
-        <Tooltip TransitionComponent={Zoom} placement="left" title={t('card.helpText') as string}>
-          <div>
-            <AppFloatButton color="secondary">
-              <HelpIcon />
-            </AppFloatButton>
-          </div>
-        </Tooltip>
+        <Box sx={{ '& > :not(style)': { m: 1 }, position: 'absolute', right: 16, bottom: 16 }}>
+          <Tooltip TransitionComponent={Zoom} placement="left" title={t('card.helpText') as string}>
+            <div>
+              <AppFloatButton color="secondary">
+                <HelpIcon />
+              </AppFloatButton>
+            </div>
+          </Tooltip>
+        </Box>
       </Box>
-    </Box>
-  );
-}
+    );
+  }
