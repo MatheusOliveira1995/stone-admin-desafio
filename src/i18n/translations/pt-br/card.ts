@@ -4,6 +4,7 @@ export default {
     helpText: 'Dicas: Selecione um pedido na lista de solicitações em aberto para avaliar. Com um pedido selecionado é possível visualizar os detalhes clicando no botão "DETALHES". Selecione o nome do titular para atualizar o nome impresso no cartão ',
     add: {
         error: 'Houve um erro ao salvar o pedido tente novamente!',
+        tooltip:'Abre o cadastro de um novo pedido de cartão',
         title: 'Novo pedido de cartão',
         document: 'Documento',
         limit: 'Limite pretendido',
@@ -22,7 +23,18 @@ export default {
         error: 'Houve um erro ao atualizar o pedido, tente novamente!'
     },
     delete:{
-      error: 'Houve um erro ao deletar o pedido, tente novamente!'
+      error: 'Houve um erro ao deletar o pedido, tente novamente!',
+      tooltip: 'Deleta o registro selecionado'
+    },
+    datagridFields:{
+        cardHolderName: 'Nome impresso',
+        digits: 'Número do cartão',
+        limit: 'Limite do cartão',
+        status: 'Status do pedido',
+        createdAt: 'Criado em',
+        updatedAt: 'Atualizado em',
+        edit: 'Editar',
+        userId: 'Id do usuário'
     },
     validation: {
         required: 'Campo obrigatório',

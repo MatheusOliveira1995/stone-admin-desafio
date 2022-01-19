@@ -114,48 +114,48 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
     {
       field: 'cardHolderName',
       minWidth: 300,
-      headerName: 'Nome impresso',
+      headerName: t('card.datagridFields.cardHolderName'),
       width: 150,
       editable: false,
     },
     {
       field: 'digits',
-      headerName: 'Número do cartão',
+      headerName: t('card.datagridFields.digits'),
       width: 150,
       type: 'number',
       editable: false,
     },
     {
       field: 'limit',
-      headerName: 'Limite do cartão',
+      headerName: t('card.datagridFields.limit'),
       type: 'number',
       width: 200,
       editable: false,
     },
     {
       field: 'status',
-      headerName: 'Status do pedido',
+      headerName: t('card.datagridFields.status'),
       sortable: true,
       width: 160,
     },
     {
       field: 'userId',
       type: 'number',
-      headerName: 'Id usuário',
+      headerName: t('card.datagridFields.userId'),
       hide: true,
       sortable: true,
       width: 100,
     },
     {
       field: 'createdAt',
-      headerName: 'Criado em',
+      headerName: t('card.datagridFields.createdAt'),
       sortable: true,
       width: 100,
       sortComparator: dateComparator
     },
     {
       field: 'updatedAt',
-      headerName: 'Atualizado em',
+      headerName: t('card.datagridFields.updatedAt'),
       sortable: true,
       width: 120,
       sortComparator: dateComparator
@@ -165,7 +165,7 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
   data.cards.forEach((card: Card) => {
     const data = {
       id: card.id,
-      cardHolderName: card.metaDatas.name ? card.metaDatas.name :  '',
+      cardHolderName: card.metaDatas.name ? card.metaDatas.name : '',
       digits: card.metaDatas.digits ? card.metaDatas.digits : '-',
       limit: card.metaDatas.limit ? card.metaDatas.limit : '-',
       status: t(`card.add.statuses.${card.status}`),
@@ -265,7 +265,7 @@ export default function Cards() {
   /**
    */
   const handleDelete = () => {
-    if(!selectionModel.length){
+    if (!selectionModel.length) {
       return
     };
     const selectedId = selectionModel.shift()
@@ -279,8 +279,8 @@ export default function Cards() {
   /**
    */
   const handleStatusChange = (status: Status) => {
-    if(!selectionModel.length) return;
-    const selectedId= selectionModel[0]
+    if (!selectionModel.length) return;
+    const selectedId = selectionModel[0]
     const selectedRow = requestedGridData.rows.filter((row: Record<string, unknown>) => {
       return row.id === selectedId
     }).shift()
@@ -364,31 +364,35 @@ export default function Cards() {
         }}
       >
         <Box gridColumn="span 8" component='div'>
-          <Button
-            onClick={handleOpenModal}
-            endIcon={<Add />}
-            aria-label='Novo'
-            size='medium'
-            variant='contained'
-            color='primary'
-          >
-            {t('card.actions.new')}
-          </Button>
-          <Button
-            onClick={() => handleDelete()}
-            endIcon={<Delete />}
-            aria-label='Deletar'
-            size='medium'
-            variant='contained'
-            color='error'
-            sx={
-              {
-                marginLeft: '10px'
+          <Tooltip title={t('card.add.tooltip') ?? ''}>
+            <Button
+              onClick={handleOpenModal}
+              endIcon={<Add />}
+              aria-label='Novo'
+              size='medium'
+              variant='contained'
+              color='primary'
+            >
+              {t('card.actions.new')}
+            </Button>
+          </Tooltip>
+          <Tooltip title={t('card.delete.tooltip') ?? ''}>
+            <Button
+              onClick={() => handleDelete()}
+              endIcon={<Delete />}
+              aria-label='Deletar'
+              size='medium'
+              variant='contained'
+              color='error'
+              sx={
+                {
+                  marginLeft: '10px'
+                }
               }
-            }
-          >
-            {t('card.actions.delete')}
-          </Button>
+            >
+              {t('card.actions.delete')}
+            </Button>
+          </Tooltip>
           <Button
             endIcon={<Visibility />}
             aria-label='Detalhes'
@@ -419,7 +423,7 @@ export default function Cards() {
                 }
               }
             >
-              Aprovar
+               {t('card.actions.approve')}
             </Button>
 
             <Button
@@ -435,7 +439,7 @@ export default function Cards() {
                 }
               }
             >
-              Recusar
+               {t('card.actions.reject')}
             </Button>
           </Box>
         }
@@ -465,7 +469,7 @@ export default function Cards() {
               {
                 field: 'edit',
                 type: 'actions',
-                headerName: 'Editar',
+                headerName: t('card.datagridFields.edit'),
                 width: 70,
                 sortable: false,
                 cellClassName: 'actions',
