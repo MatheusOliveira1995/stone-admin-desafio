@@ -295,13 +295,14 @@ export default function Cards() {
         id: selectedRow.id,
         status: status,
         userId: selectedRow.userId,
-        createdAt: selectedRow.createdAt,
+        createdAt: selectedRow.createdAt.split('/').reverse().join('-'),
         name: selectedRow.cardHolderName,
         digits: selectedRow.digits,
         limit: selectedRow.limit
       },
       before: before
     }
+    debugger
     try {
       saveCard(payload)
       fetchData()

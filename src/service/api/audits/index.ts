@@ -29,13 +29,17 @@ type AuditApi = {
 }
 
 export default async function saveAudit({ before, after }: AuditType) {
-    debugger
+    let type = Object.keys(before).length === 0 ? 'created' : 'updated'
+    //if status is different of default status REQUESTED, then the update is status change
+    if(Object.keys(before).length > 0 && before.status !== after.status){
+        type = 'card-status-change'
+    }
     const payload: AuditApi = {
         createdAt: formatDate({ dateValue: (new Date()), pattern: 'us' }),
         after: after,
         before: before,
         requestedBy: 1,
-        type: Object.keys(before).length === 0 ? 'created' : 'updated',
+        type: type,
     }
     try {
         const response = await http.post('/audits', payload)
