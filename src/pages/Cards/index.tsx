@@ -15,10 +15,11 @@ import Zoom from '@mui/material/Zoom';
 import EditIcon from '@mui/icons-material/Edit';
 
 import { useTranslation, TFunction } from 'react-i18next';
-import { getCards, saveCard } from 'src/service/api/cards';
+import { getCards, saveCard, deleteCard } from 'src/service/api/cards';
 import { getUserByDocument } from 'src/service/api/users';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { setCards } from 'src/app/store/slices/cards';
+import { error } from 'src/app/store/slices/toast';
 import { Card, Cards as CardsType, Status, User } from 'src/app/definitions';
 import { getUserById } from 'src/service/api/users';
 import AppModal from 'src/components/AppModal';
@@ -263,6 +264,20 @@ export default function Cards() {
   }
   /**
    */
+  const handleDelete = () => {
+    if(!selectionModel.length){
+      return
+    };
+    const selectedId = selectionModel.shift()
+    try {
+      deleteCard(selectedId as number)
+      fetchData()
+    } catch (e) {
+      dispatch(error(t('card.delete.error')))
+    }
+  }
+  /**
+   */
   const handleStatusChange = (status: Status) => {
     if(!selectionModel.length) return;
     const selectedId= selectionModel[0]
@@ -281,8 +296,8 @@ export default function Cards() {
     try {
       saveCard(payload)
       fetchData()
-    } catch (error) {
-      
+    } catch (e) {
+      dispatch(error(t('card.update.error')))
     }
   }
   /**
@@ -317,8 +332,8 @@ export default function Cards() {
         setTabState(0)
       }
 
-    } catch (error) {
-
+    } catch (e) {
+      dispatch(error(t('card.add.error')))
     }
 
   }
@@ -360,6 +375,7 @@ export default function Cards() {
             {t('card.actions.new')}
           </Button>
           <Button
+            onClick={() => handleDelete()}
             endIcon={<Delete />}
             aria-label='Deletar'
             size='medium'

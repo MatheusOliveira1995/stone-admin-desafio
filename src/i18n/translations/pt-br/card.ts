@@ -3,6 +3,7 @@ export default {
     gridDataEmpty: 'Nenhum registro encontrado!',
     helpText: 'Dicas: Selecione um pedido na lista de solicitações em aberto para avaliar. Com um pedido selecionado é possível visualizar os detalhes clicando no botão "DETALHES". Selecione o nome do titular para atualizar o nome impresso no cartão ',
     add: {
+        error: 'Houve um erro ao salvar o pedido tente novamente!',
         title: 'Novo pedido de cartão',
         document: 'Documento',
         limit: 'Limite pretendido',
@@ -18,6 +19,10 @@ export default {
     },
     update:{
         title: 'Editando pedido de cartão',
+        error: 'Houve um erro ao atualizar o pedido, tente novamente!'
+    },
+    delete:{
+      error: 'Houve um erro ao deletar o pedido, tente novamente!'
     },
     validation: {
         required: 'Campo obrigatório',

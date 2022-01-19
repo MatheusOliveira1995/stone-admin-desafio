@@ -40,7 +40,13 @@ export async function getCards(): Promise<Cards> {
     })
     return cards
 }
-
+export async function deleteCard (card: number) {
+    try {
+      return http.delete(`/cards/${card}`)
+    } catch (error) {
+        
+    }
+}
 export async function saveCard(card: Record<string, unknown>) {
     let url = '/cards'
     const payload: ApiCard = {
