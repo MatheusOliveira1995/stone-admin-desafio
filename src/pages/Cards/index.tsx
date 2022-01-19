@@ -58,6 +58,10 @@ type DataGridType = {
   columns: GridColDef[],
   rows: any
 }
+type SubmitType = {
+  data: Record<string, unknown>,
+  before: Card | undefined
+}
 
 /**
  * @param props 
@@ -280,18 +284,23 @@ export default function Cards() {
    */
   const handleStatusChange = (status: Status) => {
     if (!selectionModel.length) return;
+    
     const selectedId = selectionModel[0]
     const selectedRow = requestedGridData.rows.filter((row: Record<string, unknown>) => {
       return row.id === selectedId
     }).shift()
-    const payload = {
-      id: selectedRow.id,
-      status: status,
-      userId: selectedRow.userId,
-      createdAt: selectedRow.createdAt,
-      name: selectedRow.cardHolderName,
-      digits: selectedRow.digits,
-      limit: selectedRow.limit
+    const before = cards.cards.find((card) => card.id === selectedRow.id)
+    const payload: SubmitType = {
+      data: {
+        id: selectedRow.id,
+        status: status,
+        userId: selectedRow.userId,
+        createdAt: selectedRow.createdAt,
+        name: selectedRow.cardHolderName,
+        digits: selectedRow.digits,
+        limit: selectedRow.limit
+      },
+      before: before
     }
     try {
       saveCard(payload)
@@ -320,10 +329,17 @@ export default function Cards() {
    * @param data 
    */
   const submit: SubmitHandler<CardForm> = (data) => {
-    const payload = {
-      ...data
+    const payload: SubmitType = {
+      data: {
+        ...data
+      },
+      before: undefined
     }
-    payload.status = Status.REQUESTED
+
+    if (data.id) {
+      payload.before = cards.cards.find((card) => card.id === data.id)
+    }
+    payload.data.status = Status.REQUESTED
     try {
       saveCard(payload)
       handleCloseModal()
@@ -393,20 +409,22 @@ export default function Cards() {
               {t('card.actions.delete')}
             </Button>
           </Tooltip>
-          <Button
-            endIcon={<Visibility />}
-            aria-label='Detalhes'
-            size='medium'
-            variant='contained'
-            color='info'
-            sx={
-              {
-                marginLeft: '10px'
+          <Tooltip title={t('card.details.tooltip') ?? ''}>
+            <Button
+              endIcon={<Visibility />}
+              aria-label='Detalhes'
+              size='medium'
+              variant='contained'
+              color='info'
+              sx={
+                {
+                  marginLeft: '10px'
+                }
               }
-            }
-          >
-            {t('card.actions.details')}
-          </Button>
+            >
+              {t('card.actions.details')}
+            </Button>
+          </Tooltip>
         </Box>
         {selectionModel.length > 0 &&
           <Box gridColumn="span 4" component='div' sx={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -423,7 +441,7 @@ export default function Cards() {
                 }
               }
             >
-               {t('card.actions.approve')}
+              {t('card.actions.approve')}
             </Button>
 
             <Button
@@ -439,7 +457,7 @@ export default function Cards() {
                 }
               }
             >
-               {t('card.actions.reject')}
+              {t('card.actions.reject')}
             </Button>
           </Box>
         }
@@ -701,7 +719,7 @@ export default function Cards() {
       <Box sx={{ '& > :not(style)': { m: 1 }, position: 'absolute', right: 16, bottom: 16 }}>
         <Tooltip TransitionComponent={Zoom} placement="left" title={t('card.helpText') as string}>
           <div>
-            <AppFloatButton color="secondary">
+            <AppFloatButton color="primary">
               <HelpIcon />
             </AppFloatButton>
           </div>

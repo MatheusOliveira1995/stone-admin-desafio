@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     gridDataEmpty: 'Nenhum registro encontrado!',
-    helpText: 'Dicas: Selecione um pedido na lista de solicitações em aberto para avaliar. Com um pedido selecionado é possível visualizar os detalhes clicando no botão "DETALHES". Selecione o nome do titular para atualizar o nome impresso no cartão ',
+    helpText: 'Dicas: Selecione um pedido na lista de solicitações em aberto para avaliar. Com um pedido selecionado é possível visualizar os detalhes clicando no botão "AUDITORIA".',
     add: {
         error: 'Houve um erro ao salvar o pedido tente novamente!',
         tooltip:'Abre o cadastro de um novo pedido de cartão',
@@ -26,6 +26,9 @@ export default {
       error: 'Houve um erro ao deletar o pedido, tente novamente!',
       tooltip: 'Deleta o registro selecionado'
     },
+    details:{
+        tooltip: 'Mostra as alterações do registro selecionado'
+    },
     datagridFields:{
         cardHolderName: 'Nome impresso',
         digits: 'Número do cartão',
@@ -43,7 +46,7 @@ export default {
     actions: {
         new: 'Novo',
         delete: 'Deletar',
-        details: 'Detalhes',
+        details: 'Auditoria',
         save: 'Salvar',
         cancel: 'Cancelar',
         approve: 'Aprovar',

@@ -5,7 +5,6 @@ export enum Status{
     REJECTED = 'rejected'
 }
 
-
 export type Feature = {
     id: number | string,
     name: string
@@ -37,7 +36,6 @@ export type User = {
 export interface Users {
     users: User[]
 }
-
 export type Card = {
     id: string | number,
     createdAt: Date | string,
@@ -51,6 +49,14 @@ export type Card = {
     }
 }
 
+export type Audit = {
+  id: string | number,
+  createdAt: Date | string,
+  type: string,
+  before: string,
+  after: string,
+  requestedBy: number | string,
+}
 export interface Cards{
     cards: Card[]
 }

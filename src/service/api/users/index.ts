@@ -30,7 +30,6 @@ export async function getUserById(userId: number): Promise<User> {
 }
 
 export async function getUserByDocument(document: string): Promise<User[]> {
-    debugger
     const url = `/users?document=${document}`
     let response
     try {

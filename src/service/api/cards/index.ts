@@ -1,7 +1,8 @@
 import http from "src/settings/http";
 import { Cards, Card, Status } from "src/app/definitions";
+import saveAudit from 'src/service/api/audits'
 
-import {formatDate} from 'src/util/date'
+import { formatDate } from 'src/util/date'
 
 type ApiCard = {
     id?: string | number,
@@ -9,12 +10,17 @@ type ApiCard = {
     updatedAt?: string,
     status: Status,
     user_id: number,
-    metadatas:{
-        name?:string,
+    metadatas: {
+        name?: string,
         digits?: string,
         limit?: number
     }
 }
+type SubmitType = {
+    data: Record<string, unknown>,
+    before: Card | undefined
+}
+
 export async function getCards(): Promise<Cards> {
     let response
     try {
@@ -23,9 +29,9 @@ export async function getCards(): Promise<Cards> {
         return { cards: [] }
     }
     const data = response.data
-    const cards = data.map((card: Record<string, unknown>):Card => {
+    const cards = data.map((card: Record<string, unknown>): Card => {
         const metaDatas = card.metadatas as Record<string, any>
-        return{
+        return {
             id: card.id as number,
             status: card.status as Status,
             userId: card.user_id as number,
@@ -40,43 +46,60 @@ export async function getCards(): Promise<Cards> {
     })
     return cards
 }
-export async function deleteCard (card: number) {
+export async function deleteCard(card: number) {
     try {
-      return http.delete(`/cards/${card}`)
+        return http.delete(`/cards/${card}`)
     } catch (error) {
-        
+
     }
 }
-export async function saveCard(card: Record<string, unknown>) {
+export async function saveCard({ data, before } : SubmitType) {
     let url = '/cards'
+
+    let payloadBefore: Record<string, unknown> = {}
     const payload: ApiCard = {
-        status: card.status as Status,
-        user_id: card.userId as number,
-        createdAt: card.createdAt as string,
+        status: data.status as Status,
+        user_id: data.userId as number,
+        createdAt: data.createdAt as string,
         metadatas: {
-            name: card.name as string,
-            digits: card.digits as string,
-            limit: card.limit as number
+            name: data.name as string,
+            digits: data.digits as string,
+            limit: data.limit as number
         }
     }
-    if(card.id){
-        payload.id = card.id as number
-        payload.updatedAt = formatDate({dateValue:(new Date()), pattern: 'us'})
-        url = url.concat(`/${card.id}`)
+    if (data.id) {
+        payload.id = data.id as number
+        payload.updatedAt = formatDate({ dateValue: (new Date()), pattern: 'us' })
+        url = url.concat(`/${data.id}`)
+    }
+    if(before){
+        payloadBefore = {
+            id: before.id,
+            status: before.status,
+            user_id: before.userId,
+            createdAt: before.createdAt,
+            updatedAt: before.updatedAt,
+            metadatas:{
+                name: before.metaDatas.name,
+                digits: before.metaDatas.digits,
+                limit: before.metaDatas.limit
+            }
+        }
     }
     try {
-      let response
-      if(payload.id){
-        response = await http.put(url, payload)
-        return response.data
-      }
+        let response
+        if (payload.id) {
+            response = await http.put(url, payload)
+        }else{
+            response = await http.post(url, payload)
+        }
 
-      response = await http.post(url, payload)
-      return response.data  
+        await saveAudit({after: response.data, before: payloadBefore})
+        return response.data
 
     } catch (error) {
         return {}
-    }   
-    
-    
+    }
+
+
 }
