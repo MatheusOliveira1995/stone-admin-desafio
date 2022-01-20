@@ -4,13 +4,15 @@ import { useAppDispatch, useAppSelector } from "src/app/hooks";
 import { useTranslation, TFunction } from "react-i18next";
 import { setAudits } from "src/app/store/slices/audits";
 import { getAudits } from "src/service/api/audits";
-import { GridCellValue, GridColDef } from "@mui/x-data-grid";
+import { GridCellParams, GridCellValue, GridColDef } from "@mui/x-data-grid";
 import { formatDate } from "src/util/date";
 import { Box } from "@mui/material";
 
 import { Audits as AuditsType, Audit } from "src/app/definitions";
 
 import AppGridData from "src/components/AppGridData";
+
+import clsx from 'clsx';
 
 import './styles.css'
 
@@ -47,30 +49,59 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             width: 15
         },
         {
+            field: 'type',
+            headerName: 'Tipo da alteração',
+            width: 200
+        },
+        {
             field: 'cardHolderNameBefore',
             headerName: 'Titular do cartão(Antes)',
-            width: 220,
+            width: 300,
             editable: false,
+            cellClassName: (params: GridCellParams<number>) => {
+                const row = params.row
+                return clsx({
+                  'app-grid-different-cell--before': row.cardHolderNameAfter !== row.cardHolderNameBefore
+                })
+            }
         },
         {
             field: 'digitsBefore',
             headerName: 'Números do cartão(Antes)',
             width: 220,
             type: 'number',
-            editable: false
+            editable: false,
+            cellClassName: (params: GridCellParams<number>) => {
+                const row = params.row
+                return clsx({
+                  'app-grid-different-cell--before': row.digitsAfter !== row.digitsBefore
+                })
+            }
         },
         {
             field: 'limitBefore',
             headerName: 'Limite do cartão(Antes)',
             width: 200,
             type: 'number',
-            editable: false
+            editable: false,
+            cellClassName: (params: GridCellParams<number>) => {
+                const row = params.row
+                return clsx({
+                  'app-grid-different-cell--before': row.limitAfter !== row.limitBefore
+                })
+            }
         },
         {
             field: 'statusBefore',
             headerName: 'Status(Antes)',
             width: 120,
-            editable: false
+            editable: false,
+            cellClassName: (params: GridCellParams<number>) => {
+                const row = params.row
+                return clsx({
+                  'app-grid-different-cell--before': row.statusAfter !== row.statusBefore
+                })
+            }
         },
         {
             field: 'createdAtBefore',
@@ -89,48 +120,72 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
         {
             field: 'cardHolderNameAfter',
             headerName: 'Titular do cartão(Depois)',
-            width: 220,
+            width: 300,
             editable: false,
+            cellClassName: (params: GridCellParams<number>) => {
+                const row = params.row
+                return clsx({
+                  'app-grid-different-cell--after': row.cardHolderNameAfter !== row.cardHolderNameBefore
+                })
+            }
         },
         {
             field: 'digitsAfter',
             headerName: 'Números do cartão(Depois)',
             width: 220,
             type: 'number',
-            editable: false
+            editable: false,
+            cellClassName: (params: GridCellParams<number>) => {
+                const row = params.row
+                return clsx({
+                  'app-grid-different-cell--after': row.digitsAfter !== row.digitsBefore
+                })
+            }
         },
         {
             field: 'limitAfter',
             headerName: 'Limite do cartão(Depois)',
             width: 200,
             type: 'number',
-            editable: false
+            editable: false,
+            cellClassName: (params: GridCellParams<number>) => {
+                const row = params.row
+                return clsx({
+                  'app-grid-different-cell--after': row.limitAfter !== row.limitBefore
+                })
+            }
         },
         {
             field: 'statusAfter',
             headerName: 'Status(Depois)',
             width: 140,
-            editable: false
+            editable: false,
+            cellClassName: (params: GridCellParams<number>) => {
+                const row = params.row
+                return clsx({
+                  'app-grid-different-cell--after': row.statusAfter !== row.statusBefore
+                })
+            }
         },
         {
             field: 'createdAtAfter',
             headerName: 'Criado em(Depois)',
             width: 160,
             editable: false,
-            sortComparator: dateComparator
+            sortComparator: dateComparator,
         },
         {
             field: 'updatedAtAfter',
             headerName: 'Atualizado em(Depois)',
             width: 180,
             editable: false,
-            sortComparator: dateComparator
+            sortComparator: dateComparator,
         },
         {
             field: 'cardId',
             headerName: 'Id do cartão',
-            width: 100,
-            hide: true
+            width: 110,
+            type: 'number'
         },
         {
             field: 'userId',
@@ -143,6 +198,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
     const rows = data.audits.map((audit: Audit) => {
         const data = {
             id: audit.id,
+            type: audit.type,
             cardHolderNameBefore: audit.before.metaDatas.name ?? '-',
             digitsBefore: audit.before.metaDatas.digits,
             limitBefore: audit.before.metaDatas.limit,
@@ -187,8 +243,10 @@ export function AppAuditGridData({ audits }: AppAuditType) {
             <AppGridData
                 rows={auditsGridData.rows}
                 columns={auditsGridData.columns}
+                checkboxSelection={false}
                 autoPageSize={true}
                 rowsPerPage={[30]}
+                hideFooterSelectedRowsCount={true}
                 noRowsOverlayMessage={t('card.gridDataEmpty')}
             />
         </>
@@ -218,7 +276,7 @@ export default function Audits() {
                 backgroundColor: '#fff',
                 flexDirection: 'column',
                 padding: '18px 18px 30px 18px',
-                minHeight: '600px'
+                height: '600px'
             }}
         >
             <AppAuditGridData audits={audits}/>

@@ -12,6 +12,7 @@ import {
     useGridSelector,
     gridPageCountSelector,
     gridPageSelector,
+    GridCellParams,
 } from '@mui/x-data-grid';
 import { Box, Pagination  } from '@mui/material';
 
@@ -27,9 +28,10 @@ interface AppDataGridType {
     handleSortModelChange?: (model: GridSortModel) => void
     hideFooterSelectedRowsCount?: boolean
     handleSelectionModelChange?: (selectionModel: GridSelectionModel) => void
-    selectionModel?: GridInputSelectionModel,
+    selectionModel?: GridInputSelectionModel
     noRowsOverlayMessage: string
     handleCellEditCommit?: () => void
+    getCellClassName?: (params: GridCellParams<any, any, any>) => string
 }
 
 export default function AppGridData({
@@ -43,7 +45,8 @@ export default function AppGridData({
     hideFooterSelectedRowsCount = false,
     selectionModel,
     handleSelectionModelChange,
-    noRowsOverlayMessage
+    noRowsOverlayMessage,
+    getCellClassName
 }: AppDataGridType) {
     const { t } = useTranslation();
     /**
@@ -91,6 +94,7 @@ export default function AppGridData({
             rowsPerPageOptions={rowsPerPage}
             checkboxSelection={checkboxSelection}
             sortModel={sortModel}
+            getCellClassName={getCellClassName}
             components={{
                 NoRowsOverlay: CustomNoRowsOverlay,
                 Toolbar: CustomToolbar,

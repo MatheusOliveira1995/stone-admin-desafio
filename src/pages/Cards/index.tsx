@@ -82,7 +82,7 @@ function TabPanel(props: TabPanelProps) {
           elevation={2}
           sx={{
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
           }}
         >
           {children}
@@ -368,7 +368,7 @@ export default function Cards() {
   }, [cards])
 
   return (
-    <Box component="div" sx={{ backgroundColor: '#fff' }}>
+    <Box component="div" sx={{ backgroundColor: '#fff'}}>
       <Box
         component="div"
         gridTemplateColumns="repeat(12, 1fr)"
@@ -474,10 +474,9 @@ export default function Cards() {
         <Box component="div"
           sx={{
             display: 'flex',
-            backgroundColor: '#fff',
             flexDirection: 'column',
             padding: '18px 18px 30px 18px',
-            height: '600px',
+            height: '600px'
           }}
         >
           <AppGridData
@@ -505,8 +504,7 @@ export default function Cards() {
                 }
               },
             ]}
-            autoPageSize={true}
-            rowsPerPage={[30]}
+            rowsPerPage={[20]}
             checkboxSelection={true}
             sortModel={defaultSortRequestGrid}
             noRowsOverlayMessage={t('card.gridDataEmpty')}
@@ -535,10 +533,9 @@ export default function Cards() {
         <Box component="div"
           sx={{
             display: 'flex',
-            backgroundColor: 'white',
             flexDirection: 'column',
             padding: '18px 18px 30px 18px',
-            height: '600px',
+            height: '600px'
           }}
         >
           <AppGridData
@@ -555,10 +552,9 @@ export default function Cards() {
         <Box component="div"
           sx={{
             display: 'flex',
-            backgroundColor: 'white',
             flexDirection: 'column',
             padding: '18px 18px 30px 18px',
-            height: '600px',
+            height: '600px'
           }}
         >
           <AppGridData
