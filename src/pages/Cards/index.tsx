@@ -302,7 +302,6 @@ export default function Cards() {
       },
       before: before
     }
-    debugger
     try {
       saveCard(payload)
       fetchData()
@@ -336,7 +335,7 @@ export default function Cards() {
       },
       before: undefined
     }
-
+    payload.data.createdAt = formatDate({dateValue: data.createdAt, pattern:'us'}) ?? '-'
     if (data.id) {
       payload.before = cards.cards.find((card) => card.id === data.id)
     }
@@ -466,9 +465,9 @@ export default function Cards() {
       </Box>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={tabState} onChange={handleChangeTab} variant="fullWidth">
-          <Tab label="Solicitações em aberto" {...tabProps(0)} />
-          <Tab label="Solicitações aceitas" {...tabProps(1)} />
-          <Tab label="Solicitações recusadas" {...tabProps(2)} />
+          <Tab label={t('card.requestedTab')} {...tabProps(0)} />
+          <Tab label={t('card.approvedTab')} {...tabProps(1)} />
+          <Tab label={t('card.rejectedTab')} {...tabProps(2)} />
         </Tabs>
       </Box>
       <TabPanel value={tabState} index={0}>
@@ -611,7 +610,7 @@ export default function Cards() {
                     disabled={isEditing}
                     onClick={async () => {
                       const user = await loadUserFormDataByDocument() as Array<User>
-                      if (!user.length) {
+                      if (!user) {
                         setError("document", { type: "custom", message: t('card.validation.user') })
                         return
                       }

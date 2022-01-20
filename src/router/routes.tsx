@@ -7,6 +7,7 @@ import Dashboard from "src/pages/Dashboard"
 import Users from "src/pages/Users"
 import SignIn from "src/pages/Auth/SignIn"
 import Cards from "src/pages/Cards"
+import Audits from "src/pages/Audits";
 
 export default function Routes() {
 
@@ -38,6 +39,16 @@ export default function Routes() {
                 {
                     path: '/cards',
                     element: <Cards />
+                }
+            ]
+        },
+        {
+            path: '/audits',
+            element: <MainLayout />,
+            children: [
+                {
+                    path: '/audits',
+                    element: <Audits />
                 }
             ]
         },

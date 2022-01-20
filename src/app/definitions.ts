@@ -53,9 +53,13 @@ export type Audit = {
   id: string | number,
   createdAt: Date | string,
   type: string,
-  before: string,
-  after: string,
+  before: Card,
+  after: Card,
   requestedBy: number | string,
+}
+
+export interface Audits {
+    audits: Audit[]
 }
 export interface Cards{
     cards: Card[]

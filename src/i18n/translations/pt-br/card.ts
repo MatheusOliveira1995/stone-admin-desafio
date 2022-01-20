@@ -2,6 +2,9 @@
 export default {
     gridDataEmpty: 'Nenhum registro encontrado!',
     helpText: 'Dicas: Selecione um pedido na lista de solicitações em aberto para avaliar. Com um pedido selecionado é possível visualizar os detalhes clicando no botão "AUDITORIA".',
+    requestedTab: 'Solicitações em aberto',
+    approvedTab: 'Solicitações aprovadas',
+    rejectedTab: 'Solicitações recusadas',
     add: {
         error: 'Houve um erro ao salvar o pedido tente novamente!',
         tooltip:'Abre o cadastro de um novo pedido de cartão',
