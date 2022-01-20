@@ -474,7 +474,7 @@ export default function Cards() {
         <Box component="div"
           sx={{
             display: 'flex',
-            backgroundColor: 'white',
+            backgroundColor: '#fff',
             flexDirection: 'column',
             padding: '18px 18px 30px 18px',
             height: '600px',

@@ -1,5 +1,5 @@
 import http from "src/settings/http";
-import { Audit, Audits, Card, Status } from "src/app/definitions";
+import { Audit, Audits, Status } from "src/app/definitions";
 import { formatDate } from "src/util/date";
 
 type ApiCard = {
@@ -71,7 +71,7 @@ export async function getAudits(): Promise<Audits> {
                     },
                     status: after.status as Status,
                     userId: after.user_id as number,
-                    updatedAt: formatDate({dateValue: after.updatedAt as string, pattern: 'us'}) ?? '-',
+                    updatedAt: formatDate({dateValue: after.updatedAt as string, pattern: 'us'}) ?? undefined,
                 },
                 before: {
                     id: before.id as number,
@@ -83,7 +83,7 @@ export async function getAudits(): Promise<Audits> {
                     },
                     status: before.status as Status,
                     userId: before.user_id as number,
-                    updatedAt: formatDate({dateValue: before.updatedAt as string, pattern: 'us'}) ?? '-',
+                    updatedAt: formatDate({dateValue: before.updatedAt as string, pattern: 'us'}) ?? undefined,
                 },
                 id: audit.id as number,
                 createdAt: formatDate({dateValue: audit.createdAt as string, pattern: 'us'}) ?? '-',
