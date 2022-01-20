@@ -1,19 +1,17 @@
+import moment from 'moment'
 interface DatePattern {
-  dateValue: Date | string,
+  dateValue: Date | string | undefined,
   pattern?: "us" | "ptbr"
 }
 export function formatDate({ dateValue , pattern = "ptbr"}: DatePattern) {
   if (!dateValue)
     return
-    
-  const date = new Date(dateValue)
-  const monthDay = date.getDate()
-  const month = date.getMonth()
-  const year = String(date.getFullYear())
 
+  const date = moment(dateValue)
   if(pattern === 'us'){
-    return `${month < 9 ? '0' + (month + 1) : (month + 1)}-${monthDay <= 9 ? '0' + (monthDay): monthDay}-${year}`
+    const usDate = date.format('MM-DD-YYYY').toString()
+    return usDate
   }
 
-  return `${monthDay <= 9 ? '0' + (monthDay): monthDay}/${month < 9 ? '0' + (month + 1) : (month + 1)}/${year}`
+  return date.format('DD/MM/YYYY').toString()
 }

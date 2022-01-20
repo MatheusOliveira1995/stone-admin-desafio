@@ -8,7 +8,7 @@ import { GridCellParams, GridCellValue, GridColDef } from "@mui/x-data-grid";
 import { formatDate } from "src/util/date";
 import { Box } from "@mui/material";
 
-import { Audits as AuditsType, Audit } from "src/app/definitions";
+import { Audits as AuditsType, Audit, Card } from "src/app/definitions";
 
 import AppGridData from "src/components/AppGridData";
 
@@ -46,18 +46,28 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
         {
             field: 'id',
             headerName: 'Id',
-            width: 15
+            width: 15,
+            headerClassName: 'app-grid-header--info',
         },
         {
             field: 'type',
             headerName: 'Tipo da alteração',
-            width: 200
+            width: 200,
+            headerClassName: 'app-grid-header--info',
+        },
+        {
+            field: 'cardId',
+            headerName: 'Id do cartão',
+            width: 110,
+            headerClassName: 'app-grid-header--info',
+            type: 'number'
         },
         {
             field: 'cardHolderNameBefore',
             headerName: 'Titular do cartão(Antes)',
             width: 300,
             editable: false,
+            headerClassName: 'app-grid-header--before',
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
@@ -71,6 +81,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             width: 220,
             type: 'number',
             editable: false,
+            headerClassName: 'app-grid-header--before',
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
@@ -83,6 +94,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             headerName: 'Limite do cartão(Antes)',
             width: 200,
             type: 'number',
+            headerClassName: 'app-grid-header--before',
             editable: false,
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
@@ -95,6 +107,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             field: 'statusBefore',
             headerName: 'Status(Antes)',
             width: 120,
+            headerClassName: 'app-grid-header--before',
             editable: false,
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
@@ -108,6 +121,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             headerName: 'Criado em(Antes)',
             width: 160,
             editable: false,
+            headerClassName: 'app-grid-header--before',
             sortComparator: dateComparator
         },
         {
@@ -115,6 +129,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             headerName: 'Atualizado em(Antes)',
             width: 180,
             editable: false,
+            headerClassName: 'app-grid-header--before',
             sortComparator: dateComparator
         },
         {
@@ -122,6 +137,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             headerName: 'Titular do cartão(Depois)',
             width: 300,
             editable: false,
+            headerClassName: 'app-grid-header--after',
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
@@ -135,6 +151,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             width: 220,
             type: 'number',
             editable: false,
+            headerClassName: 'app-grid-header--after',
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
@@ -148,6 +165,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             width: 200,
             type: 'number',
             editable: false,
+            headerClassName: 'app-grid-header--after',
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
@@ -160,6 +178,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             headerName: 'Status(Depois)',
             width: 140,
             editable: false,
+            headerClassName: 'app-grid-header--after',
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
@@ -172,25 +191,22 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             headerName: 'Criado em(Depois)',
             width: 160,
             editable: false,
+            headerClassName: 'app-grid-header--after',
             sortComparator: dateComparator,
         },
         {
             field: 'updatedAtAfter',
+            headerClassName: 'app-grid-header--after',
             headerName: 'Atualizado em(Depois)',
             width: 180,
             editable: false,
             sortComparator: dateComparator,
         },
         {
-            field: 'cardId',
-            headerName: 'Id do cartão',
-            width: 110,
-            type: 'number'
-        },
-        {
             field: 'userId',
             headerName: 'Id do usuário',
             hide: true,
+            headerClassName: 'app-grid-header--info',
             width: 100
         },
     ]
@@ -199,7 +215,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
         const data = {
             id: audit.id,
             type: audit.type,
-            cardHolderNameBefore: audit.before.metaDatas.name ?? '-',
+            cardHolderNameBefore: audit.before.metaDatas?.name ?? '-',
             digitsBefore: audit.before.metaDatas.digits,
             limitBefore: audit.before.metaDatas.limit,
             statusBefore: t(`card.add.statuses.${audit.before.status}`),

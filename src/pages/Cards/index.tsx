@@ -28,6 +28,7 @@ import AppGridData from 'src/components/AppGridData';
 import AppFloatButton from 'src/components/AppFloatButton';
 import { SubmitHandler, useForm } from "react-hook-form";
 
+
 import { formatDate } from 'src/util/date';
 
 
@@ -270,6 +271,7 @@ export default function Cards() {
    */
   const handleDelete = () => {
     if (!selectionModel.length) {
+      dispatch(error('Deu erro!'))
       return
     };
     const selectedId = selectionModel.shift()
@@ -282,7 +284,7 @@ export default function Cards() {
   }
   /**
    */
-  const handleStatusChange = (status: Status) => {
+  const handleStatusChange = async (status: Status) => {
     if (!selectionModel.length) return;
     
     const selectedId = selectionModel[0]
@@ -303,7 +305,7 @@ export default function Cards() {
       before: before
     }
     try {
-      saveCard(payload)
+      await saveCard(payload)
       fetchData()
     } catch (e) {
       dispatch(error(t('card.update.error')))
@@ -606,7 +608,7 @@ export default function Cards() {
                     disabled={isEditing}
                     onClick={async () => {
                       const user = await loadUserFormDataByDocument() as Array<User>
-                      if (!user) {
+                      if (!user.length) {
                         setError("document", { type: "custom", message: t('card.validation.user') })
                         return
                       }

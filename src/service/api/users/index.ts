@@ -43,6 +43,5 @@ export async function getUserByDocument(document: string): Promise<User[]> {
             }
         ]
     }
-
     return response.data
 }
