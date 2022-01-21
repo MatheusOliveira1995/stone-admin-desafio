@@ -6,5 +6,8 @@ export default {
         emailPlaceholder:'Digite seu e-mail',
         password: 'Senha',
         passwordPlaceholder: 'Digite sua senha'
+    },
+    validation: {
+        password: 'A senha deve ser digitada!'
     }
 }

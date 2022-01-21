@@ -98,7 +98,9 @@ function TabPanel(props: TabPanelProps) {
  * @param t 
  * @returns GridConfigType
  */
-const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): GridConfigType => {
+const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): GridConfigType | null => {
+  if (!data.cards.length) return null
+
   let requested: any = []
   let approved: any = []
   let rejected: any = []
@@ -255,7 +257,7 @@ export default function Cards() {
    */
   const handleEdit = (row: any) => {
     getUserById(row.userId).then((user) => {
-      if(!user) return;
+      if (!user) return;
       setValue('id', row.id)
       setValue('userId', user.id)
       setValue('document', user.document)
@@ -277,7 +279,7 @@ export default function Cards() {
     const selectedId = selectionModel.shift()
     const before = cards.cards.find((card) => card.id === selectedId)
     try {
-      deleteCard({cardId: selectedId as number , before })
+      deleteCard({ cardId: selectedId as number, before })
       fetchData()
     } catch (e) {
       dispatch(error(t('card.delete.error')))
@@ -287,7 +289,7 @@ export default function Cards() {
    */
   const handleStatusChange = async (status: Status) => {
     if (!selectionModel.length) return;
-    
+
     const selectedId = selectionModel[0]
     const selectedRow = requestedGridData.rows.filter((row: Record<string, unknown>) => {
       return row.id === selectedId
@@ -338,7 +340,7 @@ export default function Cards() {
       },
       before: undefined
     }
-    payload.data.createdAt = formatDate({dateValue: data.createdAt, pattern:'us'}) ?? '-'
+    payload.data.createdAt = formatDate({ dateValue: data.createdAt, pattern: 'us' }) ?? '-'
     if (data.id) {
       payload.before = cards.cards.find((card) => card.id === data.id)
     }
@@ -365,13 +367,16 @@ export default function Cards() {
    */
   useEffect(() => {
     const gridData = configureGridData(cards, t)
+    if (!gridData) {
+      return
+    }
     setApprovedGridData({ columns: gridData.columns, rows: gridData.approvedRows })
     setRejectedGridData({ columns: gridData.columns, rows: gridData.rejectedRows })
     setRequestedGridData({ columns: gridData.columns, rows: gridData.requestedRows })
   }, [cards])
 
   return (
-    <Box component="div" sx={{ backgroundColor: '#fff'}}>
+    <Box component="div" sx={{ backgroundColor: '#fff' }}>
       <Box
         component="div"
         gridTemplateColumns="repeat(12, 1fr)"
@@ -602,12 +607,12 @@ export default function Cards() {
                       return t('card.validation.user')
                     }
                     //the user must have feature cards(id= 0) to be valid
-                    if(user.enabledFeatures?.find((feature) => feature.id === 0)){
+                    if (user.enabledFeatures?.find((feature) => feature.id === 0)) {
                       setValue('userId', user.id)
                       return
                     }
                     return t('card.validation.invalidFeature')
-                    
+
                   }
                 }}
                 endAdornment={
@@ -621,7 +626,7 @@ export default function Cards() {
                         return
                       }
                       //the user must have feature cards(id= 0) to be valid
-                      if(user.enabledFeatures?.find((feature) => feature.id === 0)){
+                      if (user.enabledFeatures?.find((feature) => feature.id === 0)) {
                         clearErrors('document')
                         setValue('name', user.name)
                         setValue('userId', user.id)
@@ -629,7 +634,7 @@ export default function Cards() {
                       }
 
                       setError("document", { type: "custom", message: t('card.validation.invalidFeature') })
-                      
+
                     }}
                     aria-label="search"
                     edge="end"

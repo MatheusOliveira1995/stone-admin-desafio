@@ -2,12 +2,28 @@ import React from 'react'
 import { Paper, Box, Typography, Button } from '@mui/material';
 import AppInput from 'src/components/AppInput';
 
+import { SubmitHandler, useForm } from 'react-hook-form';
+
 import { useTranslation } from 'react-i18next';
 
 import './styles.css'
 
+interface LoginForm{
+    email: string,
+    password: string
+}
+
 export default function Signin() {
     const { t } = useTranslation()
+    const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>()
+
+    /**
+     * 
+     * @param data LoginForm
+     */
+    const submit: SubmitHandler<LoginForm> = (data) => {
+
+    }
     return (
         <Box component='div' className='login--background'>
             <Paper
@@ -27,9 +43,12 @@ export default function Signin() {
                     component='form'
                     method='POST'
                     className='login--form'
+                    onSubmit={handleSubmit(submit)}
                 >
                     <Box className='login--input'>
                         <AppInput
+                            register={ register }
+                            error={ errors.email }
                             type='email'
                             label={t('auth.inputs.email')}
                             placeholder={t('auth.inputs.emailPlaceholder')}
@@ -38,6 +57,11 @@ export default function Signin() {
                     </Box>
                     <Box className='login--input'>
                         <AppInput
+                            register={ register }
+                            error={ errors.password }
+                            validation={{
+                                required: t('auth.validation.password')
+                            }}
                             type='password'
                             label={t('auth.inputs.password')}
                             placeholder={t('auth.inputs.passwordPlaceholder')}
