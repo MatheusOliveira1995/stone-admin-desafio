@@ -43,8 +43,9 @@ export default {
         userId: 'Id do usuário'
     },
     validation: {
-        required: 'Campo obrigatório',
-        user: 'Usuário não encontrado'
+        required: 'Campo obrigatório!',
+        user: 'Usuário não encontrado!',
+        invalidFeature: 'Usuário não elegível!'
     },
     actions: {
         new: 'Novo',

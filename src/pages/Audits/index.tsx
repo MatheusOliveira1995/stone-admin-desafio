@@ -5,10 +5,9 @@ import { useTranslation, TFunction } from "react-i18next";
 import { setAudits } from "src/app/store/slices/audits";
 import { getAudits } from "src/service/api/audits";
 import { GridCellParams, GridCellValue, GridColDef } from "@mui/x-data-grid";
-import { formatDate } from "src/util/date";
 import { Box } from "@mui/material";
 
-import { Audits as AuditsType, Audit, Card } from "src/app/definitions";
+import { Audits as AuditsType, Audit } from "src/app/definitions";
 
 import AppGridData from "src/components/AppGridData";
 

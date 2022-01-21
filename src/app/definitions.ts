@@ -7,7 +7,7 @@ export enum Status{
 
 export type Feature = {
     id: number | string,
-    name: string
+    name?: string
 }
 export type Address = {
     streetNumber: number,
@@ -20,9 +20,9 @@ export type User = {
     id: number,
     name: string,
     email?: string,
-    BirthDate?: Date,
-    createdAt?: Date,
-    updatedAt?: Date,
+    birthDate?: Date | string,
+    createdAt?: Date | string,
+    updatedAt?: Date | string | undefined,
     enabledFeatures?: Feature[],
     document: string,
     metaDatas?: {

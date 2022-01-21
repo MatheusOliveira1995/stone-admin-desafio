@@ -595,26 +595,41 @@ export default function Cards() {
                 validation={{
                   required: t('card.validation.required'),
                   validate: async () => {
-                    const user = await loadUserFormDataByDocument() as Array<User>
+                    const user = await loadUserFormDataByDocument() as User
                     //if not return any user with this document
-                    if (!user.length) {
+                    if (!user) {
                       return t('card.validation.user')
                     }
-                    setValue('userId', user[0].id)
+                    //the user must have feature cards(id= 0) to be valid
+                    if(user.enabledFeatures?.find((feature) => feature.id === 0)){
+                      setValue('userId', user.id)
+                      return
+                    }
+                    return t('card.validation.invalidFeature')
+                    
                   }
                 }}
                 endAdornment={
                   <IconButton
                     disabled={isEditing}
                     onClick={async () => {
-                      const user = await loadUserFormDataByDocument() as Array<User>
-                      if (!user.length) {
+                      const user = await loadUserFormDataByDocument() as User
+                      //if not return any user with this document
+                      if (!user) {
                         setError("document", { type: "custom", message: t('card.validation.user') })
                         return
                       }
-                      clearErrors('document')
-                      setValue('name', user[0].name)
-                      setValue('userId', user[0].id)
+                      //the user must have feature cards(id= 0) to be valid
+                      debugger
+                      if(user.enabledFeatures?.find((feature) => feature.id === 0)){
+                        clearErrors('document')
+                        setValue('name', user.name)
+                        setValue('userId', user.id)
+                        return
+                      }
+
+                      setError("document", { type: "custom", message: t('card.validation.invalidFeature') })
+                      
                     }}
                     aria-label="search"
                     edge="end"

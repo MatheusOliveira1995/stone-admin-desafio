@@ -54,7 +54,7 @@ const configureTableData = ( users: UserType[], t: TFunction<"translation", unde
                 name: user.name,
                 email: user.email,
                 document: formatDocument(user.document.toString()),
-                birthDate: user.BirthDate ? formatDate({dateValue: user.BirthDate}) : '-'
+                birthDate: user.birthDate ? formatDate({dateValue: user.birthDate}) : '-'
             }
         )
     })
