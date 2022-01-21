@@ -55,7 +55,6 @@ export async function deleteCard({ cardId, before }: DeleteType) {
     let payloadBefore: Record<string, unknown> = {}
 
     if (before) {
-        debugger
         payloadBefore = {
             id: before.id,
             status: before.status,
@@ -93,7 +92,7 @@ export async function saveCard({ data, before }: SubmitType) {
     }
     if (data.id) {
         payload.id = data.id as number
-        payload.updatedAt = formatDate({ dateValue: (new Date()), pattern: 'us' })
+        payload.updatedAt = formatDate({ dateValue: undefined, pattern: 'us' })
         url = url.concat(`/${data.id}`)
     }
     if (before) {

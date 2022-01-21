@@ -341,7 +341,6 @@ export default function Cards() {
     if (data.id) {
       payload.before = cards.cards.find((card) => card.id === data.id)
     }
-    debugger
     payload.data.status = Status.REQUESTED
     try {
       saveCard(payload)
@@ -598,7 +597,7 @@ export default function Cards() {
                   validate: async () => {
                     const user = await loadUserFormDataByDocument() as Array<User>
                     //if not return any user with this document
-                    if (!user) {
+                    if (!user.length) {
                       return t('card.validation.user')
                     }
                     setValue('userId', user[0].id)

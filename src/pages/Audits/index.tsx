@@ -299,7 +299,7 @@ export default function Audits() {
                 backgroundColor: '#fff',
                 flexDirection: 'column',
                 padding: '18px 18px 30px 18px',
-                height: '600px'
+                height: '700px'
             }}
         >
             <AppAuditGridData audits={audits}/>

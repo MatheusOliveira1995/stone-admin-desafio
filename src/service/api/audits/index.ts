@@ -1,7 +1,6 @@
 import http from "src/settings/http";
 import { Audit, Audits, Status } from "src/app/definitions";
 import { formatDate } from "src/util/date";
-import moment from 'moment'
 
 type ApiCard = {
     id?: string | number,
@@ -36,7 +35,7 @@ export async function saveAudit({ before, after }: AuditType) {
         type = 'card-status-change'
     }
     const payload: AuditApi = {
-        createdAt: formatDate({ dateValue: (new Date()), pattern: 'us' }),
+        createdAt: formatDate({ dateValue: undefined, pattern: 'us' }),
         after: after,
         before: before,
         requestedBy: 1,
