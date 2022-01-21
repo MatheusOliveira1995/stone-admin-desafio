@@ -8,6 +8,7 @@ type Props = {
   type: string,
   name: string,
   label: string,
+  placeholder?: string,
   hidden?: boolean,
   endAdornment?: ReactNode,
   startAdornment?: ReactNode,
@@ -21,7 +22,7 @@ type Props = {
   validation?: any
 }
 
-export default function AppInput({ id, name, type, label, hidden, endAdornment, register , validation, startAdornment, readOnly = false, helperText, handleChange, value, required = false, error } : Props) {
+export default function AppInput({ id, name, type, label, placeholder, hidden, endAdornment, register , validation, startAdornment, readOnly = false, helperText, handleChange, value, required = false, error } : Props) {
   return (
     <FormControl sx={{display: () => hidden ? 'none' : 'flex'}} required={required} error={!!error} fullWidth variant="outlined">
       <InputLabel htmlFor={id}>{label}</InputLabel>
@@ -32,6 +33,7 @@ export default function AppInput({ id, name, type, label, hidden, endAdornment, 
         readOnly={readOnly}
         value={value}
         type={type}
+        placeholder={placeholder}
         onChange={(event) =>{
           return handleChange ? handleChange(event.target.value) : undefined
         }}
