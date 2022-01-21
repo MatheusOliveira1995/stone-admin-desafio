@@ -255,6 +255,7 @@ export default function Cards() {
    */
   const handleEdit = (row: any) => {
     getUserById(row.userId).then((user) => {
+      if(!user) return;
       setValue('id', row.id)
       setValue('userId', user.id)
       setValue('document', user.document)
@@ -620,7 +621,6 @@ export default function Cards() {
                         return
                       }
                       //the user must have feature cards(id= 0) to be valid
-                      debugger
                       if(user.enabledFeatures?.find((feature) => feature.id === 0)){
                         clearErrors('document')
                         setValue('name', user.name)
