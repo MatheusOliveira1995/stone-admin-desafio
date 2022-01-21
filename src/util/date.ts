@@ -5,7 +5,7 @@ interface DatePattern {
 }
 export function formatDate({ dateValue , pattern = "ptbr"}: DatePattern) {
   if (!dateValue)
-    return
+    return '-'
 
   const date = moment(dateValue)
   if(pattern === 'us'){

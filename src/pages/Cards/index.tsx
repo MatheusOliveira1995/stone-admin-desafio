@@ -271,12 +271,12 @@ export default function Cards() {
    */
   const handleDelete = () => {
     if (!selectionModel.length) {
-      dispatch(error('Deu erro!'))
       return
     };
     const selectedId = selectionModel.shift()
+    const before = cards.cards.find((card) => card.id === selectedId)
     try {
-      deleteCard(selectedId as number)
+      deleteCard({cardId: selectedId as number , before })
       fetchData()
     } catch (e) {
       dispatch(error(t('card.delete.error')))
@@ -341,6 +341,7 @@ export default function Cards() {
     if (data.id) {
       payload.before = cards.cards.find((card) => card.id === data.id)
     }
+    debugger
     payload.data.status = Status.REQUESTED
     try {
       saveCard(payload)

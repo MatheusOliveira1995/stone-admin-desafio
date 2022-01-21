@@ -56,6 +56,12 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             headerClassName: 'app-grid-header--info',
         },
         {
+            field: 'requestedBy',
+            headerName: 'Realizado por',
+            width: 130,
+            headerClassName: 'app-grid-header--info',
+        },
+        {
             field: 'cardId',
             headerName: 'Id do cartão',
             width: 110,
@@ -71,7 +77,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--before': row.cardHolderNameAfter !== row.cardHolderNameBefore
+                  'app-grid-different-cell--before': row.cardHolderNameAfter !== row.cardHolderNameBefore && row.type !== 'created'
                 })
             }
         },
@@ -85,7 +91,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--before': row.digitsAfter !== row.digitsBefore
+                  'app-grid-different-cell--before': row.digitsAfter !== row.digitsBefore && row.type !== 'created'
                 })
             }
         },
@@ -99,7 +105,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--before': row.limitAfter !== row.limitBefore
+                  'app-grid-different-cell--before': row.limitAfter !== row.limitBefore && row.type !== 'created'
                 })
             }
         },
@@ -112,7 +118,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--before': row.statusAfter !== row.statusBefore
+                  'app-grid-different-cell--before': row.statusAfter !== row.statusBefore && row.type !== 'created'
                 })
             }
         },
@@ -215,18 +221,19 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
         const data = {
             id: audit.id,
             type: audit.type,
-            cardHolderNameBefore: audit.before.metaDatas?.name ?? '-',
+            requestedBy: audit.requestedBy,
+            cardHolderNameBefore: audit.before.metaDatas.name,
             digitsBefore: audit.before.metaDatas.digits,
             limitBefore: audit.before.metaDatas.limit,
-            statusBefore: t(`card.add.statuses.${audit.before.status}`),
-            createdAtBefore: audit.before.createdAt ? formatDate({ dateValue: audit.before.createdAt }) : '-',
-            updatedAtBefore: audit.before.updatedAt ? formatDate({ dateValue: audit.before.updatedAt }) : '-',
-            cardHolderNameAfter: audit.after.metaDatas.name ?? '-',
+            statusBefore: audit.before.status ? t(`card.add.statuses.${audit.before.status}`) : '',
+            createdAtBefore: audit.before.createdAt,
+            updatedAtBefore: audit.before.updatedAt,
+            cardHolderNameAfter: audit.after.metaDatas.name,
             digitsAfter: audit.after.metaDatas.digits,
             limitAfter: audit.after.metaDatas.limit,
-            statusAfter: t(`card.add.statuses.${audit.after.status}`),
-            createdAtAfter: audit.after.createdAt ? formatDate({ dateValue: audit.after.createdAt }) : '-',
-            updatedAtAfter: audit.after.updatedAt ? formatDate({ dateValue: audit.after.updatedAt }) : '-',
+            statusAfter: audit.after.status ? t(`card.add.statuses.${audit.after.status}`) : '',
+            createdAtAfter: audit.after.createdAt,
+            updatedAtAfter: audit.after.updatedAt,
             cardId: audit.after.id,
             userId: audit.after.userId
         }

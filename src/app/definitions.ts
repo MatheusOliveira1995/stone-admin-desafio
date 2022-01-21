@@ -40,7 +40,7 @@ export type Card = {
     id: string | number,
     createdAt: Date | string,
     updatedAt?: Date | string,
-    status: Status,
+    status: Status | undefined,
     userId: number,
     metaDatas:{
         name?:string,

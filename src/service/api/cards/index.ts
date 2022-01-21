@@ -20,6 +20,10 @@ type SubmitType = {
     data: Record<string, unknown>,
     before: Card | undefined
 }
+type DeleteType = {
+    cardId: number | string,
+    before: Card | undefined
+}
 
 export async function getCards(): Promise<Cards> {
     let response
@@ -38,7 +42,7 @@ export async function getCards(): Promise<Cards> {
                     digits: metaDatas?.digits ?? '',
                     limit: metaDatas?.limit as number ?? 0
                 },
-                updatedAt: formatDate({ dateValue: card.updatedAt as string, pattern: 'us' }) ?? undefined,
+                updatedAt: card.updatedAt ? formatDate({ dateValue: card.updatedAt as string, pattern: 'us' }) : undefined,
             }
         })
         return cards
@@ -47,9 +51,28 @@ export async function getCards(): Promise<Cards> {
     }
 
 }
-export async function deleteCard(card: number) {
+export async function deleteCard({ cardId, before }: DeleteType) {
+    let payloadBefore: Record<string, unknown> = {}
+
+    if (before) {
+        debugger
+        payloadBefore = {
+            id: before.id,
+            status: before.status,
+            user_id: before.userId,
+            createdAt: before.createdAt,
+            updatedAt: before.updatedAt,
+            metadatas: {
+                name: before.metaDatas.name,
+                digits: before.metaDatas.digits,
+                limit: before.metaDatas.limit
+            }
+        }
+    }
     try {
-        return http.delete(`/cards/${card}`)
+        const response = await http.delete(`/cards/${cardId}`)
+        await saveAudit({ after: {}, before: payloadBefore })
+        return response
     } catch (error) {
 
     }
