@@ -98,8 +98,8 @@ function TabPanel(props: TabPanelProps) {
  * @param t 
  * @returns GridConfigType
  */
-const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): GridConfigType | null => {
-  if (!data.cards.length) return null
+const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): GridConfigType | undefined => {
+  if (!data.cards.length) return;
 
   let requested: any = []
   let approved: any = []

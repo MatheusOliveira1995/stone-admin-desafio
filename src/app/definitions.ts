@@ -49,6 +49,19 @@ export type Card = {
     }
 }
 
+export enum Role{
+    N1= 'n1',
+    N2= 'n2'
+}
+
+export type Analyst = {
+    id: number|string,
+    userId: number|string,
+    email: string,
+    password?: string,
+    roles: Role[]
+}
+
 export type Audit = {
   id: string | number,
   createdAt: Date | string,
