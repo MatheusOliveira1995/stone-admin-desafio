@@ -5,8 +5,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import PeopleIcon from '@mui/icons-material/People';
-
 import { MenuItemsType } from 'src/components/Menu';
 
 import { useNavigate } from 'react-router-dom';
@@ -24,14 +24,10 @@ import {
 
 } from '@mui/material'
 
-import { useAppSelector } from 'src/app/hooks';
-
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-
+import { useAppSelector, useAppDispatch } from 'src/app/hooks';
+import { logoutAnalyst } from 'src/app/store/slices/analyst';
 import { Menu as SideMenu } from 'src/components/Menu'
-
 import { useTranslation } from 'react-i18next'
-let drawerWidth = 240;
 
 type Props = {
     handleDrawerShowing: Function
@@ -40,6 +36,8 @@ type Props = {
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
 }
+
+let drawerWidth = 240;
 
 /**
  */
@@ -72,6 +70,7 @@ export default function AppNavBar(props: Props) {
     const navigate = useNavigate()
 
     const analyst = useAppSelector((state) => state.analyst)
+    const dispatch = useAppDispatch()
     const adminRole = analyst.roles.find((role) => role === 'n2')
 
     const menuItems: MenuItemsType[] = [
@@ -122,6 +121,11 @@ export default function AppNavBar(props: Props) {
         setAnchorEl(null);
     };
 
+    const handleLogout = () => {
+        handleFloatMenuClose()
+        dispatch(logoutAnalyst())
+    }
+
     return (
         <div>
             <CssBaseline />
@@ -168,8 +172,7 @@ export default function AppNavBar(props: Props) {
                             open={Boolean(anchorEl)}
                             onClose={handleFloatMenuClose}
                         >
-                            <MenuItem onClick={handleFloatMenuClose}>Profile</MenuItem>
-                            <MenuItem onClick={handleFloatMenuClose}>My account</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
                         </Menu>
                     </Box>
                 </Toolbar>

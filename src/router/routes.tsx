@@ -14,6 +14,7 @@ import { useAppSelector } from "src/app/hooks";
 export default function Routes() {
     const analyst = useAppSelector((state) => state.analyst)
     const isLoggedIn = analyst.id
+    const isAdm = analyst.roles.find((role) => role === 'n2')
 
     const routes = useRoutes([
         {
@@ -48,7 +49,7 @@ export default function Routes() {
         },
         {
             path: '/audits',
-            element: isLoggedIn ? <MainLayout /> : <Navigate to='/login'/>,
+            element: isLoggedIn && isAdm ?  <MainLayout /> : <Navigate to='/login'/>,
             children: [
                 {
                     path: '/audits',
