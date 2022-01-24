@@ -1,9 +1,7 @@
-import * as React from 'react';
+import React, {ReactNode} from 'react';
 
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import MailIcon from '@mui/icons-material/Mail';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 
@@ -20,13 +18,20 @@ import {
 
 import './styles.css'
 
+export type MenuItemsType = {
+  label: string,
+  icon: ReactNode,
+  navigateTo: string, 
+}
 type Props = {
   open: boolean,
   drawerWidth: number,
   handleDrawerClose: React.MouseEventHandler,
-  handleDrawerOpen: React.MouseEventHandler
+  handleListItemClick: (navigate: string) => void,
+  menuItems: MenuItemsType[]
 }
-let drawerWidth = 240
+
+let menuDrawerWidth = 240
 
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -40,7 +45,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
  * @param theme 
  */
 const openedMixin = (theme: Theme): CSSObject => ({
-  width: drawerWidth,
+  width: menuDrawerWidth,
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
@@ -68,7 +73,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
  */
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
-    width: drawerWidth,
+    width: menuDrawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
     boxSizing: 'border-box',
@@ -87,30 +92,30 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
  * @param props 
  */
 
-export function Menu(props: Props) {
-  const [open, setOpen] = React.useState(props.open);
-  const theme = useTheme();
-  drawerWidth = props.drawerWidth
+export function Menu({open, drawerWidth, handleDrawerClose, handleListItemClick, menuItems}: Props) {
+  const [openMenu, setOpenMenu] = React.useState(open)
+  const theme = useTheme()
+  menuDrawerWidth = drawerWidth
 
   React.useEffect(() => {
-    setOpen(props.open)
-  }, [props.open])
+    setOpenMenu(open)
+  }, [open])
 
   return (
-    <Drawer variant="permanent" open={open}>
+    <Drawer variant="permanent" open={openMenu}>
       <DrawerHeader>
-        <IconButton onClick={props.handleDrawerClose}>
+        <IconButton onClick={handleDrawerClose}>
           {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
         </IconButton>
       </DrawerHeader>
       <Divider />
       <List className='menu-list'>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem className='menu-list-item' onClick={ props.handleDrawerOpen } button key={text}>
+        {menuItems.map((menuItem) => (
+          <ListItem className='menu-list-item' onClick={ () => handleListItemClick(menuItem.navigateTo)} button key={menuItem.label}>
             <ListItemIcon className='menu-list-icon'>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              { menuItem.icon }
             </ListItemIcon>
-            <ListItemText primary={text} />
+            <ListItemText primary={menuItem.label} />
           </ListItem>
         ))}
       </List>

@@ -2,14 +2,20 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 
 import MenuIcon from '@mui/icons-material/Menu';
+import AddCardIcon from '@mui/icons-material/AddCard';
 import AccountCircle from '@mui/icons-material/AccountCircle';
- 
-import { Box } from '@mui/material';
+import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
+import PeopleIcon from '@mui/icons-material/People';
+
+import { MenuItemsType } from 'src/components/Menu';
+
+import { useNavigate } from 'react-router-dom';
 
 import './styles.css'
 
 import {
     CssBaseline,
+    Box,
     Toolbar,
     Typography,
     IconButton,
@@ -17,6 +23,8 @@ import {
     Menu,
 
 } from '@mui/material'
+
+import { useAppSelector } from 'src/app/hooks';
 
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 
@@ -38,7 +46,7 @@ interface AppBarProps extends MuiAppBarProps {
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
-    color:'#ffff',
+    color: '#ffff',
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
@@ -58,15 +66,48 @@ const AppBar = styled(MuiAppBar, {
  * @param props 
  */
 export default function AppNavBar(props: Props) {
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const [open, setOpen] = React.useState(false);
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
+    const [open, setOpen] = React.useState(false)
     drawerWidth = props.drawerWidth
+    const navigate = useNavigate()
+
+    const analyst = useAppSelector((state) => state.analyst)
+    const adminRole = analyst.roles.find((role) => role === 'n2')
+
+    const menuItems: MenuItemsType[] = [
+        {
+            label: 'Pedidos de cartão',
+            icon: <AddCardIcon />,
+            navigateTo: '/cards'
+        },
+        {
+            label: 'Usuários',
+            icon: <PeopleIcon />,
+            navigateTo: '/users'
+        }
+
+    ]
+
+    if(adminRole){
+        menuItems.push(
+            {
+                label: 'Auditoria',
+                icon: <EditNotificationsIcon />,
+                navigateTo: '/audits'
+            },
+        )
+    }
 
     const { t } = useTranslation();
 
     const handleDrawerOpen = () => {
         setOpen(true);
         props.handleDrawerShowing(true)
+    };
+
+    const handleListItemClick = (clicked: string) => {
+        handleDrawerOpen()
+        navigate(clicked)
     };
 
     const handleDrawerClose = () => {
@@ -84,7 +125,7 @@ export default function AppNavBar(props: Props) {
     return (
         <div>
             <CssBaseline />
-            <AppBar sx={{backgroundColor: "primary", display: 'flex'}} position="fixed" open={open}>
+            <AppBar sx={{ backgroundColor: "primary", display: 'flex' }} position="fixed" open={open}>
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -101,7 +142,7 @@ export default function AppNavBar(props: Props) {
                     <Typography variant="h6" noWrap component="div">
                         {t('home.name')}
                     </Typography>
-                    <Box component="div" sx={{marginLeft: 'auto'}}>
+                    <Box component="div" sx={{ marginLeft: 'auto' }}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -134,7 +175,7 @@ export default function AppNavBar(props: Props) {
                 </Toolbar>
             </AppBar>
 
-            <SideMenu open={open} drawerWidth={drawerWidth} handleDrawerOpen={handleDrawerOpen} handleDrawerClose={handleDrawerClose} />
+            <SideMenu open={open} drawerWidth={drawerWidth} handleListItemClick={handleListItemClick} handleDrawerClose={handleDrawerClose} menuItems={menuItems} />
         </div>
     );
 }
