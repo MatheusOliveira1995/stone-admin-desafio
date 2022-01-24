@@ -7,6 +7,7 @@ const persistConfig = {
   key: 'root',
   version: 1,
   storage,
+  whitelist: ['analyst']
 }
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
@@ -22,14 +23,12 @@ const store = configureStore({
 })
 
 
-const persistor = persistStore(store)
-
-const defaultStore = {
-  store, persistor
+const defaultStoreConfig = {
+  store, 
+  persistor: persistStore(store)
 }
-
 export type RootState = ReturnType<typeof store.getState>
 
 export type AppDispatch = typeof store.dispatch
 
-export default defaultStore
+export default defaultStoreConfig

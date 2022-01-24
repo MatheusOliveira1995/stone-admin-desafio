@@ -17,7 +17,8 @@ type ApiCard = {
 
 interface AuditType {
     before: Record<string, unknown>,
-    after: Record<string, unknown>
+    after: Record<string, unknown>,
+    requestedBy: number|string
 }
 type AuditApi = {
     id?: number | string,
@@ -28,7 +29,7 @@ type AuditApi = {
     requestedBy: number | string,
 }
 
-export async function saveAudit({ before, after }: AuditType) {
+export async function saveAudit({ before, after, requestedBy }: AuditType) {
     let type = Object.keys(before).length === 0 ? 'created' : Object.keys(after).length === 0 ? 'deleted' : 'updated'
     //if type is different of DELETED and status is different of default status REQUESTED, then the update is status change
     if(type !== 'deleted' && (Object.keys(before).length > 0 && before.status !== after.status)){
@@ -38,7 +39,7 @@ export async function saveAudit({ before, after }: AuditType) {
         createdAt: formatDate({ dateValue: undefined, pattern: 'us' }),
         after: after,
         before: before,
-        requestedBy: 1,
+        requestedBy: requestedBy,
         type: type,
     }
     try {

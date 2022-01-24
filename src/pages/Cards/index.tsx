@@ -61,7 +61,8 @@ type DataGridType = {
 }
 type SubmitType = {
   data: Record<string, unknown>,
-  before: Card | undefined
+  before: Card | undefined,
+  requestedBy: number|string
 }
 
 /**
@@ -233,6 +234,7 @@ export default function Cards() {
   const [defaultSortRequestGrid, setDefaultSortRequestGrid] = useState<GridSortModel>([{ field: 'createdAt', sort: 'desc' }])
   const dispatch = useAppDispatch()
   const cards = useAppSelector((state) => state.cards)
+  const analyst = useAppSelector((state) => state.analyst)
   const [requestedGridData, setRequestedGridData] = useState<DataGridType>({ columns: [], rows: [] })
   const [approvedGridData, setApprovedGridData] = useState<DataGridType>({ columns: [], rows: [] })
   const [rejectedGridData, setRejectedGridData] = useState<DataGridType>({ columns: [], rows: [] })
@@ -279,7 +281,7 @@ export default function Cards() {
     const selectedId = selectionModel.shift()
     const before = cards.cards.find((card) => card.id === selectedId)
     try {
-      deleteCard({ cardId: selectedId as number, before })
+      deleteCard({ cardId: selectedId as number, before, requestedBy: analyst.userId })
       fetchData()
     } catch (e) {
       dispatch(error(t('card.delete.error')))
@@ -305,7 +307,8 @@ export default function Cards() {
         digits: selectedRow.digits,
         limit: selectedRow.limit
       },
-      before: before
+      before: before,
+      requestedBy: analyst.userId
     }
     try {
       await saveCard(payload)
@@ -338,7 +341,8 @@ export default function Cards() {
       data: {
         ...data
       },
-      before: undefined
+      before: undefined,
+      requestedBy: analyst.userId
     }
     payload.data.createdAt = formatDate({ dateValue: data.createdAt, pattern: 'us' }) ?? '-'
     if (data.id) {

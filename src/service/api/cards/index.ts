@@ -18,11 +18,13 @@ type ApiCard = {
 }
 type SubmitType = {
     data: Record<string, unknown>,
-    before: Card | undefined
+    before: Card | undefined,
+    requestedBy: number|string
 }
 type DeleteType = {
     cardId: number | string,
-    before: Card | undefined
+    before: Card | undefined,
+    requestedBy: number|string
 }
 
 export async function getCards(): Promise<Cards> {
@@ -51,7 +53,7 @@ export async function getCards(): Promise<Cards> {
     }
 
 }
-export async function deleteCard({ cardId, before }: DeleteType) {
+export async function deleteCard({ cardId, before, requestedBy }: DeleteType) {
     let payloadBefore: Record<string, unknown> = {}
 
     if (before) {
@@ -70,13 +72,13 @@ export async function deleteCard({ cardId, before }: DeleteType) {
     }
     try {
         const response = await http.delete(`/cards/${cardId}`)
-        await saveAudit({ after: {}, before: payloadBefore })
+        await saveAudit({ after: {}, before: payloadBefore, requestedBy: requestedBy })
         return response
     } catch (error) {
 
     }
 }
-export async function saveCard({ data, before }: SubmitType) {
+export async function saveCard({ data, before, requestedBy }: SubmitType) {
     let url = '/cards'
 
     let payloadBefore: Record<string, unknown> = {}
@@ -117,7 +119,7 @@ export async function saveCard({ data, before }: SubmitType) {
             response = await http.post(url, payload)
         }
 
-        await saveAudit({ after: response.data, before: payloadBefore })
+        await saveAudit({ after: response.data, before: payloadBefore, requestedBy: requestedBy })
         return response.data
 
     } catch (error) {
