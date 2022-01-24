@@ -29,6 +29,10 @@ type AuditApi = {
     requestedBy: number | string,
 }
 
+/**
+ * @param AuditType 
+ * @return void
+ */
 export async function saveAudit({ before, after, requestedBy }: AuditType) {
     let type = Object.keys(before).length === 0 ? 'created' : Object.keys(after).length === 0 ? 'deleted' : 'updated'
     //if type is different of DELETED and status is different of default status REQUESTED, then the update is status change
@@ -50,6 +54,9 @@ export async function saveAudit({ before, after, requestedBy }: AuditType) {
     }
 }
 
+/**
+ * @return Promise<Audit>
+ */
 export async function getAudits(): Promise<Audits> {
 
     try {

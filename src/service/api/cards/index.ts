@@ -27,6 +27,9 @@ type DeleteType = {
     requestedBy: number|string
 }
 
+/**
+ * @return Promise<Cards> 
+ */
 export async function getCards(): Promise<Cards> {
     let response
     try {
@@ -53,6 +56,10 @@ export async function getCards(): Promise<Cards> {
     }
 
 }
+/**
+ * @param DeleteType 
+ * @return void
+ */
 export async function deleteCard({ cardId, before, requestedBy }: DeleteType) {
     let payloadBefore: Record<string, unknown> = {}
 
@@ -78,6 +85,10 @@ export async function deleteCard({ cardId, before, requestedBy }: DeleteType) {
 
     }
 }
+/**
+ * @param SubmitType 
+ * @return void
+ */
 export async function saveCard({ data, before, requestedBy }: SubmitType) {
     let url = '/cards'
 

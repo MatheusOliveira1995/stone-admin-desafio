@@ -66,6 +66,7 @@ const AppBar = styled(MuiAppBar, {
 export default function AppNavBar(props: Props) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
     const [open, setOpen] = React.useState(false)
+    const { t } = useTranslation();
     drawerWidth = props.drawerWidth
     const navigate = useNavigate()
 
@@ -75,12 +76,12 @@ export default function AppNavBar(props: Props) {
 
     const menuItems: MenuItemsType[] = [
         {
-            label: 'Pedidos de cartão',
+            label: t('main.menu.cards'),
             icon: <AddCardIcon />,
             navigateTo: '/cards'
         },
         {
-            label: 'Usuários',
+            label: t('main.menu.users'),
             icon: <PeopleIcon />,
             navigateTo: '/users'
         }
@@ -90,14 +91,12 @@ export default function AppNavBar(props: Props) {
     if(adminRole){
         menuItems.push(
             {
-                label: 'Auditoria',
+                label: t('main.menu.audits'),
                 icon: <EditNotificationsIcon />,
                 navigateTo: '/audits'
             },
         )
     }
-
-    const { t } = useTranslation();
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -144,7 +143,7 @@ export default function AppNavBar(props: Props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        {t('home.name')}
+                        {t('main.name')}
                     </Typography>
                     <Box component="div" sx={{ marginLeft: 'auto' }}>
                         <IconButton

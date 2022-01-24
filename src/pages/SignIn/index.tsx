@@ -18,13 +18,6 @@ interface LoginForm{
     password: string
 }
 
-type Session = {
-    id: string | number;
-    userId: string | number;
-    email: string;
-    password?: string | undefined
-}
-
 export default function Signin() {
     const { t } = useTranslation()
     const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>()

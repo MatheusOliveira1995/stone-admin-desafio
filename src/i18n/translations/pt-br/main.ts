@@ -24,5 +24,10 @@ export default {
         columnMenuFilter: 'Filtrar',
         columnMenuHideColumn: 'Esconder',
         columnMenuShowColumns: 'Mostrar colunas'
+    },
+    menu: {
+        cards: 'Pedidos de cartão',
+        audits: 'Auditoria',
+        users: 'Usuários'
     }
 }

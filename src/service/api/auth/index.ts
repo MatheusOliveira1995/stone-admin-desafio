@@ -2,6 +2,11 @@ import http from "src/settings/http";
 import { Analyst, Role } from "src/app/definitions";
 
 
+/**
+ * @param email 
+ * @param password 
+ * @return Promise<Analyst | undefined>
+ */
 export async function login(email: string, password: string): Promise<Analyst | undefined> {
 
     try {

@@ -3,6 +3,10 @@ import { Users, User, Feature } from "src/app/definitions";
 
 import { formatDate } from "src/util/date";
 
+/**
+ * @param data 
+ * @return User
+ */
 function mapUser(data: Record<string, unknown>): User {
     const address = data.address as Record<string, unknown>
     const metaDatas = data.metadatas as Record<string, unknown>
@@ -39,6 +43,9 @@ function mapUser(data: Record<string, unknown>): User {
     }
     return user
 }
+/**
+ * @return Promise<Users> 
+ */
 export async function getUsers(): Promise<Users> {
     let response
     try {
@@ -51,6 +58,10 @@ export async function getUsers(): Promise<Users> {
     }
 }
 
+/**
+ * @param userId 
+ * @return Promise<User|undefined>
+ */
 export async function getUserById(userId: number): Promise<User|undefined> {
     const url = `/users/${userId}`
     let response
@@ -66,6 +77,10 @@ export async function getUserById(userId: number): Promise<User|undefined> {
     }
 }
 
+/**
+ * @param document 
+ * @return Promise<User | undefined> 
+ */
 export async function getUserByDocument(document: string): Promise<User | undefined> {
     const url = `/users?document=${document}`
     let response
