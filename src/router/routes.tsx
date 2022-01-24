@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useRoutes } from "react-router-dom"
+import { useRoutes, Navigate } from "react-router-dom"
 
 import MainLayout from "src/layouts/MainLayout"
 
@@ -9,22 +9,26 @@ import SignIn from "src/pages/SignIn"
 import Cards from "src/pages/Cards"
 import Audits from "src/pages/Audits";
 
+import { useAppSelector } from "src/app/hooks";
+
 export default function Routes() {
+    const analyst = useAppSelector((state) => state.analyst)
+    const isLoggedIn = analyst.id
 
     const routes = useRoutes([
         {
             path: '*',
-            element: <MainLayout />,
+            element: isLoggedIn ? <MainLayout /> : <Navigate to='/login'/>,
             children: [
                 {
-                    path: 'dashboard',
+                    path: '*',
                     element: <Dashboard />
                 }
             ]
         },
         {
             path: '/users',
-            element: <MainLayout />,
+            element: isLoggedIn ? <MainLayout /> : <Navigate to='/login'/>,
             children: [
                 {
                     path: '/users',
@@ -34,7 +38,7 @@ export default function Routes() {
         },
         {
             path: '/cards',
-            element: <MainLayout />,
+            element: isLoggedIn ? <MainLayout /> : <Navigate to='/login'/>,
             children: [
                 {
                     path: '/cards',
@@ -44,7 +48,7 @@ export default function Routes() {
         },
         {
             path: '/audits',
-            element: <MainLayout />,
+            element: isLoggedIn ? <MainLayout /> : <Navigate to='/login'/>,
             children: [
                 {
                     path: '/audits',
@@ -54,7 +58,7 @@ export default function Routes() {
         },
         {
             path:'/login',
-            element: <SignIn/>
+            element: !isLoggedIn ? <SignIn/> : <Navigate to='/dashboard'/>,
         }
     ])
 

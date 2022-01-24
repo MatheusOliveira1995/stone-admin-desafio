@@ -1,17 +1,17 @@
-import React from 'react'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Paper, Box, Typography, Button } from '@mui/material';
 import AppInput from 'src/components/AppInput';
 
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector } from 'src/app/hooks';
+import { useAppDispatch } from 'src/app/hooks';
 import { setAnalyst } from 'src/app/store/slices/analyst';
 
 import { error } from 'src/app/store/slices/toast';
 import { login } from 'src/service/api/auth';
 
 import './styles.css'
-import { stringify } from 'querystring';
 
 interface LoginForm{
     email: string,
@@ -29,6 +29,7 @@ export default function Signin() {
     const { t } = useTranslation()
     const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>()
     const dispatch = useAppDispatch()
+    const navigate = useNavigate()
 
     /**
      * @param data LoginForm
@@ -40,7 +41,13 @@ export default function Signin() {
                 dispatch(error(t('auth.loginError')))
                 return
             }
+            const adminRole = analyst.roles.find((role) => role === 'n2')
+            if(adminRole){
+                analyst.roles = [adminRole]
+            }
+
             dispatch(setAnalyst(analyst))
+            navigate('/dashboard')
 
         } catch (e) {
             dispatch(error(t('auth.error')))
