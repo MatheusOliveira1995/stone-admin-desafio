@@ -31,6 +31,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 
 import { formatDate } from 'src/util/date';
 
+import './styles.css'
+
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -728,7 +730,7 @@ export default function Cards() {
         </>
       </AppModal>
 
-      <Box sx={{ '& > :not(style)': { m: 1 }, position: 'absolute', right: 16, bottom: 16 }}>
+      <Box id='card-help' sx={{ '& > :not(style)': { m: 1 }, position: 'absolute', right: 16, bottom: 16 }}>
         <Tooltip TransitionComponent={Zoom} placement="left" title={t('card.helpText') as string}>
           <div>
             <AppFloatButton color="primary">

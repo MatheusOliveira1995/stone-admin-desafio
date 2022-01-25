@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
     gridDataEmpty: 'Nenhum registro encontrado!',
-    helpText: 'Dicas: Selecione um pedido na lista de solicitações em aberto para avaliar. Com um pedido selecionado é possível visualizar os detalhes clicando no botão "AUDITORIA".',
+    helpText: 'Dicas: Selecione um pedido na lista de solicitações em aberto para avaliar.',
     requestedTab: 'Solicitações em aberto',
     approvedTab: 'Solicitações aprovadas',
     rejectedTab: 'Solicitações recusadas',
