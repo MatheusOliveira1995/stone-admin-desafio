@@ -7,6 +7,7 @@ import EmailIcon from '@mui/icons-material/Email';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import DoneIcon from '@mui/icons-material/Done';
 import VerifiedIcon from '@mui/icons-material/Verified';
+import CreditScoreIcon from '@mui/icons-material/CreditScore';
 import Event from '@mui/icons-material/Event';
 import HomeIcon from '@mui/icons-material/Home';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
@@ -37,7 +38,8 @@ type UserForm = {
     streetNumber: string,
     state: string,
     city: string,
-    postalCode: string
+    postalCode: string,
+    cardFeature: string|undefined
 }
 const configureTableData = (users: UserType[], t: TFunction<"translation", undefined>) => {
     const columnsMetaData: Column[] = [
@@ -109,10 +111,14 @@ export default function Users() {
         const user = users.find((user) => user.id === id)
         if (!user) return
 
+        //get feature if user is eligible to be used in new card
+        const cardFeature = user.enabledFeatures?.find((feature) => feature.id === 0)
+        
         let salaryBase = user.salaryBase ? user.salaryBase.toString() : ''
         if (!isAdm) {
             salaryBase = '*******'
         }
+
 
         setValue('document', user.document ? formatDocument(user.document.toString()) ?? '' : '')
         setValue('name', user.name)
@@ -126,6 +132,7 @@ export default function Users() {
         setValue('state', user.address.state)
         setValue('city', user.address.city)
         setValue('postalCode', user.address.postalCode)
+        setValue('cardFeature', cardFeature ? t(`user.add.valid.true`) : t(`user.add.valid.false`))
         handleOpenModal()
 
     }
@@ -157,6 +164,7 @@ export default function Users() {
                 handleClose={handleCloseModal}
                 open={openModal}
                 title={t('user.add.title')}
+                disableEscKeyDown={false}
             >
                 <>
                     <Box
@@ -205,7 +213,7 @@ export default function Users() {
                             />
                         </Box>
 
-                        <Box gridColumn='span 8'>
+                        <Box gridColumn='span 5'>
                             <AppInput
                                 readOnly={true}
                                 name="salaryBase"
@@ -215,6 +223,18 @@ export default function Users() {
                                 label={t('user.add.salaryBase')}
                             />
                         </Box>
+
+                        <Box gridColumn='span 3'>
+                            <AppInput
+                                readOnly={true}
+                                name="cardFeature"
+                                register={register}
+                                type='string'
+                                startAdornment={<CreditScoreIcon />}
+                                label={t('user.add.cardEligible')}
+                            />
+                        </Box>
+
 
                         <Box gridColumn='span 2'>
                             <AppInput

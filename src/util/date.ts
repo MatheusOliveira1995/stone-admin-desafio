@@ -1,15 +1,16 @@
 import moment from 'moment'
 interface DatePattern {
   dateValue: Date | string | undefined,
-  pattern?: "us" | "ptbr"
+  pattern?: "us" | "ptbr",
+  format?: string
 }
-export function formatDate({ dateValue, pattern = "ptbr" }: DatePattern) {
+export function formatDate({ dateValue, pattern = "ptbr", format }: DatePattern) {
   let date
   if (!dateValue) {
     date = moment()
   }
   else {
-    date = moment(dateValue)
+    date = moment(dateValue, format)
   }
   if (pattern === 'us') {
     const usDate = date.format('MM-DD-YYYY').toString()

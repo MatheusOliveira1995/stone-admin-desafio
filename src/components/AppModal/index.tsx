@@ -16,7 +16,8 @@ type DialogType = {
   open: boolean,
   handleClose: () => void
   children: ReactElement,
-  title: string
+  title: string,
+  disableEscKeyDown?: boolean
 }
 
 export interface DialogTitleProps {
@@ -57,7 +58,7 @@ const AppDialogTitle = (props: DialogTitleProps) => {
   );
 };
 
-export default function FormModal({ open, title, handleClose, children }: DialogType) {
+export default function FormModal({ open, title, handleClose, disableEscKeyDown = true, children }: DialogType) {
   
   const closeHandler = (event: Object, reason: string) => {
     if(reason && reason === 'backdropClick') return;
@@ -72,7 +73,7 @@ export default function FormModal({ open, title, handleClose, children }: Dialog
         maxWidth="md"
         TransitionComponent={Transition}
         scroll='paper'
-        disableEscapeKeyDown={true}
+        disableEscapeKeyDown={disableEscKeyDown}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >

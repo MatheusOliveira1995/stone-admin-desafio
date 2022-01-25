@@ -14,11 +14,12 @@ export default {
       streetNumber: 'Número',
       state: 'UF',
       city: 'Cidade',
+      cardEligible: 'Eligível p/ pedido de cartão',
       postalCode: 'CEP',
       valid: {
           true: 'Sim',
           false: 'Não'
-      }
+      },
     },
     details: {
         email: 'E-mail',

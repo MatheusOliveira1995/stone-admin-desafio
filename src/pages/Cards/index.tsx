@@ -173,7 +173,6 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
       sortComparator: dateComparator
     },
   ];
-
   data.cards.forEach((card: Card) => {
     const data = {
       id: card.id,
