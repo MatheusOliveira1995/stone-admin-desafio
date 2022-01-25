@@ -1,6 +1,7 @@
 import http from "src/settings/http";
 import { Audit, Audits, Status, AuditStatusType } from "src/app/definitions";
 import { formatDate } from "src/util/date";
+import { getUserById } from "src/service/api/users";
 
 type ApiCard = {
     id?: string | number,
@@ -63,11 +64,12 @@ export async function getAudits(): Promise<Audits> {
         const response = await http.get('/audits')
         const data = response.data
 
-        const audits = data.map((audit: Record<string, unknown>): Audit => {
+        const audits =  await Promise.all<Audit>(data.map( async (audit: Record<string, unknown>): Promise<Audit> => {
             const before = audit.before as Record<string, unknown>
             const after = audit.after as Record<string, unknown>
             const afterMetadatas = after.metadatas ? after.metadatas as Record<string, unknown> : {}
             const beforeMetadatas = before.metadatas ? before.metadatas as Record<string, unknown> : {}
+            const user = await getUserById(audit.requestedBy as number)
             return {
                 after: {
                     id: after.id as number ?? '',
@@ -95,12 +97,12 @@ export async function getAudits(): Promise<Audits> {
                 },
                 id: audit.id as number,
                 createdAt: formatDate({dateValue: audit.createdAt as string}) ?? '-',
-                requestedBy: audit.requestedBy as number,
+                requestedBy: user?.name ?? audit.requestedBy as number,
                 type: audit.type as AuditStatusType
             }
-        })
+        }))
 
-        return audits
+        return {audits: audits}
 
     } catch (error) {
         return { audits: [] }

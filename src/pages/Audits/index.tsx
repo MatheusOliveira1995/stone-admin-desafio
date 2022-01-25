@@ -30,8 +30,8 @@ interface AppAuditType {
  * @param t Tfunction
  */
 function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation", undefined>): GridConfigType | undefined {
-    
-    if(!data) return;
+
+    if (!data.audits.length) return;
 
     const dateComparator = (v1: GridCellValue, v2: GridCellValue) => {
         if (!v1) v1 = '';
@@ -57,7 +57,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
         {
             field: 'requestedBy',
             headerName: 'Realizado por',
-            width: 130,
+            width: 350,
             headerClassName: 'app-grid-header--info',
         },
         {
@@ -70,13 +70,13 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
         {
             field: 'cardHolderNameBefore',
             headerName: 'Titular do cartão(Antes)',
-            width: 300,
+            width: 350,
             editable: false,
             headerClassName: 'app-grid-header--before',
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--before': row.cardHolderNameAfter !== row.cardHolderNameBefore && row.type !== 'created'
+                    'app-grid-different-cell--before': row.cardHolderNameAfter !== row.cardHolderNameBefore && row.type !== 'created'
                 })
             }
         },
@@ -90,7 +90,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--before': row.digitsAfter !== row.digitsBefore && row.type !== 'created'
+                    'app-grid-different-cell--before': row.digitsAfter !== row.digitsBefore && row.type !== 'created'
                 })
             }
         },
@@ -104,7 +104,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--before': row.limitAfter !== row.limitBefore && row.type !== 'created'
+                    'app-grid-different-cell--before': row.limitAfter !== row.limitBefore && row.type !== 'created'
                 })
             }
         },
@@ -117,7 +117,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--before': row.statusAfter !== row.statusBefore && row.type !== 'created'
+                    'app-grid-different-cell--before': row.statusAfter !== row.statusBefore && row.type !== 'created'
                 })
             }
         },
@@ -140,13 +140,13 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
         {
             field: 'cardHolderNameAfter',
             headerName: 'Titular do cartão(Depois)',
-            width: 300,
+            width: 350,
             editable: false,
             headerClassName: 'app-grid-header--after',
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--after': row.cardHolderNameAfter !== row.cardHolderNameBefore
+                    'app-grid-different-cell--after': row.cardHolderNameAfter !== row.cardHolderNameBefore
                 })
             }
         },
@@ -160,7 +160,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--after': row.digitsAfter !== row.digitsBefore
+                    'app-grid-different-cell--after': row.digitsAfter !== row.digitsBefore
                 })
             }
         },
@@ -174,7 +174,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--after': row.limitAfter !== row.limitBefore
+                    'app-grid-different-cell--after': row.limitAfter !== row.limitBefore
                 })
             }
         },
@@ -187,7 +187,7 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
             cellClassName: (params: GridCellParams<number>) => {
                 const row = params.row
                 return clsx({
-                  'app-grid-different-cell--after': row.statusAfter !== row.statusBefore
+                    'app-grid-different-cell--after': row.statusAfter !== row.statusBefore
                 })
             }
         },
@@ -217,9 +217,16 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
     ]
 
     const rows = data.audits.map((audit: Audit) => {
+        let type = audit.type as string
+
+        if (type.split('-').length > 0) {
+            type = audit.type.split('-').reduce((accumulator, current) => {
+                return accumulator + current.charAt(0).toUpperCase() + current.substring(1)
+            })
+        }
         const data = {
             id: audit.id,
-            type: audit.type,
+            type: t(`audit.statuses.${type}`),
             requestedBy: audit.requestedBy,
             cardHolderNameBefore: audit.before.metaDatas.name,
             digitsBefore: audit.before.metaDatas.digits,
@@ -256,8 +263,11 @@ export function AppAuditGridData({ audits }: AppAuditType) {
     const [auditsGridData, setAuditsGridData] = useState<GridConfigType>({ columns: [], rows: [] })
 
     useEffect(() => {
-        const data = configureAppAuditGridData(audits, t)
-        if(data) setAuditsGridData({ columns: data.columns, rows: data.rows })
+        const gridData = configureAppAuditGridData(audits, t)
+        if (!gridData) {
+            return
+        }
+        setAuditsGridData({ columns: gridData.columns, rows: gridData.rows })
     }, [audits])
 
     return (
@@ -283,7 +293,7 @@ export default function Audits() {
      */
     const fetchData = () => {
         getAudits().then((response) => {
-            dispatch(setAudits(response))
+            dispatch(setAudits(response.audits))
         })
     }
 
@@ -301,7 +311,7 @@ export default function Audits() {
                 height: '700px'
             }}
         >
-            <AppAuditGridData audits={audits}/>
+            <AppAuditGridData audits={audits} />
         </Box>
     )
 }
