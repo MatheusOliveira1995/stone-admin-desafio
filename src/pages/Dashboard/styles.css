@@ -8,3 +8,9 @@
     justify-content: flex-end;
     border-radius: 5px;
 }
+
+@media screen and (max-width: 800px){
+    #dashboard-date{
+        display: none;
+    }
+}

@@ -33,7 +33,7 @@ export default function Dashboard() {
                 </Box>
             </Box>
 
-            <Box component='div' sx={{ display: 'flex' }}>
+            <Box id='dashboard-date' component='div' sx={{ display: 'flex' }}>
                 <Box  component='strong' sx={{marginRight: '5px'}}>
                     {t(`dashboard.daysOfWeek.${dayOfWeek}`)} ·
                 </Box>
