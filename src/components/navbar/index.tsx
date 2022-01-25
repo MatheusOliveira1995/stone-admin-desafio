@@ -7,6 +7,7 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import PeopleIcon from '@mui/icons-material/People';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { MenuItemsType } from 'src/components/Menu';
 
 import { useNavigate } from 'react-router-dom';
@@ -75,6 +76,11 @@ export default function AppNavBar(props: Props) {
     const adminRole = analyst.roles.find((role) => role === 'n2')
 
     const menuItems: MenuItemsType[] = [
+        {
+            label: t('main.menu.dashboard'),
+            icon: <DashboardIcon />,
+            navigateTo: '/dashboard'
+        },
         {
             label: t('main.menu.cards'),
             icon: <AddCardIcon />,

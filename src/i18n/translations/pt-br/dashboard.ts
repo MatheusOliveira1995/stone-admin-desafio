@@ -26,5 +26,5 @@ export default {
    },
    morning: 'Bom dia',
    afternoon: 'Boa tarde',
-   nigth: 'Boa noite'
+   night: 'Boa noite'
 }

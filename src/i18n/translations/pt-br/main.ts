@@ -28,6 +28,7 @@ export default {
     menu: {
         cards: 'Pedidos de cartão',
         audits: 'Auditoria',
-        users: 'Usuários'
+        users: 'Usuários',
+        dashboard: 'Dashboard'
     }
 }
