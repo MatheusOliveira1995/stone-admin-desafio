@@ -29,7 +29,7 @@ export type User = {
         validDocument: boolean,
         verified: boolean
     },
-    address?: Address,
+    address: Address,
     salaryBase?: number
 }
 

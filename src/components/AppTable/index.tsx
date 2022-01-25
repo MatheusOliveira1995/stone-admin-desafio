@@ -36,7 +36,8 @@ export type Column = {
   textAlign?: string
 }
 type Props = {
-  headerTitle: string
+  headerTitle: string,
+  handleClick?: (id: number) => void,
   columns?: Column[],
   rows: any[]
 }
@@ -245,6 +246,7 @@ export default function AppTable(props: Props) {
                   .map((row, index) => {
                     return (
                       <TableRow
+                        onClick={ () => props.handleClick ?  props.handleClick(row['id'] as number) : undefined}
                         hover
                         sx={{cursor: 'pointer'}}
                         tabIndex={-1}

@@ -2,7 +2,7 @@
 import React, { useEffect, useState, SyntheticEvent } from 'react';
 import { GridCellParams, GridCellValue, GridColDef, GridRowId, GridSortModel } from '@mui/x-data-grid';
 import { Paper, Box, Button, IconButton, Tabs, Tab, Tooltip } from '@mui/material';
-import { Add, Delete, Visibility } from '@mui/icons-material';
+import { Add, Delete } from '@mui/icons-material';
 import AssigmentId from '@mui/icons-material/AccountCircle';
 import CreditCard from '@mui/icons-material/CreditCard';
 import LocalAtm from '@mui/icons-material/LocalAtm';
