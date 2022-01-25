@@ -406,7 +406,7 @@ export default function Cards() {
           </Tooltip>
           <Tooltip title={t('card.delete.tooltip') ?? ''}>
             <Button
-              disabled={ !analyst.roles.find((role) => role === 'n2') ?  true : selectionModel.length === 0 }
+              disabled={ !analyst.roles.find((role) => role === 'n2') || selectionModel.length === 0 }
               onClick={() => handleDelete()}
               endIcon={<Delete />}
               aria-label='Deletar'
