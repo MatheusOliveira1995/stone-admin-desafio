@@ -62,7 +62,7 @@ type DataGridType = {
 type SubmitType = {
   data: Record<string, unknown>,
   before: Card | undefined,
-  requestedBy: number|string
+  requestedBy: number | string
 }
 
 /**
@@ -409,22 +409,24 @@ export default function Cards() {
             </Button>
           </Tooltip>
           <Tooltip title={t('card.delete.tooltip') ?? ''}>
-            <Button
-              disabled={ !analyst.roles.find((role) => role === 'n2') || selectionModel.length === 0 }
-              onClick={() => handleDelete()}
-              endIcon={<Delete />}
-              aria-label='Deletar'
-              size='medium'
-              variant='contained'
-              color='error'
-              sx={
-                {
-                  marginLeft: '10px'
+            <span>
+              <Button
+                disabled={!analyst.roles.find((role) => role === 'n2') || selectionModel.length === 0}
+                onClick={() => handleDelete()}
+                endIcon={<Delete />}
+                aria-label='Deletar'
+                size='medium'
+                variant='contained'
+                color='error'
+                sx={
+                  {
+                    marginLeft: '10px'
+                  }
                 }
-              }
-            >
-              {t('card.actions.delete')}
-            </Button>
+              >
+                {t('card.actions.delete')}
+              </Button>
+            </span>
           </Tooltip>
         </Box>
         {selectionModel.length > 0 &&

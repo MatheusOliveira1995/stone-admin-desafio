@@ -62,7 +62,7 @@ const configureTableData = (users: UserType[], t: TFunction<"translation", undef
         {
             id: 'document',
             name: t('user.details.document'),
-            enableSort: true,
+            enableSort: false,
             width: 45
         },
         {
