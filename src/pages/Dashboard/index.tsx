@@ -26,7 +26,7 @@ export default function Dashboard() {
             <Box sx={{ flexGrow: 1, display: 'flex' }} component='div'>
                 { hour < 12 ? <WbSunnyIcon /> : hour < 18 ? <Brightness6Icon /> : <DarkModeIcon /> }
                 <Box component='span' sx={{ marginLeft: '10px', marginRight: '5px' }}>
-                    {hour < 12 ? 'Bom dia' : hour < 18 ? 'Boa tarde' : 'Boa noite'}
+                    {hour < 12 ? t('dashboard.morning') : hour < 18 ? t('dashboard.afternoon') : t('dashboard.night')}
                 </Box>
                 <Box component='strong'>
                     { analyst.userName ? analyst?.userName.split(' ').shift() +'!' : ''}
@@ -37,7 +37,7 @@ export default function Dashboard() {
                 <Box  component='strong' sx={{marginRight: '5px'}}>
                     {t(`dashboard.daysOfWeek.${dayOfWeek}`)} ·
                 </Box>
-                {' ' + dayOfMonth + ' ' + t(`dashboard.of`) + ' ' + t(`dashboard.months.${month}`) + ' ' + year + ' - '}
+                { dayOfMonth + ' ' + t(`dashboard.of`) + ' ' + t(`dashboard.months.${month}`) + ' ' + year + ' - '}
                 <Box component='strong' sx={{marginLeft: '5px'}}>
                     <AppClock />
                 </Box>

@@ -23,5 +23,8 @@ export default {
        9: 'Outubro',
        10: 'Novembro',
        11: 'Dezembro'
-   } 
+   },
+   morning: 'Bom dia',
+   afternoon: 'Boa tarde',
+   nigth: 'Boa noite'
 }
