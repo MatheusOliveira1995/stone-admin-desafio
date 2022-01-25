@@ -406,6 +406,7 @@ export default function Cards() {
           </Tooltip>
           <Tooltip title={t('card.delete.tooltip') ?? ''}>
             <Button
+              disabled={ !analyst.roles.find((role) => role === 'n2') ?  true : selectionModel.length === 0 }
               onClick={() => handleDelete()}
               endIcon={<Delete />}
               aria-label='Deletar'
@@ -419,22 +420,6 @@ export default function Cards() {
               }
             >
               {t('card.actions.delete')}
-            </Button>
-          </Tooltip>
-          <Tooltip title={t('card.details.tooltip') ?? ''}>
-            <Button
-              endIcon={<Visibility />}
-              aria-label='Detalhes'
-              size='medium'
-              variant='contained'
-              color='info'
-              sx={
-                {
-                  marginLeft: '10px'
-                }
-              }
-            >
-              {t('card.actions.details')}
             </Button>
           </Tooltip>
         </Box>

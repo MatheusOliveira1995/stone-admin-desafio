@@ -1,5 +1,5 @@
 import http from "src/settings/http";
-import { Audit, Audits, Status } from "src/app/definitions";
+import { Audit, Audits, Status, AuditStatusType } from "src/app/definitions";
 import { formatDate } from "src/util/date";
 
 type ApiCard = {
@@ -34,10 +34,10 @@ type AuditApi = {
  * @return void
  */
 export async function saveAudit({ before, after, requestedBy }: AuditType) {
-    let type = Object.keys(before).length === 0 ? 'created' : Object.keys(after).length === 0 ? 'deleted' : 'updated'
+    let type = Object.keys(before).length === 0 ? AuditStatusType.CREATED : Object.keys(after).length === 0 ? AuditStatusType.DELETE : AuditStatusType.UPDATED
     //if type is different of DELETED and status is different of default status REQUESTED, then the update is status change
     if(type !== 'deleted' && (Object.keys(before).length > 0 && before.status !== after.status)){
-        type = 'card-status-change'
+        type = AuditStatusType.STATUS_CHANGE
     }
     const payload: AuditApi = {
         createdAt: formatDate({ dateValue: undefined, pattern: 'us' }),
@@ -96,7 +96,7 @@ export async function getAudits(): Promise<Audits> {
                 id: audit.id as number,
                 createdAt: formatDate({dateValue: audit.createdAt as string}) ?? '-',
                 requestedBy: audit.requestedBy as number,
-                type: audit.type as string
+                type: audit.type as AuditStatusType
             }
         })
 

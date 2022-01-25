@@ -65,10 +65,17 @@ export type Analyst = {
 export type Audit = {
   id: string | number,
   createdAt: Date | string,
-  type: string,
+  type: AuditStatusType,
   before: Card,
   after: Card,
   requestedBy: number | string,
+}
+
+export enum AuditStatusType {
+    CREATED= 'created',
+    UPDATED= 'updated',
+    STATUS_CHANGE= 'card-status-change',
+    DELETE= 'deleted'
 }
 
 export interface Audits {
