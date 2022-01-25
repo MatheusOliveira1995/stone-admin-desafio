@@ -20,7 +20,7 @@ import { getUserByDocument } from 'src/service/api/users';
 import { useAppDispatch, useAppSelector } from 'src/app/hooks';
 import { setCards } from 'src/app/store/slices/cards';
 import { error } from 'src/app/store/slices/toast';
-import { Card, Cards as CardsType, Status, User } from 'src/app/definitions';
+import { Analyst, Card, Cards as CardsType, Status, User } from 'src/app/definitions';
 import { getUserById } from 'src/service/api/users';
 import AppModal from 'src/components/AppModal';
 import AppInput from 'src/components/AppInput';
@@ -99,8 +99,10 @@ function TabPanel(props: TabPanelProps) {
  * @param t 
  * @returns GridConfigType
  */
-const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>): GridConfigType | undefined => {
+const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>, analyst: Analyst): GridConfigType | undefined => {
   if (!data.cards.length) return;
+
+  const isAdm = analyst.roles.find((role) => role === 'n2')
 
   let requested: any = []
   let approved: any = []
@@ -139,6 +141,8 @@ const configureGridData = (data: CardsType, t: TFunction<"translation", undefine
       type: 'number',
       width: 200,
       editable: false,
+      hideable: isAdm ? true : false,
+      hide: !isAdm
     },
     {
       field: 'status',
@@ -370,7 +374,7 @@ export default function Cards() {
   /**
    */
   useEffect(() => {
-    const gridData = configureGridData(cards, t)
+    const gridData = configureGridData(cards, t, analyst)
     if (!gridData) {
       return
     }
