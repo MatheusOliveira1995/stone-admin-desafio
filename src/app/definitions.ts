@@ -57,6 +57,7 @@ export enum Role{
 export type Analyst = {
     id: number|string,
     userId: number|string,
+    userName?: string,
     email: string,
     password?: string,
     roles: Role[]

@@ -6,6 +6,7 @@ const initialState: Analyst = {
     email: '',
     roles: [],
     userId: 0,
+    userName: ''
 }
 
 export const analystSlice = createSlice({
@@ -17,6 +18,7 @@ export const analystSlice = createSlice({
             state.id = payload.id
             state.email = payload.email
             state.userId = payload.userId
+            state.userName = payload.userName
             state.roles = payload.roles
         },
         logoutAnalyst(state) {
@@ -24,6 +26,7 @@ export const analystSlice = createSlice({
             state.email = ''
             state.roles = []
             state.userId = 0
+            state.userName = ''
         }
     }
 })

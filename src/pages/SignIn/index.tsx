@@ -95,6 +95,7 @@ export default function Signin() {
                             label={t('auth.inputs.password')}
                             placeholder={t('auth.inputs.passwordPlaceholder')}
                             name='password'
+                            autoComplete='on'
                         />
                     </Box>
 

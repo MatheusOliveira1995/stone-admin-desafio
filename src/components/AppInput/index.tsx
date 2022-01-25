@@ -20,9 +20,10 @@ type Props = {
   readOnly?: boolean
   register?: UseFormRegister<any>
   validation?: any
+  autoComplete?: 'off'|'on'
 }
 
-export default function AppInput({ id, name, type, label, placeholder, hidden, endAdornment, register , validation, startAdornment, readOnly = false, helperText, handleChange, value, required = false, error } : Props) {
+export default function AppInput({ id, name, type, label, placeholder, hidden, endAdornment, autoComplete, register , validation, startAdornment, readOnly = false, helperText, handleChange, value, required = false, error } : Props) {
   return (
     <FormControl sx={{display: () => hidden ? 'none' : 'flex'}} required={required} error={!!error} fullWidth variant="outlined">
       <InputLabel htmlFor={id}>{label}</InputLabel>
@@ -30,6 +31,7 @@ export default function AppInput({ id, name, type, label, placeholder, hidden, e
         { ...( register && register(name, validation)) }
         id={id}
         name={name}
+        autoComplete={autoComplete}
         readOnly={readOnly}
         value={value}
         type={type}

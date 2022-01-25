@@ -1,6 +1,6 @@
 import http from "src/settings/http";
 import { Analyst, Role } from "src/app/definitions";
-
+import { getUserById } from "../users";
 
 /**
  * @param email 
@@ -21,6 +21,7 @@ export async function login(email: string, password: string): Promise<Analyst | 
             return
         }
 
+        const user = await getUserById(data.user_id as number)
         const userRoles = data.roles as []
         const roles = userRoles.map((role: string): Role => {
             return role as Role
@@ -30,6 +31,7 @@ export async function login(email: string, password: string): Promise<Analyst | 
             email: data.email as string,
             password: data.password as string,
             userId: data.user_id as number,
+            userName: user?.name,
             roles: roles
         }
 

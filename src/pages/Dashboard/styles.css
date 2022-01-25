@@ -1,0 +1,10 @@
+.dashboard--toolbar{
+    background-color: #008E5A !important;
+    margin: 0;
+    height: 60px;
+    color: #fff !important;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border-radius: 5px;
+}
