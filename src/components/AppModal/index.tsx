@@ -26,6 +26,8 @@ export interface DialogTitleProps {
   onClose: () => void;
 }
 
+/**
+ */
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
     children: React.ReactElement<any, any>;
@@ -34,7 +36,9 @@ const Transition = React.forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
+/**
+ * @param props DialogTitleProps
+ */
 const AppDialogTitle = (props: DialogTitleProps) => {
   const { children, onClose, ...other } = props;
   return (
@@ -58,6 +62,8 @@ const AppDialogTitle = (props: DialogTitleProps) => {
   );
 };
 
+/**
+ */
 export default function FormModal({ open, title, handleClose, disableEscKeyDown = true, children }: DialogType) {
   
   const closeHandler = (event: Object, reason: string) => {

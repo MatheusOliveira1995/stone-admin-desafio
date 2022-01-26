@@ -33,6 +33,8 @@ type Props = {
 
 let menuDrawerWidth = 240
 
+/**
+ */
 const DrawerHeader = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',

@@ -294,7 +294,9 @@ export default function Cards() {
       dispatch(error(t('card.delete.error')))
     }
   }
+  
   /**
+   * @param status Status
    */
   const handleStatusChange = async (status: Status) => {
     if (!selectionModel.length) return;
@@ -325,7 +327,6 @@ export default function Cards() {
     }
   }
   /**
-   * @returns Promise<User>
    */
   const loadUserFormDataByDocument = () => {
     const document = getValues('document')
