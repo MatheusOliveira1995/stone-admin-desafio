@@ -263,6 +263,7 @@ export default function Cards() {
    * @param row 
    */
   const handleEdit = (row: any) => {
+    const isAdm = analyst.roles.find((role) => role === 'n2')
     getUserById(row.userId).then((user) => {
       if (!user) return;
       setValue('id', row.id)
@@ -270,7 +271,7 @@ export default function Cards() {
       setValue('document', user.document)
       setValue('name', row.cardHolderName)
       setValue('digits', row.digits)
-      setValue('limit', row.limit)
+      setValue('limit', isAdm ? row.limit : '******')
       setValue('status', row.status)
       setValue('createdAt', row.createdAt.split('/').reverse().join('-'))
       setIsEditing(true)
