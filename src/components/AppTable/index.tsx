@@ -55,6 +55,11 @@ interface EnhancedTableProps {
   rowCount: number;
 }
 
+/**
+ * @param a T
+ * @param b T
+ * @param orderBy keyof T
+ */
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -65,7 +70,10 @@ function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   return 0;
 }
 
-
+/**
+ * @param order Order
+ * @param orderBy Key
+ */
 function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key,
@@ -77,7 +85,10 @@ function getComparator<Key extends keyof any>(
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
-
+/**
+ * @param array readonly T[]
+ * @param comparator (a: T, b: T)
+ */
 // This method is created for cross-browser compatibility, if you don't
 // need to support IE11, you can use Array.prototype.sort() directly
 function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
@@ -92,6 +103,9 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
   return stabilizedThis.map((el) => el[0]);
 }
 
+/**
+ * @param props EnhancedTableProps
+ */
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { order, orderBy, onRequestSort } = props;
   const createSortHandler = (property: keyof any) => (event: React.MouseEvent<unknown>) => { onRequestSort(event, property); };
@@ -144,6 +158,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
+/**
+ * @param props EnhancedTableToolbarProps
+ */
 const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
 
   return (
@@ -173,6 +190,9 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
   );
 };
 
+/**
+ * @param props Props
+ */
 export default function AppTable(props: Props) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof any>(props.columns ? props.columns[0].id : '');

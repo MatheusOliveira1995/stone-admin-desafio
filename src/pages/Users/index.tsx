@@ -41,6 +41,10 @@ type UserForm = {
     postalCode: string,
     cardFeature: string|undefined
 }
+/**
+ * @param users UserType[]
+ * @param t TFunction<"translation", undefined>
+ */
 const configureTableData = (users: UserType[], t: TFunction<"translation", undefined>) => {
     const columnsMetaData: Column[] = [
         {

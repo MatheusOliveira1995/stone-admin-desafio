@@ -27,7 +27,7 @@ interface AppAuditType {
 
 /**
  * @param data Audits
- * @param t Tfunction
+ * @param t TFunction<"translation", undefined>
  */
 function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation", undefined>): GridConfigType | undefined {
 

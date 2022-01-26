@@ -97,8 +97,9 @@ function TabPanel(props: TabPanelProps) {
 }
 
 /** 
- * @param data 
- * @param t 
+ * @param data CardsType
+ * @param t TFunction<"translation", undefined>
+ * @param analyst Analyst
  * @returns GridConfigType
  */
 const configureGridData = (data: CardsType, t: TFunction<"translation", undefined>, analyst: Analyst): GridConfigType | undefined => {
@@ -253,14 +254,14 @@ export default function Cards() {
   }
 
   /**
-   * @param event 
-   * @param newState 
+   * @param event SyntheticEvent
+   * @param newState number
    */
   const handleChangeTab = (event: SyntheticEvent, newState: number) => {
     setTabState(newState)
   }
   /**
-   * @param row 
+   * @param row any
    */
   const handleEdit = (row: any) => {
     const isAdm = analyst.roles.find((role) => role === 'n2')
