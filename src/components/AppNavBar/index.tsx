@@ -8,7 +8,7 @@ import EditNotificationsIcon from '@mui/icons-material/EditNotifications';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import PeopleIcon from '@mui/icons-material/People';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import { MenuItemsType } from 'src/components/Menu';
+import { MenuItemsType } from 'src/components/AppMenu';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -27,7 +27,7 @@ import {
 
 import { useAppSelector, useAppDispatch } from 'src/app/hooks';
 import { logoutAnalyst } from 'src/app/store/slices/analyst';
-import { Menu as SideMenu } from 'src/components/Menu'
+import { Menu as SideMenu } from 'src/components/AppMenu'
 import { useTranslation } from 'react-i18next'
 
 type Props = {
