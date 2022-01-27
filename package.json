@@ -1,7 +1,12 @@
 {
-  "name": "nome-do-meu-app",
+  "author": {
+    "name": "Matheus Ribeiro de Oliveira",
+    "email": "mateusribeirooliveira@hotmail.com",
+    "url": "https://github.com/MatheusOliveira1995"
+  },
+  "name": "stone-desafio-react",
   "version": "1.0.0",
-  "license": "MIT",
+  "license": "(ISC OR GPL-3.0)",
   "private": true,
   "engines": {
     "node": "12.x"

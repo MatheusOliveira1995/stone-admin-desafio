@@ -1,8 +1,14 @@
 {
-  "name": "server",
+  "author": {
+    "name": "Matheus Ribeiro de Oliveira",
+    "email": "mateusribeirooliveira@hotmail.com",
+    "url": "https://github.com/MatheusOliveira1995"
+  },
   "version": "1.0.0",
+  "license" : "(ISC OR GPL-3.0)",
+  "private": true,
+  "name": "server",
   "main": "index.js",
-  "license": "MIT",
   "scripts": {
     "build": "tsc && node ./build/generator.js",
     "start": "node ./build/index.js"
