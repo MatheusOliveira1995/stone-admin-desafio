@@ -124,7 +124,7 @@ export default function Users() {
         }
 
 
-        setValue('document', user.document ? formatDocument(user.document.toString()) ?? '' : '')
+        setValue('document', user.document)
         setValue('name', user.name)
         setValue('email', user.email)
         setValue('birthDate', user.birthDate ? formatDate({ dateValue: user.birthDate.toString() }) : undefined)
