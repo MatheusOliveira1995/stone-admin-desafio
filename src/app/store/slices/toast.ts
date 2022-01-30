@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-type ToastSettings = {
+export type ToastSettings = {
     visible: boolean,
     color: "error" | "warning" | "success" | "info" | undefined,
     message: string

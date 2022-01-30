@@ -258,21 +258,15 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
  * @returns 
  */
 export function AppAuditGridData({ audits }: AppAuditType) {
-    const dispatch = useAppDispatch()
     const { t } = useTranslation();
     const [auditsGridData, setAuditsGridData] = useState<GridConfigType>({ columns: [], rows: [] })
 
     useEffect(() => {
-        if(!audits.audits.length){
-            dispatch(showBackdrop())
-        }
         const gridData = configureAppAuditGridData(audits, t)
         if (!gridData) {
             return
         }
         setAuditsGridData({ columns: gridData.columns, rows: gridData.rows })
-
-        dispatch(hideBackdrop())
     }, [audits])
 
     return (
@@ -297,8 +291,10 @@ export default function Audits() {
     /**
      */
     const fetchData = () => {
+        dispatch(showBackdrop())
         getAudits().then((response) => {
             dispatch(setAudits(response.audits))
+            dispatch(hideBackdrop())
         })
     }
 

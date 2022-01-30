@@ -339,8 +339,10 @@ export default function Cards() {
   /**
    */
   const fetchData = () => {
+    dispatch(showBackdrop())
     getCards().then((response) => {
       dispatch(setCards(response))
+      dispatch(hideBackdrop())
     })
   }
   /**
@@ -380,9 +382,6 @@ export default function Cards() {
   /**
    */
   useEffect(() => {
-    if(!cards.cards.length){
-      dispatch(showBackdrop())
-    }
     const gridData = configureGridData(cards, t, analyst)
     if (!gridData) {
       return
@@ -390,8 +389,6 @@ export default function Cards() {
     setApprovedGridData({ columns: gridData.columns, rows: gridData.approvedRows })
     setRejectedGridData({ columns: gridData.columns, rows: gridData.rejectedRows })
     setRequestedGridData({ columns: gridData.columns, rows: gridData.requestedRows })
-
-    dispatch(hideBackdrop())
   }, [cards])
 
   return (

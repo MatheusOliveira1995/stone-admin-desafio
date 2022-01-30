@@ -164,22 +164,19 @@ export default function Users() {
     }
 
     useEffect(() => {
+        dispatch(showBackdrop())
         getUsers().then((response) => {
             dispatch(setUsers(response))
+            dispatch(hideBackdrop())
         })
     }, [])
 
     useEffect(() => {
-        if(!users.length){
-            dispatch(showBackdrop())
-        }
         const data = configureTableData(users, t)
         if(!data){
             return
         }
         setTableData(data)
-
-        dispatch(hideBackdrop())
     }, [users])
 
     return (
