@@ -22,9 +22,11 @@ import { User as UserType } from "src/app/definitions";
 import { formatDate } from 'src/util/date';
 import { formatDocument } from 'src/util/format';
 import { useForm } from "react-hook-form";
+import { showBackdrop, hideBackdrop } from "src/app/store/slices/backdrop";
 
 import AppModal from 'src/components/AppModal';
 import AppInput from "src/components/AppInput";
+
 
 type UserForm = {
     document: string,
@@ -41,11 +43,20 @@ type UserForm = {
     postalCode: string,
     cardFeature: string|undefined
 }
+type TableDataType = {
+    columnsMetaData: Column[],
+    rowsData: any[]
+}
 /**
  * @param users UserType[]
  * @param t TFunction<"translation", undefined>
  */
-const configureTableData = (users: UserType[], t: TFunction<"translation", undefined>) => {
+const configureTableData = (users: UserType[], t: TFunction<"translation", undefined>): TableDataType|undefined => {
+
+    if(!users.length){
+        return
+    }
+
     const columnsMetaData: Column[] = [
         {
             id: 'id',
@@ -101,10 +112,13 @@ const configureTableData = (users: UserType[], t: TFunction<"translation", undef
 export default function Users() {
     const { t } = useTranslation();
     const [openModal, setOpenModal] = useState(false)
-    const dipatch = useAppDispatch()
+    const dispatch = useAppDispatch()
     const { users } = useAppSelector((state) => state.users)
     const analyst = useAppSelector((state) => state.analyst)
-    const tableData = configureTableData(users, t)
+    const [tableData, setTableData] = useState<TableDataType>({
+        columnsMetaData: [],
+        rowsData: []
+    })
     const { register, setValue } = useForm<UserForm>()
 
     /**
@@ -151,9 +165,22 @@ export default function Users() {
 
     useEffect(() => {
         getUsers().then((response) => {
-            dipatch(setUsers(response))
+            dispatch(setUsers(response))
         })
     }, [])
+
+    useEffect(() => {
+        if(!users.length){
+            dispatch(showBackdrop())
+        }
+        const data = configureTableData(users, t)
+        if(!data){
+            return
+        }
+        setTableData(data)
+
+        dispatch(hideBackdrop())
+    }, [users])
 
     return (
         <Box component='div'>

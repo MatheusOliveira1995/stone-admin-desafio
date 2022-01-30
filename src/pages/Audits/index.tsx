@@ -10,7 +10,7 @@ import { Box } from "@mui/material";
 import { Audits as AuditsType, Audit } from "src/app/definitions";
 
 import AppGridData from "src/components/AppGridData";
-
+import { showBackdrop, hideBackdrop } from "src/app/store/slices/backdrop";
 import clsx from 'clsx';
 
 import './styles.css'
@@ -258,16 +258,21 @@ function configureAppAuditGridData(data: AuditsType, t: TFunction<"translation",
  * @returns 
  */
 export function AppAuditGridData({ audits }: AppAuditType) {
-
+    const dispatch = useAppDispatch()
     const { t } = useTranslation();
     const [auditsGridData, setAuditsGridData] = useState<GridConfigType>({ columns: [], rows: [] })
 
     useEffect(() => {
+        if(!audits.audits.length){
+            dispatch(showBackdrop())
+        }
         const gridData = configureAppAuditGridData(audits, t)
         if (!gridData) {
             return
         }
         setAuditsGridData({ columns: gridData.columns, rows: gridData.rows })
+
+        dispatch(hideBackdrop())
     }, [audits])
 
     return (

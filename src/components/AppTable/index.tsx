@@ -195,7 +195,7 @@ const EnhancedTableToolbar = (props: EnhancedTableToolbarProps) => {
  */
 export default function AppTable(props: Props) {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof any>(props.columns ? props.columns[0].id : '');
+  const [orderBy, setOrderBy] = React.useState<keyof any>(props.columns?.length ? props.columns[0].id : '');
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 

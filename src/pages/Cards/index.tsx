@@ -28,6 +28,8 @@ import AppGridData from 'src/components/AppGridData';
 import AppFloatButton from 'src/components/AppFloatButton';
 import { SubmitHandler, useForm } from "react-hook-form";
 
+import { showBackdrop, hideBackdrop } from 'src/app/store/slices/backdrop';
+
 
 import { formatDate } from 'src/util/date';
 
@@ -378,6 +380,9 @@ export default function Cards() {
   /**
    */
   useEffect(() => {
+    if(!cards.cards.length){
+      dispatch(showBackdrop())
+    }
     const gridData = configureGridData(cards, t, analyst)
     if (!gridData) {
       return
@@ -385,6 +390,8 @@ export default function Cards() {
     setApprovedGridData({ columns: gridData.columns, rows: gridData.approvedRows })
     setRejectedGridData({ columns: gridData.columns, rows: gridData.rejectedRows })
     setRequestedGridData({ columns: gridData.columns, rows: gridData.requestedRows })
+
+    dispatch(hideBackdrop())
   }, [cards])
 
   return (
