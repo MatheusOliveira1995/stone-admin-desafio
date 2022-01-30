@@ -3,6 +3,9 @@
   <br>
 </p>
 
+Projeto desenvolvido para o desafio de desenvolvimento para front-end da empresa Stone.
+## Descrição do desafio
+
 Que tal ser desafiado pela Stone?
 
 O seu desafio será construir uma aplicação de gestão financeira para o mundo dos negócios de uma nova empresa que está em constante crescimento. Voce terá o papel de ajudar a alavancar os negócios dessa empresa. Um nome bem legal para ela ficará a seu critério, mas ao longo do texto a chamaremos de **Rocha Incrível**.
@@ -236,3 +239,8 @@ Fique à vontade para definir seu próprio layout. Mas vamos deixar algumas dica
 
 
 Tenha um bom desafio.
+
+## Fim da descrição do desafio
+
+<p>Para desenvolvimento do desafio foi utilizado a biblioteca de componentes Material UI: https://mui.com/pt/</p>
+<p>Uma demo do projeto foi publicada no Heroku e pode ser visualizada através do link: <strong>https://stone-desafio-react.herokuapp.com/</strong></p>
