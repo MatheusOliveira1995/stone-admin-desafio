@@ -244,3 +244,21 @@ Tenha um bom desafio.
 
 <p>Para desenvolvimento do desafio foi utilizado a biblioteca de componentes Material UI: https://mui.com/pt/</p>
 <p>Uma demo do projeto foi publicada no Heroku e pode ser visualizada através do link: <strong>https://stone-desafio-react.herokuapp.com/</strong></p>
+
+## Como rodar
+1. **Clonar o repositório**
+```sh
+git clone https://github.com/MatheusOliveira1995/stone.git
+```
+2. **Acessar diretório do projeto**
+```sh
+cd stone
+```
+3. **Instalar dependências**
+```sh
+yarn install
+```
+4. **Executar**
+```sh
+yarn dev
+```
