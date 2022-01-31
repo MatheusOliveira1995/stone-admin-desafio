@@ -240,7 +240,7 @@ Fique à vontade para definir seu próprio layout. Mas vamos deixar algumas dica
 
 Tenha um bom desafio.
 
-## Fim da descrição do desafio
+## Conclusão do desafio
 
 <p>Para desenvolvimento do desafio foi utilizado a biblioteca de componentes Material UI: https://mui.com/pt/</p>
 <p>Uma demo do projeto foi publicada no Heroku e pode ser visualizada através do link: <strong>https://stone-desafio-react.herokuapp.com/</strong></p>
