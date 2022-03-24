@@ -12,6 +12,7 @@
     "node": "12.x"
   },
   "dependencies": {
+    "babel-loader": "8.1.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.5",
@@ -52,7 +53,9 @@
     "dev:server": "yarn run build:server && cd ./server && yarn start",
     "build:client": "yarn && react-scripts build",
     "start": "pm2-runtime start pm2.json --env production",
-    "serve:kill": "pm2 kill"
+    "serve:kill": "pm2 kill",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "resolutions": {
     "react-error-overlay": "6.0.9"
@@ -61,6 +64,16 @@
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
     ]
   },
   "browserslist": {
@@ -76,6 +89,14 @@
     ]
   },
   "devDependencies": {
+    "@storybook/addon-actions": "^6.4.19",
+    "@storybook/addon-essentials": "^6.4.19",
+    "@storybook/addon-interactions": "^6.4.19",
+    "@storybook/addon-links": "^6.4.19",
+    "@storybook/node-logger": "^6.4.19",
+    "@storybook/preset-create-react-app": "^3.2.0",
+    "@storybook/react": "^6.4.19",
+    "@storybook/testing-library": "^0.0.9",
     "dotenv": "^8.2.0",
     "eslint-plugin-react-hooks": "^4.3.0"
   }
